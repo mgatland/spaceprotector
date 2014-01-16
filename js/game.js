@@ -80,6 +80,7 @@
 		man.pos = new Pos(50,10);
 		man.size = new Pos(5,5);
 		man.state = "falling";
+		man.canJump = true;
 		man.fallingTime = 0;
 		man.loading = 0;
 		man.refireRate = 15;
@@ -145,10 +146,12 @@
 
 			if (man.isOnGround()) {
 				man.fallingTime = 0;
+				man.canJump = true;
 			}
 
-			if (upHit && man.fallingTime < 3) { // this means you can walk off a cliff and still jump for 3 frames
+			if (upHit && man.canJump) { // this means you can walk off a cliff and still jump for 3 frames
 				man.state = "jumping";
+				man.canJump = false;
 				man.jumpTime = 0;
 				man.jumpPhase = 1;
 			}
@@ -185,6 +188,7 @@
 				if (man.fallingTime >= 3) {
 					var speed = man.fallingTime < 10 ? 1 : 2;
 					man.tryMove(0,speed);
+					man.canJump = false;
 				}
 			}
 		}
