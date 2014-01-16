@@ -5,7 +5,45 @@
 
 		var man = {};
 		man.pos = new Pos(10,70);
+		man.size = new Pos(5,5);
 		man.state = "falling";
+
+		var mapData =
+		"O                 O\n" +
+		"O                 O\n" +
+		"O                 O\n" +
+		"O                 O\n" +
+		"O                 O\n" +
+		"O                 O\n" +
+		"O                OO\n" +
+		"OOOOOOO    OO   OOO\n" +
+		"OOOOOOO    OO  OOOO\n" +
+		" OOOOOOOOOOOOOOOOOO\n";
+
+		var map = [];
+
+		var loadMap = function (mapData) {
+			map = [];
+			var n = 0;
+			var x = 0;
+			var y = 0;
+			map[y] = [];
+			while (mapData[n]) {
+				if (mapData[n]==="O") {
+					map[y][x] = 1;
+				}
+				if (mapData[n] === "\n") {
+					x = 0;
+					y++;
+					map[y] = [];
+				} else {
+					x++;
+				}
+				n++;
+			}
+		}
+		loadMap(mapData);
+
 
 		man.isOnGround = function () {
 			return this.pos.y >= 90;
@@ -64,6 +102,14 @@
 		var draw = function (painter) {
 			painter.clear();
 			painter.drawSprite(man.pos.x,man.pos.y, man0, "#FFFF00");
+
+			map.forEach(function (row, y) {
+				row.forEach(function (value, x) {
+					if (value === 1) {
+						painter.drawSquare(x*10,y*10, "#FFFF00");
+					}
+				});
+			});
 		}
 
         var pixelWindow = {width:192, height:104};

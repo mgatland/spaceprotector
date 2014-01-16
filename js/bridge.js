@@ -13,6 +13,11 @@
 			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
 		}
 
+		this.drawSquare = function (x, y, color) {
+			ctx.fillStyle = color;
+			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*10, pixelSize*10);
+		}
+
 		this.drawSprite = function (x, y, sprite, color) {
 			ctx.fillStyle = color;
 			var n = 0;
@@ -56,7 +61,7 @@
 					thisSecond = newSecond;
 					currentFps = framesThisSecond;
 					framesThisSecond = 0;
-					//console.log(currentFps + " fps");
+					console.log(currentFps + " fps");
 				}
 				framesThisSecond++;
 			});
