@@ -1,0 +1,1 @@
+Promise is from https://github.com/jakearchibald/ES6-Promises
