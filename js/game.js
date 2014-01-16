@@ -17,9 +17,16 @@
 			}
 		}
 
+		var man0 =
+		"  1  \n" +
+		" 111 \n" +
+		"1 1 1\n" +
+		" 1 1 \n" +
+		" 1 1 \n";
+
 		var draw = function (painter) {
 			painter.clear();
-			painter.drawPixel(man.pos.x,man.pos.y,"#FFFF00");
+			painter.drawSprite(man.pos.x,man.pos.y, man0, "#FFFF00");
 		}
 
         var pixelWindow = {width:192, height:104};

@@ -8,9 +8,26 @@
 			ctx.fillRect(0,0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
 		}
 
-		this.drawPixel = function (x, y, color) {
+		var drawPixel = function (x, y, color) {
 			ctx.fillStyle = color;
 			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+		}
+
+		this.drawSprite = function (x, y, sprite, color) {
+			ctx.fillStyle = color;
+			var n = 0;
+			var xN = x;
+			var yN = y;
+			while (sprite[n]) {
+				if (sprite[n] === "1") drawPixel(xN,yN,color);
+				if (sprite[n] === "\n") {
+					xN = x;
+					yN++;
+				} else {
+					xN++;
+				}
+				n++;
+			}
 		}
 	}
 
