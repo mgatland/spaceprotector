@@ -9,13 +9,13 @@
 		"O                 O\n" +
 		"O                 O\n" +
 		"O                 O\n" +
-		"O               OOO\n" +
+		"O  O  O  O  O   OOO\n" +
 		"O                 O\n" +
 		"OO                O\n" +
 		"O                OO\n" +
 		"OOOOOOO    OO   OOO\n" +
 		"OOOOOOO    OO  OOOO\n" +
-		" OOOOOOOOOOOOOOOOOO\n";
+		"OOOOOOOOOOOOOOOOOOO\n";
 
 		var map = [];
 
@@ -59,11 +59,31 @@
 			return false;
 		}
 
+		var Shot = function (pos, dir) {
+			this.pos = pos;
+			this.dir = dir;
+			this.pos.moveXY(2,1);
+			if (dir === Dir.LEFT) {
+				this.pos.moveXY(-8, 0);
+			} else {
+				this.pos.moveXY(3, 0);
+			}
+			this.update = function () {
+				this.pos.moveInDir(this.dir, 2);
+			}
+		}
+
+		var shots = [];
+		shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
+
 		var man = {};
 		man.pos = new Pos(50,10);
 		man.size = new Pos(5,5);
 		man.state = "falling";
 		man.fallingTime = 0;
+		man.loading = 0;
+		man.refireRate = 15;
+		man.dir = Dir.RIGHT;
 
 		man.isOnGround = function () {
 			var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
@@ -97,14 +117,29 @@
 		}
 
 		var update = function(keyboard) {
+
+			shots.forEach(function (shot) {shot.update();});
+
 			var left = keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT);
 			var right = keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT);
 			var up = keyboard.isKeyDown(KeyEvent.DOM_VK_X);
 			var upHit = keyboard.isKeyHit(KeyEvent.DOM_VK_X);
 
+			var shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_C) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
+			var shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_C) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
+
+			if (man.loading > 0) man.loading--;
+
+			if (shootHit || shoot && man.loading === 0) {
+				man.loading = man.refireRate;
+				shots.push(new Shot(man.pos.clone(), man.dir));
+			}
+
 			if (left && !right) {
+				man.dir = Dir.LEFT;
 				man.tryMove(-1,0);
 			} else if (right && !left) {
+				man.dir = Dir.RIGHT;
 				man.tryMove(1,0);
 			}
 
@@ -154,16 +189,22 @@
 			}
 		}
 
-		var man0 =
+		var manSprite0 =
 		"  1  \n" +
 		" 111 \n" +
 		"1 1 1\n" +
 		" 1 1 \n" +
 		" 1 1 \n";
 
+		var shotSprite0 = "111111\n";
+
 		var draw = function (painter) {
 			painter.clear();
-			painter.drawSprite(man.pos.x,man.pos.y, man0, "#FFFF00");
+			painter.drawSprite(man.pos.x,man.pos.y, manSprite0, "#FFFF00");
+
+			shots.forEach(function (shot) {
+				painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, "#FFFF00");
+			});
 
 			map.forEach(function (row, y) {
 				row.forEach(function (value, x) {

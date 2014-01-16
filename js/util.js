@@ -19,16 +19,6 @@ Pos.prototype.toString = function () {
     return "(" + this.x + "," + this.y + ")";
 }
 
-Pos.prototype.moveInDir = function (dir, distance) {
-    switch (dir) {
-        case Dir.UP: this.y -= distance; break;
-        case Dir.DOWN: this.y += distance; break;
-        case Dir.LEFT: this.x -= distance; break;
-        case Dir.RIGHT: this.x += distance; break;
-    }
-    return this;
-}
-
 Pos.prototype.distanceTo = function (other) {
     var xDiff = this.x - other.x;
     var yDiff = this.y - other.y;
@@ -59,9 +49,13 @@ Pos.prototype.moveAtAngle = function (angle, speed) {
     return this;
 }
 
-Pos.prototype.floor = function () {
-    this.x = Math.floor(this.x);
-    this.y = Math.floor(this.y);
+Pos.prototype.moveInDir = function (dir, distance) {
+    switch (dir) {
+        case Dir.UP: this.y -= distance; break;
+        case Dir.DOWN: this.y += distance; break;
+        case Dir.LEFT: this.x -= distance; break;
+        case Dir.RIGHT: this.x += distance; break;
+    }
     return this;
 }
 
@@ -70,6 +64,19 @@ Pos.prototype.moveXY = function (x, y) {
     this.y += y;
     return this;
 }
+
+Pos.prototype.moveByPos = function (pos) {
+    this.x += pos.x;
+    this.y += pos.y;
+    return this;
+}
+
+Pos.prototype.floor = function () {
+    this.x = Math.floor(this.x);
+    this.y = Math.floor(this.y);
+    return this;
+}
+
 //End of Pos.prototype
 
 

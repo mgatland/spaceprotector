@@ -61,7 +61,7 @@
 					thisSecond = newSecond;
 					currentFps = framesThisSecond;
 					framesThisSecond = 0;
-					console.log(currentFps + " fps");
+					//console.log(currentFps + " fps");
 				}
 				framesThisSecond++;
 			});
