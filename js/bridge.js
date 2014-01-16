@@ -48,6 +48,7 @@
 		var currentFps = 0;
 		window.setInterval(function () {
 			update(keyboard);
+			keyboard.update();
 			requestAnimationFrame(function() {
 				draw(painter);
 				var newSecond = Math.floor(Date.now() / 1000);
