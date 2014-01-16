@@ -37,15 +37,15 @@
 				}
 
 				man.jumpTime++;
-				if (man.jumpPhase === 1 && man.jumpTime > 2 && (!up || man.jumpTime > 7)) {
+				if (man.jumpPhase === 1 && man.jumpTime > 3) {
 					man.jumpPhase = 2;
 					man.jumpTime = 0;
 				}
-				if (man.jumpPhase === 2 && man.jumpTime > 7) {
+				if (man.jumpPhase === 2 && man.jumpTime > 5 && (!up || man.jumpTime > 14)) {
 					man.jumpPhase = 3;
 					man.jumpTime = 0;
 				}
-				if (man.jumpPhase === 3 && man.jumpTime > 3) {
+				if (man.jumpPhase === 3 && man.jumpTime > 5) {
 					man.state = "falling";
 				}
 
