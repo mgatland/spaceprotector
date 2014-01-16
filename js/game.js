@@ -9,9 +9,9 @@
 		"O                 O\n" +
 		"O                 O\n" +
 		"O                 O\n" +
+		"O               OOO\n" +
 		"O                 O\n" +
-		"O                 O\n" +
-		"O                 O\n" +
+		"OO                O\n" +
 		"O                OO\n" +
 		"OOOOOOO    OO   OOO\n" +
 		"OOOOOOO    OO  OOOO\n" +
@@ -63,6 +63,7 @@
 		man.pos = new Pos(50,10);
 		man.size = new Pos(5,5);
 		man.state = "falling";
+		man.fallingTime = 0;
 
 		man.isOnGround = function () {
 			var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
@@ -71,6 +72,7 @@
 		}
 
 		man.tryMove = function (x, y) {
+			var ok = true;
 			while (x != 0) {
 				var sign = x > 0 ? 1 : -1;
 				this.pos.x += sign;
@@ -78,6 +80,7 @@
 				if (isColliding(this, map)) {
 					this.pos.x -= sign;
 					x = 0; //no more movement.
+					ok = false;
 				}
 			}
 			while (y != 0) {
@@ -87,8 +90,10 @@
 				if (isColliding(this, map)) {
 					this.pos.y -= sign;
 					y = 0; //no more movement.
+					ok = false;
 				}
 			}
+			return ok;
 		}
 
 		var update = function(keyboard) {
@@ -103,18 +108,24 @@
 				man.tryMove(1,0);
 			}
 
-			if (upHit && man.isOnGround()) {
+			if (man.isOnGround()) {
+				man.fallingTime = 0;
+			}
+
+			if (upHit && man.fallingTime < 3) { // this means you can walk off a cliff and still jump for 3 frames
 				man.state = "jumping";
 				man.jumpTime = 0;
 				man.jumpPhase = 1;
 			}
 
 			if (man.state === "jumping") {
+				var speed = 0;
 				if (man.jumpPhase === 1) {
-					man.tryMove(0,-2);
+					speed = -2;
 				} else if (man.jumpPhase === 2) {
-					man.tryMove(0,-1);
+					speed = -1;
 				}
+				var unblocked = man.tryMove(0, speed);
 
 				man.jumpTime++;
 				if (man.jumpPhase === 1 && man.jumpTime > 3) {
@@ -125,12 +136,21 @@
 					man.jumpPhase = 3;
 					man.jumpTime = 0;
 				}
+				if (!unblocked && man.jumpPhase != 3) {
+					man.jumpPhase = 3;
+					man.jumpTime = 0;
+				}
 				if (man.jumpPhase === 3 && man.jumpTime > 5) {
 					man.state = "falling";
+					man.fallingTime = 5; //Hack so the player can't recover from this fallingness.
 				}
 
 			} else if (!man.isOnGround()) {
-				man.tryMove(0,1);
+				man.fallingTime++;
+				if (man.fallingTime >= 3) {
+					var speed = man.fallingTime < 10 ? 1 : 2;
+					man.tryMove(0,speed);
+				}
 			}
 		}
 
