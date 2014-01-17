@@ -180,7 +180,7 @@
 					man.jumpPhase = 2;
 					man.jumpTime = 0;
 				}
-				if (man.jumpPhase === 2 && man.jumpTime > 5 && (!up || man.jumpTime > 14)) {
+				if (man.jumpPhase === 2 && man.jumpTime > 5 && (!up || man.jumpTime > 15)) {
 					man.jumpPhase = 3;
 					man.jumpTime = 0;
 				}
@@ -188,9 +188,9 @@
 					man.jumpPhase = 3;
 					man.jumpTime = 0;
 				}
-				if (man.jumpPhase === 3 && man.jumpTime > 5) {
+				if (man.jumpPhase === 3 && man.jumpTime > 6) {
 					man.state = "falling";
-					man.fallingTime = 5; //Hack so the player can't recover from this fallingness.
+					man.fallingTime = 6; //Hack so the player can't recover from this fallingness.
 				}
 
 			} else if (!man.isOnGround()) {
