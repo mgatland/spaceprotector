@@ -21,13 +21,19 @@ var Network = {};
 	var connection;
 
 	Network.connectToServer = function (dataCallback) {
-		var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80});
+		var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80, debug: 3});
+		peer.on('error', function(err) {
+			console.log(err.message + "|" + err.type);
+		});
 		peer.on('connection', function(conn) {
 			console.log("Someone connected to you!");
 			Network.networkRole = Network.HOST;
 			connection = conn;
 		  	connection.on('data', function(data){
 		    	dataCallback(data);
+		  	});
+		  	connection.on('error', function(err) {
+				console.log(err.message + "|" + err.type);
 		  	});
 		});
 
@@ -46,6 +52,9 @@ var Network = {};
 				connection.on('data', function(data){
 					dataCallback(data);
 				});
+				connection.on('error', function(err) {
+					console.log(err.message + "|" + err.type);
+		  		});
   			}
 		});
 	}
