@@ -21,6 +21,10 @@
 
 				  // Send messages
 				  conn.send('Hello!');
+
+				  setInterval(function () {
+				  	conn.send("Tick");
+				  }, 1500);
 				});
 		}
 	</script>
