@@ -1,0 +1,30 @@
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/game.css">
+	<script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+	<script>
+		var id = window.prompt('choose a unique id');
+		var peer = new Peer(id, {key: '6ku8444tfj3y2e29', debug: 3});
+		peer.on('open', function(id) {
+  			console.log('My peer ID is: ' + id);
+		});
+
+		var connectTo = window.prompt('your id is ' + id + '. enter an id to connect to.');
+		if (connectTo) {
+			var conn = peer.connect(connectTo);
+			conn.on('open', function() {
+				  // Receive messages
+				  conn.on('data', function(data) {
+				    console.log('Received', data);
+				  });
+
+				  // Send messages
+				  conn.send('Hello!');
+				});
+		}
+	</script>
+</head>
+<body>
+</body>
+</html>
