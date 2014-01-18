@@ -1,4 +1,12 @@
+var Network = {};
 (function(){
+
+
+	Network.networkRole = null;
+	//consts
+	Network.HOST = "HOST";
+	Network.CLIENT = "GUEST";
+
 	var generatePeerId = function () {
 		//http://stackoverflow.com/a/1349426/439948
 	   	var text = "";
@@ -10,37 +18,43 @@
 	    return text;
 	}
 
-	var connectToServer = function () {
+	var connection;
+
+	Network.connectToServer = function (dataCallback) {
 		var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80});
-		var connection;
 		peer.on('connection', function(conn) {
 			console.log("Someone connected to you!");
+			Network.networkRole = Network.HOST;
 			connection = conn;
 		  	connection.on('data', function(data){
-		    	console.log("msg: " + data);
-		    	connection.send("polo!");
+		    	dataCallback(data);
 		  	});
 		});
 
 		peer.on('open', function(id) {
   			console.log('My peer ID is: ' + id);
+  			document.getElementById('netcode').innerHTML = id; //TODO: don't manipulate the DOM in this file.
 
-  			var myHost = window.prompt("Connect to someone else's game? enter their peer ID.");
+  			var myHost = window.prompt("If you want to join someone else's game, enter their code here. Otherwise hit 'cancel' to start your own.");
   			if (myHost) {
   				connection = peer.connect(myHost);
 				connection.on('open', function(){
 					console.log("Connected!");
+					Network.networkRole = Network.GUEST;
 			  		connection.send('hi!');
-			  		window.setInterval(function () {
-			  			connection.send("hi...");
-			  		}, 1000);
 				});
 				connection.on('data', function(data){
-					console.log("msg: " + data);
+					dataCallback(data);
 				});
   			}
 		});
 	}
 
-	window.connectToServer = connectToServer;
+	Network.send = function (data) {
+		if (connection) {
+			connection.send(data);
+		} else {
+			//console.error("Network.send called with no connection. Data was " + data);
+		}
+	}
 })();

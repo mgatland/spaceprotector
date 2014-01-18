@@ -4,7 +4,17 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 		window.initGame = function () {
 
-			connectToServer();
+			var gotData = function (data) {
+				if (data.x !== undefined && data.y !== undefined) {
+					mans[other].pos.x = data.x;
+					mans[other].pos.y = data.y;
+					mans[other].dir = data.dir == 0 ? Dir.LEFT : Dir.RIGHT;
+					if (data.shot === 1) mans[other]._shoot();
+				} else {
+					console.log("Weird data: " + data);
+				}
+			}
+			Network.connectToServer(gotData);
 
 			var tileSize = 10;
 
@@ -91,46 +101,130 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			var shots = [];
 			shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
 
-			var man = {};
-			man.pos = new Pos(50,10);
-			man.size = new Pos(5,5);
-			man.state = "falling";
-			man.canJump = true;
-			man.fallingTime = 0;
-			man.loading = 0;
-			man.refireRate = 15;
-			man.dir = Dir.RIGHT;
+			var Man = function () {
+				this.pos = new Pos(50,10);
+				this.size = new Pos(5,5);
+				this.state = "falling";
+				this.canJump = true;
+				this.fallingTime = 0;
+				this.loading = 0;
+				this.refireRate = 15;
+				this.dir = Dir.RIGHT;
+				this.shotThisFrame = false;
 
-			man.isOnGround = function () {
-				var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
-				var rightFoot = isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y), map);
-				return (leftFoot || rightFoot);
-			}
+				this.isOnGround = function () {
+					var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
+					var rightFoot = isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y), map);
+					return (leftFoot || rightFoot);
+				}
 
-			man.tryMove = function (x, y) {
-				var ok = true;
-				while (x != 0) {
-					var sign = x > 0 ? 1 : -1;
-					this.pos.x += sign;
-					x -= sign;
-					if (isColliding(this, map)) {
-						this.pos.x -= sign;
-						x = 0; //no more movement.
-						ok = false;
+				this.tryMove = function (x, y) {
+					var ok = true;
+					while (x != 0) {
+						var sign = x > 0 ? 1 : -1;
+						this.pos.x += sign;
+						x -= sign;
+						if (isColliding(this, map)) {
+							this.pos.x -= sign;
+							x = 0; //no more movement.
+							ok = false;
+						}
+					}
+					while (y != 0) {
+						var sign = y > 0 ? 1 : -1;
+						this.pos.y += sign;
+						y -= sign;
+						if (isColliding(this, map)) {
+							this.pos.y -= sign;
+							y = 0; //no more movement.
+							ok = false;
+						}
+					}
+					return ok;
+				}
+
+				this._shoot = function () {
+					shots.push(new Shot(this.pos.clone(), this.dir));
+				}
+
+				this.update = function (left, right, shoot, shootHit, jump, jumpHit) {
+
+					if (this.loading > 0) this.loading--;
+
+					if (shootHit || shoot && this.loading === 0) {
+						this.loading = this.refireRate;
+						this._shoot();
+						this.shotThisFrame = true;
+					} else {
+						this.shotThisFrame = false;
+					}
+
+					if (left && !right) {
+						this.dir = Dir.LEFT;
+						this.tryMove(-1,0);
+					} else if (right && !left) {
+						this.dir = Dir.RIGHT;
+						this.tryMove(1,0);
+					}
+
+					if (this.isOnGround()) {
+						this.fallingTime = 0;
+						this.canJump = true;
+					}
+
+					if (jumpHit && this.canJump) { // this means you can walk off a cliff and still jump for 3 frames
+						this.state = "jumping";
+						this.canJump = false;
+						this.jumpTime = 0;
+						this.jumpPhase = 1;
+					}
+
+					if (this.state === "jumping") {
+						var speed = 0;
+						if (this.jumpPhase === 1) {
+							speed = -2;
+						} else if (this.jumpPhase === 2) {
+							speed = -1;
+						}
+						var unblocked = this.tryMove(0, speed);
+
+						this.jumpTime++;
+						if (this.jumpPhase === 1 && this.jumpTime > 3) {
+							this.jumpPhase = 2;
+							this.jumpTime = 0;
+						}
+						if (this.jumpPhase === 2 && this.jumpTime > 5 && (!jump || this.jumpTime > 15)) {
+							this.jumpPhase = 3;
+							this.jumpTime = 0;
+						}
+						if (!unblocked && this.jumpPhase != 3) {
+							this.jumpPhase = 3;
+							this.jumpTime = 0;
+						}
+						if (this.jumpPhase === 3 && this.jumpTime > 6) {
+							this.state = "falling";
+							this.fallingTime = 6; //Hack so the player can't recover from this fallingness.
+						}
+
+					} else if (!this.isOnGround()) {
+						this.fallingTime++;
+						if (this.fallingTime >= 3) {
+							var speed = this.fallingTime < 10 ? 1 : 2;
+							this.tryMove(0,speed);
+							this.canJump = false;
+						}
 					}
 				}
-				while (y != 0) {
-					var sign = y > 0 ? 1 : -1;
-					this.pos.y += sign;
-					y -= sign;
-					if (isColliding(this, map)) {
-						this.pos.y -= sign;
-						y = 0; //no more movement.
-						ok = false;
-					}
-				}
-				return ok;
 			}
+
+			var mans = [];
+			mans.push(new Man());
+			mans.push(new Man());
+			var local = 0;
+			var other = 1;
+
+			var netFramesToSkip = 0;
+			var netFrame = netFramesToSkip;
 
 			var update = function(keyboard) {
 
@@ -138,74 +232,29 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 				var left = keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT);
 				var right = keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT);
-				var up = keyboard.isKeyDown(KeyEvent.DOM_VK_X);
-				var upHit = keyboard.isKeyHit(KeyEvent.DOM_VK_X);
+				var jump = keyboard.isKeyDown(KeyEvent.DOM_VK_X);
+				var jumpHit = keyboard.isKeyHit(KeyEvent.DOM_VK_X);
 
 				var shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_C) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
 				var shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_C) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
-				if (man.loading > 0) man.loading--;
-
-				if (shootHit || shoot && man.loading === 0) {
-					man.loading = man.refireRate;
-					shots.push(new Shot(man.pos.clone(), man.dir));
+				if (Network.networkRole === Network.HOST) {
+					local = 0;
+					other = 1;
+				} else if (Network.networkRole === Network.CLIENT) {
+					local = 1;
+					other = 0;
 				}
-
-				if (left && !right) {
-					man.dir = Dir.LEFT;
-					man.tryMove(-1,0);
-				} else if (right && !left) {
-					man.dir = Dir.RIGHT;
-					man.tryMove(1,0);
+				mans[local].update(left, right, shoot, shootHit, jump, jumpHit);
+				if (netFrame === 0) {
+					var netData = {x:mans[local].pos.x, y:mans[local].pos.y, dir:mans[local].dir == Dir.LEFT ? 0 : 1};
+					if (mans[local].shotThisFrame === true) netData.shot = 1;
+					Network.send(netData);
+					netFrame = netFramesToSkip;
+				} else {
+					netFrame--;
 				}
-
-				if (man.isOnGround()) {
-					man.fallingTime = 0;
-					man.canJump = true;
-				}
-
-				if (upHit && man.canJump) { // this means you can walk off a cliff and still jump for 3 frames
-					man.state = "jumping";
-					man.canJump = false;
-					man.jumpTime = 0;
-					man.jumpPhase = 1;
-				}
-
-				if (man.state === "jumping") {
-					var speed = 0;
-					if (man.jumpPhase === 1) {
-						speed = -2;
-					} else if (man.jumpPhase === 2) {
-						speed = -1;
-					}
-					var unblocked = man.tryMove(0, speed);
-
-					man.jumpTime++;
-					if (man.jumpPhase === 1 && man.jumpTime > 3) {
-						man.jumpPhase = 2;
-						man.jumpTime = 0;
-					}
-					if (man.jumpPhase === 2 && man.jumpTime > 5 && (!up || man.jumpTime > 15)) {
-						man.jumpPhase = 3;
-						man.jumpTime = 0;
-					}
-					if (!unblocked && man.jumpPhase != 3) {
-						man.jumpPhase = 3;
-						man.jumpTime = 0;
-					}
-					if (man.jumpPhase === 3 && man.jumpTime > 6) {
-						man.state = "falling";
-						man.fallingTime = 6; //Hack so the player can't recover from this fallingness.
-					}
-
-				} else if (!man.isOnGround()) {
-					man.fallingTime++;
-					if (man.fallingTime >= 3) {
-						var speed = man.fallingTime < 10 ? 1 : 2;
-						man.tryMove(0,speed);
-						man.canJump = false;
-					}
-				}
+				//mans[other].update();
 			}
 
 			var manSprite0 =
@@ -219,7 +268,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 			var draw = function (painter) {
 				painter.clear();
-				painter.drawSprite(man.pos.x,man.pos.y, manSprite0, "#FFFF00");
+				mans.forEach(function (man) {
+					painter.drawSprite(man.pos.x,man.pos.y, manSprite0, "#FFFF00");
+				});
 
 				shots.forEach(function (shot) {
 					if (shot.live) painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, "#FFFF00");
