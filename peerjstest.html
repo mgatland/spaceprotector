@@ -10,14 +10,29 @@
   			console.log('My peer ID is: ' + id);
 		});
 
+
+		peer.on('connection', function(conn) {
+			console.log("Someone connected to you!");
+		  	conn.on('data', function(data){
+		    	console.log("msg: " + data);
+		    	conn.send("tock");
+		  	});
+		  	conn.on('error', function(err) {
+				console.log(err.message + "|" + err.type);
+		  	});
+		});
+
 		var connectTo = window.prompt('your id is ' + id + '. enter an id to connect to.');
 		if (connectTo) {
 			var conn = peer.connect(connectTo);
 			conn.on('open', function() {
 				  // Receive messages
-				  conn.on('data', function(data) {
+				conn.on('data', function(data) {
 				    console.log('Received', data);
-				  });
+				});
+				conn.on('error', function(err) {
+					console.log(err.message + "|" + err.type);
+		  		});
 
 				  // Send messages
 				  conn.send('Hello!');
