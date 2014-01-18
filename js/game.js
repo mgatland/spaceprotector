@@ -4,6 +4,8 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 		window.initGame = function () {
 
+			connectToServer();
+
 			var tileSize = 10;
 
 			var mapData =
