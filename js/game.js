@@ -280,30 +280,31 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				if (!isSolid(x+checkX, y+checkY)) {
 					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
 					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
-					var width = (mode === "horizontal") ? 10 : 1;
-					var height = (mode === "horizontal") ? 1: 10
+					var width;
+					var height;
+					if (mode === "horizontal") {
+						width = 10;
+						height = 1;
+					} else if (mode === "vertical") {
+						width = 1;
+						height = 10;
+					} else { //corner
+						width = 1;
+						height = 1;
+					}
 					painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, width, height, "#FFFF00");
 				}
 			}
 
-			var drawCorner = function(x, y, checkX, checkY, painter) {
-				if (!isSolid(x+checkX, y+checkY)) {
-					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
-					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
-					painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, 1, 1, "#FFFF00");
-				}
-			}
-
 			var drawTile = function (x, y, painter) {
-				//edges
 				drawEdge(x, y, 0, -1, "horizontal", painter);
 				drawEdge(x, y, 0, 1, "horizontal", painter);
 				drawEdge(x, y, -1, 0, "vertical", painter);
 				drawEdge(x, y, +1, 0, "vertical", painter);
-				drawCorner(x, y, -1, -1, painter);
-				drawCorner(x, y, +1, -1, painter);
-				drawCorner(x, y, -1, +1, painter);
-				drawCorner(x, y, +1, +1, painter);
+				drawEdge(x, y, -1, -1, "corner", painter);
+				drawEdge(x, y, +1, -1, "corner", painter);
+				drawEdge(x, y, -1, +1, "corner", painter);
+				drawEdge(x, y, +1, +1, "corner", painter);
 			}
 
 			var draw = function (painter) {
