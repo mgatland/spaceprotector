@@ -114,6 +114,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				this.refireRate = 15;
 				this.dir = Dir.RIGHT;
 				this.shotThisFrame = false;
+				this.groundedY = this.pos.y;
 
 				this.isOnGround = function () {
 					var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
@@ -217,6 +218,10 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 							this.canJump = false;
 						}
 					}
+
+					if (this.isOnGround() || this.pos.y > this.groundedY) {
+						this.groundedY = this.pos.y;
+					}
 				}
 			}
 
@@ -308,6 +313,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			}
 
 			var draw = function (painter) {
+				painter.setPos(mans[local].pos.x, mans[local].groundedY);
 				painter.clear();
 				mans.forEach(function (man) {
 					painter.drawSprite(man.pos.x,man.pos.y, manSprite0, "#FFFF00");

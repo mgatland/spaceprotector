@@ -3,19 +3,34 @@
 
 	var Painter = function (ctx, pixelWindow, pixelSize) {
 		var backgroundColor = "#000000";
+		var pos = new Pos(0,0);
+
+		var cameraSlackX = pixelWindow.width/8;
+		var cameraSlackY = 0;
+
+		this.setPos = function (x, y) {
+			var perfectX = x - pixelWindow.width/2;
+			if (perfectX > pos.x + cameraSlackX) pos.x++;
+			if (perfectX < pos.x - cameraSlackX) pos.x--;
+
+			var perfectY = y - pixelWindow.height/2;
+			if (perfectY > pos.y + cameraSlackY) pos.y++;
+			if (perfectY < pos.y - cameraSlackY) pos.y--;
+		}
+
 		this.clear = function() {
 			ctx.fillStyle = backgroundColor;
-			ctx.fillRect(0,0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
+			ctx.fillRect(0, 0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
 		}
 
 		var drawPixel = function (x, y, color) {
 			ctx.fillStyle = color;
-			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize, pixelSize);
 		}
 
 		this.drawRect= function (x, y, width, height, color) {
 			ctx.fillStyle = color;
-			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);
+			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
 		this.drawSprite = function (x, y, sprite, color) {
