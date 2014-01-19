@@ -82,7 +82,7 @@ var Network = {};
 		conn.on('close', function() {
 			console.log("Connection lost.");
 			connectionIsReady = false;
-  			if (type === "guest" && rejected === false) { //hack to prevent overwriting error message, guest only
+  			if (rejected === false) { //hack to prevent overwriting error message, guest only
   				setNetworkMessage("<b style='color: red'>Connection lost.</b>");
   			}
 		});
