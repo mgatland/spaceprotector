@@ -1,6 +1,33 @@
 var Network = {};
 (function(){
 
+	Network.debug = {};
+	var simulateNetworkProblems = false;
+	Network.debug.fakeLag = 100;
+	Network.debug.fakeJitter = 400;
+	Network.debug.fakePacketLoss = 0.1;
+
+	Network.debug.simulateNetworkProblems = function (value) {
+		simulateNetworkProblems = value ? true : false;
+		if (simulateNetworkProblems) {
+			var newAlert = document.createElement("p");
+  			var newContent = document.createTextNode("simulateNetworkProblems ON - adding lag, jitter and packet loss.");
+  			newAlert.appendChild(newContent); //add the text node to the newly created div.
+			document.getElementById('alerts').appendChild(newAlert);
+		} else {
+			var newAlert = document.createElement("p");
+  			var newContent = document.createTextNode("simulateNetworkProblems OFF");
+  			newAlert.appendChild(newContent); //add the text node to the newly created div.
+			document.getElementById('alerts').appendChild(newAlert);
+		}
+	}
+
+	var causeFakeNetworkProblems = function (data, dataCallback) {
+		if (Math.random() < Network.debug.fakePacketLoss) return; //packet lost.
+		var lag = Network.debug.fakeLag + Math.random() * Network.debug.fakeJitter;
+		window.setTimeout(dataCallback, lag, data);
+	}
+
 	Network.networkRole = null;
 	//consts
 	Network.HOST = "HOST";
@@ -41,7 +68,11 @@ var Network = {};
 					conn.close();
 				}
 
-	    	dataCallback(data);
+			if (simulateNetworkProblems === true) {
+				causeFakeNetworkProblems(data, dataCallback);
+			} else {
+				dataCallback(data);
+			}
 	  	});
 
 	  	conn.on('error', function(err) {
