@@ -19,16 +19,17 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			var tileSize = 10;
 
 			var mapData =
-			"O                 O\n" +
-			"O                 O\n" +
-			"O                 O\n" +
-			"O  O  O  O  O   OOO\n" +
-			"O                 O\n" +
-			"OO                O\n" +
-			"O                OO\n" +
-			"OOOOOOO    OO   OOO\n" +
-			"OOOOOOO    OO  OOOO\n" +
-			"OOOOOOOOOOOOOOOOOOO\n";
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"O                 OOOO\n" +
+			"O                 OOOOOOOOOOOOOOO\n" +
+			"O                    O          O\n" +
+			"O  O  O  O  O   OOO  O          O\n" +
+			"O                 O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"OO                O                                            O\n" +
+			"O                OOOOOOOOO                                     O\n" +
+			"OOOOOOO    OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO              O\n" +
+			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 			var map = [];
 
