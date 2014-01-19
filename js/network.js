@@ -19,6 +19,7 @@ var Network = {};
 	}
 
 	var connection;
+	var isOpen = false;
 
 	Network.connectToServer = function (dataCallback) {
 		//var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80, debug: 3});
@@ -27,14 +28,26 @@ var Network = {};
 			console.log(err.message + "|" + err.type);
 		});
 		peer.on('connection', function(conn) {
-			console.log("Someone connected to you!");
-			Network.networkRole = Network.HOST;
+			console.log("incoming connection...");
 			connection = conn;
+
+			connection.on('open', function(){
+				console.log("Someone connected to you!");
+				isOpen = true;
+				Network.networkRole = Network.HOST;
+				document.getElementById('netinfo').innerHTML = "You are hosting a game."
+				connection.send('Thanks for joining!');
+			});
+
 		  	connection.on('data', function(data){
 		    	dataCallback(data);
 		  	});
 		  	connection.on('error', function(err) {
-				console.log(err.message + "|" + err.type);
+				console.log(err.message);
+		  	});
+		  	connection.on('close', function() {
+		  		console.log("Connection lost.");
+		  		isOpen = false;
 		  	});
 		});
 
@@ -47,24 +60,28 @@ var Network = {};
   				connection = peer.connect(myHost);
 				connection.on('open', function(){
 					console.log("Connected!");
+					isOpen = true;
 					Network.networkRole = Network.GUEST;
+					document.getElementById('netinfo').innerHTML = "You have joined a game."
 			  		connection.send('hi!');
 				});
 				connection.on('data', function(data){
 					dataCallback(data);
 				});
 				connection.on('error', function(err) {
-					console.log(err.message + "|" + err.type);
+					console.log(err.message);
+		  		});
+		  		connection.on('close', function() {
+		  			console.log("Connection lost.");
+		  			isOpen = false;
 		  		});
   			}
 		});
 	}
 
 	Network.send = function (data) {
-		if (connection) {
+		if (connection && isOpen) {
 			connection.send(data);
-		} else {
-			//console.error("Network.send called with no connection. Data was " + data);
 		}
 	}
 })();
