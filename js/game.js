@@ -276,6 +276,36 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				return true;
 			}
 
+			var drawEdge = function(x, y, checkX, checkY, mode, painter) {
+				if (!isSolid(x+checkX, y+checkY)) {
+					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
+					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
+					var width = (mode === "horizontal") ? 10 : 1;
+					var height = (mode === "horizontal") ? 1: 10
+					painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, width, height, "#FFFF00");
+				}
+			}
+
+			var drawCorner = function(x, y, checkX, checkY, painter) {
+				if (!isSolid(x+checkX, y+checkY)) {
+					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
+					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
+					painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, 1, 1, "#FFFF00");
+				}
+			}
+
+			var drawTile = function (x, y, painter) {
+				//edges
+				drawEdge(x, y, 0, -1, "horizontal", painter);
+				drawEdge(x, y, 0, 1, "horizontal", painter);
+				drawEdge(x, y, -1, 0, "vertical", painter);
+				drawEdge(x, y, +1, 0, "vertical", painter);
+				drawCorner(x, y, -1, -1, painter);
+				drawCorner(x, y, +1, -1, painter);
+				drawCorner(x, y, -1, +1, painter);
+				drawCorner(x, y, +1, +1, painter);
+			}
+
 			var draw = function (painter) {
 				painter.clear();
 				mans.forEach(function (man) {
@@ -289,32 +319,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				map.forEach(function (row, y) {
 					row.forEach(function (value, x) {
 						if (value === 1) {
-							//edges
-							if (!isSolid(x, y-1)) {
-								painter.drawRect(x*tileSize,y*tileSize, 10, 1, "#FFFF00");
-							}
-							if (!isSolid(x, y+1)) {
-								painter.drawRect(x*tileSize,(y+1)*tileSize-1, 10, 1, "#FFFF00");
-							}
-							if (!isSolid(x-1, y)) {
-								painter.drawRect(x*tileSize,y*tileSize, 1, 10, "#FFFF00");
-							}
-							if (!isSolid(x+1, y)) {
-								painter.drawRect((x+1)*tileSize-1,y*tileSize, 1, 10, "#FFFF00");
-							}
-							//corners
-							if (!isSolid(x-1, y-1)) {
-								painter.drawRect(x*tileSize,y*tileSize, 1, 1, "#FFFF00");
-							}
-							if (!isSolid(x-1, y+1)) {
-								painter.drawRect(x*tileSize,(y+1)*tileSize-1, 1, 1, "#FFFF00");
-							}
-							if (!isSolid(x+1, y-1)) {
-								painter.drawRect((x+1)*tileSize-1,y*tileSize, 1, 1, "#FFFF00");
-							}
-							if (!isSolid(x+1, y+1)) {
-								painter.drawRect((x+1)*tileSize-1,(y+1)*tileSize-1, 1, 1, "#FFFF00");
-							}
+							drawTile(x, y, painter);
 						}
 					});
 				});
