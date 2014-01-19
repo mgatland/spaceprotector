@@ -22,10 +22,10 @@ var Network = {};
 		}
 	}
 
-	var causeFakeNetworkProblems = function (data, dataCallback) {
+	var causeFakeNetworkProblems = function (data, dataCallback, processData) {
 		if (Math.random() < Network.debug.fakePacketLoss) return; //packet lost.
 		var lag = Network.debug.fakeLag + Math.random() * Network.debug.fakeJitter;
-		window.setTimeout(dataCallback, lag, data);
+		window.setTimeout(processData, lag, data, dataCallback);
 	}
 
 	Network.networkRole = null;
@@ -60,18 +60,20 @@ var Network = {};
 
 		var rejected = false; //guest only
 
-	  	conn.on('data', function(data){
-
+		var processData = function(data, dataCallback) {
 	  		if (data == "REJECTED") { //guest only
 				setNetworkMessage("<b style='color: red'>ERROR: You cannot join that game, it is full. Please refresh the page and join a different game.</b>");
 				rejected = true;
-					conn.close();
-				}
+				conn.close();
+			}
+			dataCallback(data);
+		};
 
+	  	conn.on('data', function(data){
 			if (simulateNetworkProblems === true) {
-				causeFakeNetworkProblems(data, dataCallback);
+				causeFakeNetworkProblems(data, dataCallback, processData);
 			} else {
-				dataCallback(data);
+				processData(data, dataCallback);
 			}
 	  	});
 
