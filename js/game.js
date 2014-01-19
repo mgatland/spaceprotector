@@ -6,10 +6,10 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 			var gotData = function (data) {
 				if (data.x !== undefined && data.y !== undefined) {
-					mans[other].pos.x = data.x;
-					mans[other].pos.y = data.y;
-					mans[other].dir = data.dir == 0 ? Dir.LEFT : Dir.RIGHT;
-					if (data.shot === 1) mans[other]._shoot();
+					players[other].pos.x = data.x;
+					players[other].pos.y = data.y;
+					players[other].dir = data.dir == 0 ? Dir.LEFT : Dir.RIGHT;
+					if (data.shot === 1) players[other]._shoot();
 				} else {
 					console.log("Weird data: " + data);
 				}
@@ -65,14 +65,14 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				return false;
 			}
 
-			var isColliding = function (man, map) {
+			var isColliding = function (player, map) {
 				//find out which cell each corner is in.
 				//If a corner is inside a solid square, return true.
-				var corner = man.pos.clone();
+				var corner = player.pos.clone();
 				if (isPointColliding(corner, map)) return true;
-				if (isPointColliding(corner.moveXY(man.size.x-1,0), map)) return true;
-				if (isPointColliding(corner.moveXY(0,man.size.y-1), map)) return true;
-				if (isPointColliding(corner.moveXY(-man.size.x+1,0), map)) return true;
+				if (isPointColliding(corner.moveXY(player.size.x-1,0), map)) return true;
+				if (isPointColliding(corner.moveXY(0,player.size.y-1), map)) return true;
+				if (isPointColliding(corner.moveXY(-player.size.x+1,0), map)) return true;
 				return false;
 			}
 
@@ -105,7 +105,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			var shots = [];
 			shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
 
-			var Man = function () {
+			var Player = function () {
 				this.pos = new Pos(50,10);
 				this.size = new Pos(5,5);
 				this.state = "falling";
@@ -226,9 +226,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				}
 			}
 
-			var mans = [];
-			mans.push(new Man());
-			mans.push(new Man());
+			var players = [];
+			players.push(new Player());
+			players.push(new Player());
 			var local = 0;
 			var other = 1;
 
@@ -254,19 +254,19 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 					local = 1;
 					other = 0;
 				}
-				mans[local].update(left, right, shoot, shootHit, jump, jumpHit);
+				players[local].update(left, right, shoot, shootHit, jump, jumpHit);
 				if (netFrame === 0) {
-					var netData = {x:mans[local].pos.x, y:mans[local].pos.y, dir:mans[local].dir == Dir.LEFT ? 0 : 1};
-					if (mans[local].shotThisFrame === true) netData.shot = 1;
+					var netData = {x:players[local].pos.x, y:players[local].pos.y, dir:players[local].dir == Dir.LEFT ? 0 : 1};
+					if (players[local].shotThisFrame === true) netData.shot = 1;
 					Network.send(netData);
 					netFrame = netFramesToSkip;
 				} else {
 					netFrame--;
 				}
-				//mans[other].update();
+				//players[other].update();
 			}
 
-			var manSprite0 =
+			var playerSprite0 =
 			"  1  \n" +
 			" 111 \n" +
 			"1 1 1\n" +
@@ -314,10 +314,10 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			}
 
 			var draw = function (painter) {
-				painter.setPos(mans[local].pos.x, mans[local].groundedY);
+				painter.setPos(players[local].pos.x, players[local].groundedY);
 				painter.clear();
-				mans.forEach(function (man) {
-					painter.drawSprite(man.pos.x,man.pos.y, manSprite0, "#FFFF00");
+				players.forEach(function (player) {
+					painter.drawSprite(player.pos.x,player.pos.y, playerSprite0, "#FFFF00");
 				});
 
 				shots.forEach(function (shot) {
