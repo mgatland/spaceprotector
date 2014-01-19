@@ -1,7 +1,6 @@
 var Network = {};
 (function(){
 
-
 	Network.networkRole = null;
 	//consts
 	Network.HOST = "HOST";
@@ -27,8 +26,53 @@ var Network = {};
 	}
 
 	var connection;
-	var isOpen = false;
-	var tryingToJoin = false;
+	var connectionIsReady = false;
+	var tryingToJoin = false; //guest only
+
+	var setupConn = function (conn, type, dataCallback) {
+
+		var rejected = false; //guest only
+
+	  	conn.on('data', function(data){
+
+	  		if (data == "REJECTED") { //guest only
+				setNetworkMessage("<b style='color: red'>ERROR: You cannot join that game, it is full. Please refresh the page and join a different game.</b>");
+				rejected = true;
+					conn.close();
+				}
+
+	    	dataCallback(data);
+	  	});
+
+	  	conn.on('error', function(err) {
+			console.log(err.message);
+		});
+
+		conn.on('close', function() {
+			console.log("Connection lost.");
+			connectionIsReady = false;
+  			if (type === "guest" && rejected === false) { //hack to prevent overwriting error message, guest only
+  				setNetworkMessage("<b style='color: red'>Connection lost.</b>");
+  			}
+		});
+
+		conn.on('open', function(){
+			connectionIsReady = true;
+			if (type === "host") {
+				Network.networkRole = Network.HOST;
+				console.log("Someone connected to you!");
+				setNetworkMessage("You are hosting a game.");
+				conn.send('Thanks for joining!');
+			} else {
+				console.log("You connected to the host!");
+				tryingToJoin = false;
+				connection = conn;
+				Network.networkRole = Network.GUEST;
+				setNetworkMessage("You have joined a game.");
+		  		conn.send('Thank you for hosting me!');
+			}
+		});
+	}
 
 	Network.connectToServer = function (dataCallback) {
 		//var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80, debug: 3});
@@ -51,26 +95,7 @@ var Network = {};
 				return;
 			}
 			connection = conn;
-
-			connection.on('open', function(){
-				console.log("Someone connected to you!");
-				isOpen = true;
-				Network.networkRole = Network.HOST;
-				setNetworkMessage("You are hosting a game.");
-				connection.send('Thanks for joining!');
-			});
-
-		  	connection.on('data', function(data){
-		    	dataCallback(data);
-		  	});
-		  	connection.on('error', function(err) {
-				console.log(err.message);
-		  	});
-		  	connection.on('close', function() {
-		  		console.log("Connection lost.");
-		  		isOpen = false;
-		  		setNetworkMessage("<b style='color: red'>Connection lost.</b>");
-		  	});
+			setupConn(connection, "host", dataCallback);
 		});
 
 		peer.on('open', function(id) {
@@ -81,40 +106,13 @@ var Network = {};
   			if (myHost) {
   				tryingToJoin = true;
   				var conn = peer.connect(myHost);
-				conn.on('open', function(){
-					console.log("Connected!");
-					tryingToJoin = false;
-					connection = conn;
-					isOpen = true;
-					Network.networkRole = Network.GUEST;
-					setNetworkMessage("You have joined a game.");
-			  		connection.send('hi!');
-				});
-				var rejected = false;
-				conn.on('data', function(data){
-					if (data == "REJECTED") {
-						setNetworkMessage("<b style='color: red'>ERROR: You cannot join that game, it is full. Please refresh the page and join a different game.</b>");
-						rejected = true;
-						connection.close();
-					}
-					dataCallback(data);
-				});
-				conn.on('error', function(err) {
-					console.log(err.message);
-		  		});
-		  		conn.on('close', function() {
-		  			console.log("Connection lost.");
-		  			isOpen = false;
-		  			if (rejected === false) { //hack to prevent overwriting error message
-		  				setNetworkMessage("<b style='color: red'>Connection lost.</b>");
-		  			}
-		  		});
+				setupConn(conn, "guest", dataCallback);
   			}
 		});
 	}
 
 	Network.send = function (data) {
-		if (connection && isOpen) {
+		if (connection && connectionIsReady) {
 			connection.send(data);
 		}
 	}
