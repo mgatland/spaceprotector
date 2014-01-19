@@ -13,9 +13,9 @@
 			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
 		}
 
-		this.drawSquare = function (x, y, color) {
+		this.drawRect= function (x, y, width, height, color) {
 			ctx.fillStyle = color;
-			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*10, pixelSize*10);
+			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
 		this.drawSprite = function (x, y, sprite, color) {

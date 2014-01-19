@@ -42,6 +42,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 					if (mapData[n]==="O") {
 						map[y][x] = 1;
 					}
+					if (mapData[n]===" ") {
+						map[y][x] = 0;
+					}
 					if (mapData[n] === "\n") {
 						x = 0;
 						y++;
@@ -266,6 +269,13 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 
 			var shotSprite0 = "111111\n";
 
+			var isSolid = function(x, y) {
+				if (x < 0) return true;
+				if (y < 0) return true;
+				if (map[y][x] === 0) return false;
+				return true;
+			}
+
 			var draw = function (painter) {
 				painter.clear();
 				mans.forEach(function (man) {
@@ -279,7 +289,32 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				map.forEach(function (row, y) {
 					row.forEach(function (value, x) {
 						if (value === 1) {
-							painter.drawSquare(x*tileSize,y*tileSize, "#FFFF00");
+							//edges
+							if (!isSolid(x, y-1)) {
+								painter.drawRect(x*tileSize,y*tileSize, 10, 1, "#FFFF00");
+							}
+							if (!isSolid(x, y+1)) {
+								painter.drawRect(x*tileSize,(y+1)*tileSize-1, 10, 1, "#FFFF00");
+							}
+							if (!isSolid(x-1, y)) {
+								painter.drawRect(x*tileSize,y*tileSize, 1, 10, "#FFFF00");
+							}
+							if (!isSolid(x+1, y)) {
+								painter.drawRect((x+1)*tileSize-1,y*tileSize, 1, 10, "#FFFF00");
+							}
+							//corners
+							if (!isSolid(x-1, y-1)) {
+								painter.drawRect(x*tileSize,y*tileSize, 1, 1, "#FFFF00");
+							}
+							if (!isSolid(x-1, y+1)) {
+								painter.drawRect(x*tileSize,(y+1)*tileSize-1, 1, 1, "#FFFF00");
+							}
+							if (!isSolid(x+1, y-1)) {
+								painter.drawRect((x+1)*tileSize-1,y*tileSize, 1, 1, "#FFFF00");
+							}
+							if (!isSolid(x+1, y+1)) {
+								painter.drawRect((x+1)*tileSize-1,(y+1)*tileSize-1, 1, 1, "#FFFF00");
+							}
 						}
 					});
 				});
