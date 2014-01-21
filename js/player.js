@@ -10,6 +10,17 @@ var Player = function (level, startPos) {
 	this.shotThisFrame = false;
 	this.groundedY = this.pos.y;
 
+	var playerSprite0 =
+	"  1  \n" +
+	" 111 \n" +
+	"1 1 1\n" +
+	" 1 1 \n" +
+	" 1 1 \n";
+
+	this.draw = function (painter) {
+		painter.drawSprite(this.pos.x, this.pos.y, playerSprite0, "#FFFF00");
+	}
+
 	this.isOnGround = function () {
 		var leftFoot = level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
 		var rightFoot = level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));

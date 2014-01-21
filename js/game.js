@@ -92,20 +92,13 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				});
 			}
 
-			var playerSprite0 =
-			"  1  \n" +
-			" 111 \n" +
-			"1 1 1\n" +
-			" 1 1 \n" +
-			" 1 1 \n";
-
 			var shotSprite0 = "111111\n";
 
 			var draw = function (painter) {
 				painter.setPos(players[local].pos.x, players[local].groundedY);
 				painter.clear();
 				players.forEach(function (player) {
-					painter.drawSprite(player.pos.x, player.pos.y, playerSprite0, "#FFFF00");
+					player.draw(painter);
 				});
 
 				monsters.forEach(function (monster) {
