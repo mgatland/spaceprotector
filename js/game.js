@@ -33,11 +33,11 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"O                 OOOO\n" +
 			"O                 OOOOOOOOOOOOOOO\n" +
-			"O        m      m    O          O\n" +
+			"O        m           O          O\n" +
 			"O  O  O  O  O   OOO  O          O\n" +
-			"O                 O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"OO                O                                            O\n" +
-			"O           m    OOOOOOOOO            m                        O\n" +
+			"Om                O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"OO               mO                                            O\n" +
+			"O                OOOOOOOOO            m                        O\n" +
 			"OOOOOOO    OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO              O\n" +
 			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";

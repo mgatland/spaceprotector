@@ -33,10 +33,12 @@ var WalkingThing = function (level, pos, size) {
 }
 
 var Monster = function (level, x, y) {
-	var dir = Dir.RIGHT;
+	var dir = Dir.LEFT;
 
 	var refireDelay = 60;
 	var refireTimer = 0;
+
+	var doesMove = false;
 	var moveDelay = 2;
 	var moveTimer = 0;
 
@@ -53,12 +55,14 @@ var Monster = function (level, x, y) {
 
 		this.tryMove(0,1);
 
-		if (moveTimer === 0) {
-			moveTimer = moveDelay;
-			var couldWalk = this.tryMove(dir.x,0);
-			if (couldWalk === false) dir = dir.reverse;
-		} else {
-			moveTimer--;
+		if (doesMove) {
+			if (moveTimer === 0) {
+				moveTimer = moveDelay;
+				var couldWalk = this.tryMove(dir.x,0);
+				if (couldWalk === false) dir = dir.reverse;
+			} else {
+				moveTimer--;
+			}
 		}
 
 		if (this.collisions.length > 0) {
