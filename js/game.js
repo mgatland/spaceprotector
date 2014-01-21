@@ -2,8 +2,12 @@
 
 var Events = new function () {
 	this.shots = [];
+	this.monsters = [];
 	this.shoot = function (shot) {
 		this.shots.push(shot);
+	}
+	this.monster = function (m) {
+		this.monsters.push(m);
 	}
 };
 
@@ -29,11 +33,11 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"O                 OOOO\n" +
 			"O                 OOOOOOOOOOOOOOO\n" +
-			"O                    O          O\n" +
+			"O        m      m    O          O\n" +
 			"O  O  O  O  O   OOO  O          O\n" +
 			"O                 O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OO                O                                            O\n" +
-			"O                OOOOOOOOO                                     O\n" +
+			"O           m    OOOOOOOOO            m                        O\n" +
 			"OOOOOOO    OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO              O\n" +
 			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
@@ -41,7 +45,8 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			var level = new Level(mapData, tileSize);
 
 			var checkCollision = function (a, b) {
-				if (a.pos.x < b.pos.x + b.size.x
+				if (a.live === true && b.live === true
+					&& a.pos.x < b.pos.x + b.size.x
 					&& a.pos.x + a.size.x > b.pos.x
 					&& a.pos.y < b.pos.y + b.size.y
 					&& a.pos.y + a.size.y > b.pos.y
@@ -52,7 +57,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			}
 
 			var shots = [];
-			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT));
+			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT)); //test shot
 
 			var players = [];
 			players.push(new Player(level, new Pos(30, 70)));
@@ -61,7 +66,6 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			var other = 1;
 
 			var monsters = [];
-			monsters.push(new Monster(level, 30, 70));
 
 			var netFramesToSkip = 0;
 			var netFrame = netFramesToSkip;
@@ -71,6 +75,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				//Pull new shots from the event system
 				Array.prototype.push.apply(shots, Events.shots);
 				Events.shots.length = 0;
+
+				Array.prototype.push.apply(monsters, Events.monsters);
+				Events.monsters.length = 0;
 
 				//Process collisions
 				//Shots and enemies
