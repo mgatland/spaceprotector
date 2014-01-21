@@ -9,6 +9,10 @@ var Player = function (level, startPos) {
 	this.dir = Dir.RIGHT;
 	this.shotThisFrame = false;
 	this.groundedY = this.pos.y;
+	var spawnPoint = startPos.clone();
+
+	var maxDeadTime = 30;
+	var deadTimer = 0;
 
 	var playerSprite0 =
 	"  1  \n" +
@@ -32,6 +36,22 @@ var Player = function (level, startPos) {
 	}
 
 	this.update = function (left, right, shoot, shootHit, jump, jumpHit) {
+
+		if (!this.alive) {
+			if (deadTimer === 0) {
+				this.alive = true;
+				this.pos = spawnPoint.clone();
+			} else {
+				deadTimer--;
+			}
+			return;
+		}
+
+		if (this.collisions.length > 0) {
+			this.collisions.length = 0;
+			this.alive = false;
+			deadTimer = maxDeadTime;
+		}
 
 		if (this.loading > 0) this.loading--;
 
