@@ -33,6 +33,7 @@ var WalkingThing = function (level, pos, size) {
 }
 
 var Monster = function (level, x, y) {
+	var dir = Dir.RIGHT;
 
 	var sprite =
 			" 111 \n" +
@@ -44,7 +45,9 @@ var Monster = function (level, x, y) {
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
 	this.update = function () {
 		if (this.live === false) return;
-		this.tryMove(1,0);
+		this.tryMove(0,1);
+		var couldWalk = this.tryMove(dir.x,0);
+		if (couldWalk === false) dir = dir.reverse;
 
 		if (this.collisions.length > 0) {
 			this.live = false;

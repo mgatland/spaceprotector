@@ -1,8 +1,8 @@
 var Dir = {};
-Dir.UP = {isHorizontal: false};
-Dir.DOWN = {isHorizontal: false};
-Dir.LEFT = {isHorizontal: true};
-Dir.RIGHT = {isHorizontal: true};
+Dir.UP = {isHorizontal: false, x:0};
+Dir.DOWN = {isHorizontal: false, x:0};
+Dir.LEFT = {isHorizontal: true, x:-1};
+Dir.RIGHT = {isHorizontal: true, x:1};
 
 Dir.UP.reverse = Dir.DOWN;
 Dir.DOWN.reverse = Dir.UP;
