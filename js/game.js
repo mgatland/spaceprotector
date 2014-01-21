@@ -1,5 +1,5 @@
 "use strict";
-require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], function(util) {
+require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "monster"], function(util) {
 	(function() {
 
 		window.initGame = function () {
@@ -31,53 +31,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
-			var level = {};
-			level.isColliding = function (player) {
-				//find out which cell each corner is in.
-				//If a corner is inside a solid square, return true.
-				var corner = player.pos.clone();
-				if (this.isPointColliding(corner)) return true;
-				if (this.isPointColliding(corner.moveXY(player.size.x-1,0))) return true;
-				if (this.isPointColliding(corner.moveXY(0,player.size.y-1))) return true;
-				if (this.isPointColliding(corner.moveXY(-player.size.x+1,0))) return true;
-				return false;
-			}
-			level.loadMap = function (mapData) {
-				this.map = [];
-				var n = 0;
-				var x = 0;
-				var y = 0;
-				this.map[y] = [];
-				while (mapData[n]) {
-					if (mapData[n]==="O") {
-						this.map[y][x] = 1;
-					}
-					if (mapData[n]===" ") {
-						this.map[y][x] = 0;
-					}
-					if (mapData[n] === "\n") {
-						x = 0;
-						y++;
-						this.map[y] = [];
-					} else {
-						x++;
-					}
-					n++;
-				}
-			}
-			level.isPointColliding = function (pos) {
-				var x = Math.floor(pos.x / tileSize);
-				var y = Math.floor(pos.y / tileSize);
-				if (this.map[y][x] === 1) return true;
-				return false;
-			}
-			level.isSolid = function(x, y) {
-				if (x < 0) return true;
-				if (y < 0) return true;
-				if (this.map[y][x] === 0) return false;
-				return true;
-			}
-
+			var level = new Level(tileSize);
 			level.loadMap(mapData);
 
 			var Shot = function (pos, dir) {
@@ -259,37 +213,6 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 
 			var shotSprite0 = "111111\n";
 
-			var drawEdge = function(x, y, checkX, checkY, mode, painter) {
-				if (!level.isSolid(x+checkX, y+checkY)) {
-					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
-					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
-					var width;
-					var height;
-					if (mode === "horizontal") {
-						width = 10;
-						height = 1;
-					} else if (mode === "vertical") {
-						width = 1;
-						height = 10;
-					} else { //corner
-						width = 1;
-						height = 1;
-					}
-					painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, width, height, "#FFFF00");
-				}
-			}
-
-			var drawTile = function (x, y, painter) {
-				drawEdge(x, y, 0, -1, "horizontal", painter);
-				drawEdge(x, y, 0, 1, "horizontal", painter);
-				drawEdge(x, y, -1, 0, "vertical", painter);
-				drawEdge(x, y, +1, 0, "vertical", painter);
-				drawEdge(x, y, -1, -1, "corner", painter);
-				drawEdge(x, y, +1, -1, "corner", painter);
-				drawEdge(x, y, -1, +1, "corner", painter);
-				drawEdge(x, y, +1, +1, "corner", painter);
-			}
-
 			var draw = function (painter) {
 				painter.setPos(players[local].pos.x, players[local].groundedY);
 				painter.clear();
@@ -305,13 +228,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 					if (shot.live) painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, "#FFFF00");
 				});
 
-				level.map.forEach(function (row, y) {
-					row.forEach(function (value, x) {
-						if (value === 1) {
-							drawTile(x, y, painter);
-						}
-					});
-				});
+				level.draw(painter);
 			}
 
 	        var pixelWindow = {width:192, height:104};
