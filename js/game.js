@@ -1,5 +1,5 @@
 "use strict";
-require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
+require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], function(util) {
 	(function() {
 
 		window.initGame = function () {
@@ -106,8 +106,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
 
 			var Player = function () {
-				this.pos = new Pos(50,10);
-				this.size = new Pos(5,5);
+				extend(this, new WalkingThing(new Pos(50,10), new Pos(5,5)));
 				this.state = "falling";
 				this.canJump = true;
 				this.fallingTime = 0;
@@ -232,6 +231,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 			var local = 0;
 			var other = 1;
 
+			var monsters = [];
+			monsters.push(new Monster(30, 70));
+
 			var netFramesToSkip = 0;
 			var netFrame = netFramesToSkip;
 
@@ -263,7 +265,10 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				} else {
 					netFrame--;
 				}
-				//players[other].update();
+
+				monsters.forEach(function (monster) {
+					monster.update();
+				});
 			}
 
 			var playerSprite0 =
@@ -317,7 +322,11 @@ require(["util", "bridge", "keyboard", "network", "lib/peer"], function(util) {
 				painter.setPos(players[local].pos.x, players[local].groundedY);
 				painter.clear();
 				players.forEach(function (player) {
-					painter.drawSprite(player.pos.x,player.pos.y, playerSprite0, "#FFFF00");
+					painter.drawSprite(player.pos.x, player.pos.y, playerSprite0, "#FFFF00");
+				});
+
+				monsters.forEach(function (monster) {
+					monster.draw(painter);
 				});
 
 				shots.forEach(function (shot) {
