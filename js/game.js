@@ -1,7 +1,14 @@
 "use strict";
-require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "monster"], function(util) {
-	(function() {
 
+var Events = new function () {
+	this.shots = [];
+	this.shoot = function (shot) {
+		this.shots.push(shot);
+	}
+};
+
+require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "player", "monster"], function(util) {
+	(function() {
 		window.initGame = function () {
 
 			var gotData = function (data) {
@@ -33,133 +40,12 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "monster"
 
 			var level = new Level(mapData, tileSize);
 
-			var Shot = function (pos, dir) {
-				this.pos = pos;
-				this.dir = dir;
-
-				this.size = new Pos(5,1);
-
-				this.pos.moveXY(2,1);
-				this.live = true;
-
-				if (dir === Dir.LEFT) {
-					this.pos.moveXY(-8, 0);
-				} else {
-					this.pos.moveXY(3, 0);
-				}
-				this.update = function () {
-					if (this.live === false) return;
-					this.pos.moveInDir(this.dir, 2);
-					var left = level.isPointColliding(this.pos);
-					var right = level.isPointColliding(this.pos.clone().moveXY(this.size.x,0));
-					if (left || right) {
-						//destroy it
-						this.live = false;
-					}
-				}
-			}
-
 			var shots = [];
-			shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
-
-			var Player = function () {
-				extend(this, new WalkingThing(level, new Pos(50,10), new Pos(5,5)));
-				this.state = "falling";
-				this.canJump = true;
-				this.fallingTime = 0;
-				this.loading = 0;
-				this.refireRate = 15;
-				this.dir = Dir.RIGHT;
-				this.shotThisFrame = false;
-				this.groundedY = this.pos.y;
-
-				this.isOnGround = function () {
-					var leftFoot = level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
-					var rightFoot = level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));
-					return (leftFoot || rightFoot);
-				}
-
-				this._shoot = function () {
-					shots.push(new Shot(this.pos.clone(), this.dir));
-				}
-
-				this.update = function (left, right, shoot, shootHit, jump, jumpHit) {
-
-					if (this.loading > 0) this.loading--;
-
-					if (shootHit || shoot && this.loading === 0) {
-						this.loading = this.refireRate;
-						this._shoot();
-						this.shotThisFrame = true;
-					} else {
-						this.shotThisFrame = false;
-					}
-
-					if (left && !right) {
-						this.dir = Dir.LEFT;
-						this.tryMove(-1,0);
-					} else if (right && !left) {
-						this.dir = Dir.RIGHT;
-						this.tryMove(1,0);
-					}
-
-					if (this.isOnGround()) {
-						this.fallingTime = 0;
-						this.canJump = true;
-					}
-
-					if (jumpHit && this.canJump) { // this means you can walk off a cliff and still jump for 3 frames
-						this.state = "jumping";
-						this.canJump = false;
-						this.jumpTime = 0;
-						this.jumpPhase = 1;
-					}
-
-					if (this.state === "jumping") {
-						var speed = 0;
-						if (this.jumpPhase === 1) {
-							speed = -2;
-						} else if (this.jumpPhase === 2) {
-							speed = -1;
-						}
-						var unblocked = this.tryMove(0, speed);
-
-						this.jumpTime++;
-						if (this.jumpPhase === 1 && this.jumpTime > 3) {
-							this.jumpPhase = 2;
-							this.jumpTime = 0;
-						}
-						if (this.jumpPhase === 2 && this.jumpTime > 5 && (!jump || this.jumpTime > 15)) {
-							this.jumpPhase = 3;
-							this.jumpTime = 0;
-						}
-						if (!unblocked && this.jumpPhase != 3) {
-							this.jumpPhase = 3;
-							this.jumpTime = 0;
-						}
-						if (this.jumpPhase === 3 && this.jumpTime > 6) {
-							this.state = "falling";
-							this.fallingTime = 6; //Hack so the player can't recover from this fallingness.
-						}
-
-					} else if (!this.isOnGround()) {
-						this.fallingTime++;
-						if (this.fallingTime >= 3) {
-							var speed = this.fallingTime < 10 ? 1 : 2;
-							this.tryMove(0,speed);
-							this.canJump = false;
-						}
-					}
-
-					if (this.isOnGround() || this.pos.y > this.groundedY) {
-						this.groundedY = this.pos.y;
-					}
-				}
-			}
+			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT));
 
 			var players = [];
-			players.push(new Player());
-			players.push(new Player());
+			players.push(new Player(level, new Pos(30, 70)));
+			players.push(new Player(level, new Pos(50, 70)));
 			var local = 0;
 			var other = 1;
 
@@ -170,6 +56,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "monster"
 			var netFrame = netFramesToSkip;
 
 			var update = function(keyboard) {
+
+				Array.prototype.push.apply(shots, Events.shots);
+				Events.shots.length = 0;
 
 				shots.forEach(function (shot) {shot.update();});
 
