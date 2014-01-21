@@ -1,6 +1,7 @@
 "use strict";
-var Level = function(tileSize) {
+var Level = function(mapData, tileSize) {
 	var level = this; //for use in private methods
+	var map = [];
 
 	var drawEdge = function(x, y, checkX, checkY, mode, painter) {
 		if (!level.isSolid(x+checkX, y+checkY)) {
@@ -33,18 +34,7 @@ var Level = function(tileSize) {
 		drawEdge(x, y, +1, +1, "corner", painter);
 	}
 
-	var map = [];
-	this.isColliding = function (player) {
-		//find out which cell each corner is in.
-		//If a corner is inside a solid square, return true.
-		var corner = player.pos.clone();
-		if (this.isPointColliding(corner)) return true;
-		if (this.isPointColliding(corner.moveXY(player.size.x-1,0))) return true;
-		if (this.isPointColliding(corner.moveXY(0,player.size.y-1))) return true;
-		if (this.isPointColliding(corner.moveXY(-player.size.x+1,0))) return true;
-		return false;
-	}
-	this.loadMap = function (mapData) {
+	var loadMap = function (mapData) {
 		map = [];
 		var n = 0;
 		var x = 0;
@@ -67,6 +57,17 @@ var Level = function(tileSize) {
 			n++;
 		}
 	}
+
+	this.isColliding = function (player) {
+		//find out which cell each corner is in.
+		//If a corner is inside a solid square, return true.
+		var corner = player.pos.clone();
+		if (this.isPointColliding(corner)) return true;
+		if (this.isPointColliding(corner.moveXY(player.size.x-1,0))) return true;
+		if (this.isPointColliding(corner.moveXY(0,player.size.y-1))) return true;
+		if (this.isPointColliding(corner.moveXY(-player.size.x+1,0))) return true;
+		return false;
+	}
 	this.isPointColliding = function (pos) {
 		var x = Math.floor(pos.x / tileSize);
 		var y = Math.floor(pos.y / tileSize);
@@ -88,6 +89,8 @@ var Level = function(tileSize) {
 			});
 		});
 	}
+
+	loadMap(mapData);
 };
 
 

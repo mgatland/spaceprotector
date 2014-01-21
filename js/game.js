@@ -31,8 +31,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "monster"
 			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
-			var level = new Level(tileSize);
-			level.loadMap(mapData);
+			var level = new Level(mapData, tileSize);
 
 			var Shot = function (pos, dir) {
 				this.pos = pos;
