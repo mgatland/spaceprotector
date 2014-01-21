@@ -28,7 +28,7 @@ var Player = function (level, startPos) {
 	}
 
 	this._shoot = function () {
-		Events.shoot(new Shot(level, this.pos.clone(), this.dir));
+		Events.shoot(new Shot(level, this.pos.clone(), this.dir, "player"));
 	}
 
 	this.update = function (left, right, shoot, shootHit, jump, jumpHit) {

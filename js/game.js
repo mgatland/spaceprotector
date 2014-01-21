@@ -76,9 +76,15 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				//Shots and enemies
 				shots.forEach(function (shot) {
 					if (shot.live === true) {
-						monsters.forEach(function (monster) {
-							checkCollision(shot, monster);
-						});
+						if (shot.hitsMonsters === true) {
+							monsters.forEach(function (monster) {
+								checkCollision(shot, monster);
+							});
+						} else {
+							players.forEach(function (player) {
+								checkCollision(shot, player);
+							});
+						}
 					}
 				});
 
@@ -135,7 +141,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				level.draw(painter);
 			}
 
-	        var pixelWindow = {width:192, height:104};
+	        var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
 	        var scale = 4;
 
 	        var desiredFps = 60;

@@ -1,7 +1,9 @@
-var Shot = function (level, pos, dir) {
+var Shot = function (level, pos, dir, owner) {
 	this.collisions = [];
 	this.pos = pos;
 	this.dir = dir;
+
+	this.hitsMonsters = (owner === "player");
 
 	this.size = new Pos(5,1);
 
