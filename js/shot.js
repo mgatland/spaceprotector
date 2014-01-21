@@ -1,4 +1,5 @@
 var Shot = function (level, pos, dir) {
+	this.collisions = [];
 	this.pos = pos;
 	this.dir = dir;
 
@@ -14,6 +15,12 @@ var Shot = function (level, pos, dir) {
 	}
 	this.update = function () {
 		if (this.live === false) return;
+
+		if (this.collisions.length > 0) {
+			this.live = false;
+			return;
+		}
+
 		this.pos.moveInDir(this.dir, 2);
 		var left = level.isPointColliding(this.pos);
 		var right = level.isPointColliding(this.pos.clone().moveXY(this.size.x,0));

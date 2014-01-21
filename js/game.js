@@ -40,6 +40,17 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 
 			var level = new Level(mapData, tileSize);
 
+			var checkCollision = function (a, b) {
+				if (a.pos.x < b.pos.x + b.size.x
+					&& a.pos.x + a.size.x > b.pos.x
+					&& a.pos.y < b.pos.y + b.size.y
+					&& a.pos.y + a.size.y > b.pos.y
+					) {
+					a.collisions.push(b);
+					b.collisions.push(a);
+				}
+			}
+
 			var shots = [];
 			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT));
 
@@ -57,8 +68,20 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 
 			var update = function(keyboard) {
 
+				//Pull new shots from the event system
 				Array.prototype.push.apply(shots, Events.shots);
 				Events.shots.length = 0;
+
+				//Process collisions
+				//Shots and enemies
+				shots.forEach(function (shot) {
+					if (shot.live === true) {
+						monsters.forEach(function (monster) {
+							checkCollision(shot, monster);
+						});
+					}
+				});
+
 
 				shots.forEach(function (shot) {shot.update();});
 

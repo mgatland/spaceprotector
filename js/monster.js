@@ -1,8 +1,10 @@
 "use strict";
 
 var WalkingThing = function (level, pos, size) {
+	this.collisions = [];
 	this.pos = pos;
 	this.size = size;
+	this.live = true;
 
 	this.tryMove = function (x, y) {
 		var ok = true;
@@ -41,9 +43,17 @@ var Monster = function (level, x, y) {
 
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
 	this.update = function () {
+		if (this.live === false) return;
 		this.tryMove(1,0);
+
+		if (this.collisions.length > 0) {
+			this.live = false;
+			return;
+		}
+
 	};
 	this.draw = function (painter) {
+		if (this.live === false) return;
 		painter.drawSprite(this.pos.x, this.pos.y, sprite, "#FFFF00");
 	};
 };
