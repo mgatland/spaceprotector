@@ -31,50 +31,54 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
-			var map = [];
-
-			var loadMap = function (mapData) {
-				map = [];
+			var level = {};
+			level.isColliding = function (player) {
+				//find out which cell each corner is in.
+				//If a corner is inside a solid square, return true.
+				var corner = player.pos.clone();
+				if (this.isPointColliding(corner)) return true;
+				if (this.isPointColliding(corner.moveXY(player.size.x-1,0))) return true;
+				if (this.isPointColliding(corner.moveXY(0,player.size.y-1))) return true;
+				if (this.isPointColliding(corner.moveXY(-player.size.x+1,0))) return true;
+				return false;
+			}
+			level.loadMap = function (mapData) {
+				this.map = [];
 				var n = 0;
 				var x = 0;
 				var y = 0;
-				map[y] = [];
+				this.map[y] = [];
 				while (mapData[n]) {
 					if (mapData[n]==="O") {
-						map[y][x] = 1;
+						this.map[y][x] = 1;
 					}
 					if (mapData[n]===" ") {
-						map[y][x] = 0;
+						this.map[y][x] = 0;
 					}
 					if (mapData[n] === "\n") {
 						x = 0;
 						y++;
-						map[y] = [];
+						this.map[y] = [];
 					} else {
 						x++;
 					}
 					n++;
 				}
 			}
-			loadMap(mapData);
-
-			var isPointColliding = function (pos, map) {
+			level.isPointColliding = function (pos) {
 				var x = Math.floor(pos.x / tileSize);
 				var y = Math.floor(pos.y / tileSize);
-				if (map[y][x] === 1) return true;
+				if (this.map[y][x] === 1) return true;
 				return false;
+			}
+			level.isSolid = function(x, y) {
+				if (x < 0) return true;
+				if (y < 0) return true;
+				if (this.map[y][x] === 0) return false;
+				return true;
 			}
 
-			var isColliding = function (player, map) {
-				//find out which cell each corner is in.
-				//If a corner is inside a solid square, return true.
-				var corner = player.pos.clone();
-				if (isPointColliding(corner, map)) return true;
-				if (isPointColliding(corner.moveXY(player.size.x-1,0), map)) return true;
-				if (isPointColliding(corner.moveXY(0,player.size.y-1), map)) return true;
-				if (isPointColliding(corner.moveXY(-player.size.x+1,0), map)) return true;
-				return false;
-			}
+			level.loadMap(mapData);
 
 			var Shot = function (pos, dir) {
 				this.pos = pos;
@@ -93,8 +97,8 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 				this.update = function () {
 					if (this.live === false) return;
 					this.pos.moveInDir(this.dir, 2);
-					var left = isPointColliding(this.pos, map);
-					var right = isPointColliding(this.pos.clone().moveXY(this.size.x,0), map);
+					var left = level.isPointColliding(this.pos);
+					var right = level.isPointColliding(this.pos.clone().moveXY(this.size.x,0));
 					if (left || right) {
 						//destroy it
 						this.live = false;
@@ -106,7 +110,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 			shots.push(new Shot(new Pos(20,20), Dir.RIGHT));
 
 			var Player = function () {
-				extend(this, new WalkingThing(new Pos(50,10), new Pos(5,5)));
+				extend(this, new WalkingThing(level, new Pos(50,10), new Pos(5,5)));
 				this.state = "falling";
 				this.canJump = true;
 				this.fallingTime = 0;
@@ -117,34 +121,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 				this.groundedY = this.pos.y;
 
 				this.isOnGround = function () {
-					var leftFoot = isPointColliding(this.pos.clone().moveXY(0,this.size.y), map);
-					var rightFoot = isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y), map);
+					var leftFoot = level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
+					var rightFoot = level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));
 					return (leftFoot || rightFoot);
-				}
-
-				this.tryMove = function (x, y) {
-					var ok = true;
-					while (x != 0) {
-						var sign = x > 0 ? 1 : -1;
-						this.pos.x += sign;
-						x -= sign;
-						if (isColliding(this, map)) {
-							this.pos.x -= sign;
-							x = 0; //no more movement.
-							ok = false;
-						}
-					}
-					while (y != 0) {
-						var sign = y > 0 ? 1 : -1;
-						this.pos.y += sign;
-						y -= sign;
-						if (isColliding(this, map)) {
-							this.pos.y -= sign;
-							y = 0; //no more movement.
-							ok = false;
-						}
-					}
-					return ok;
 				}
 
 				this._shoot = function () {
@@ -232,7 +211,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 			var other = 1;
 
 			var monsters = [];
-			monsters.push(new Monster(30, 70));
+			monsters.push(new Monster(level, 30, 70));
 
 			var netFramesToSkip = 0;
 			var netFrame = netFramesToSkip;
@@ -280,15 +259,8 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 
 			var shotSprite0 = "111111\n";
 
-			var isSolid = function(x, y) {
-				if (x < 0) return true;
-				if (y < 0) return true;
-				if (map[y][x] === 0) return false;
-				return true;
-			}
-
 			var drawEdge = function(x, y, checkX, checkY, mode, painter) {
-				if (!isSolid(x+checkX, y+checkY)) {
+				if (!level.isSolid(x+checkX, y+checkY)) {
 					var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
 					var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
 					var width;
@@ -333,7 +305,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "monster"], functi
 					if (shot.live) painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, "#FFFF00");
 				});
 
-				map.forEach(function (row, y) {
+				level.map.forEach(function (row, y) {
 					row.forEach(function (value, x) {
 						if (value === 1) {
 							drawTile(x, y, painter);

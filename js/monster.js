@@ -1,11 +1,36 @@
 "use strict";
 
-var WalkingThing = function (pos, size) {
+var WalkingThing = function (level, pos, size) {
 	this.pos = pos;
 	this.size = size;
+
+	this.tryMove = function (x, y) {
+		var ok = true;
+		while (x != 0) {
+			var sign = x > 0 ? 1 : -1;
+			this.pos.x += sign;
+			x -= sign;
+			if (level.isColliding(this)) {
+				this.pos.x -= sign;
+				x = 0; //no more movement.
+				ok = false;
+			}
+		}
+		while (y != 0) {
+			var sign = y > 0 ? 1 : -1;
+			this.pos.y += sign;
+			y -= sign;
+			if (level.isColliding(this)) {
+				this.pos.y -= sign;
+				y = 0; //no more movement.
+				ok = false;
+			}
+		}
+		return ok;
+	}
 }
 
-var Monster = function (x, y) {
+var Monster = function (level, x, y) {
 
 	var sprite =
 			" 111 \n" +
@@ -14,9 +39,9 @@ var Monster = function (x, y) {
 			" 111 \n" +
 			" 1 1 \n";
 
-	extend(this, new WalkingThing(new Pos(x, y), new Pos(5, 5)));
+	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
 	this.update = function () {
-
+		this.tryMove(1,0);
 	};
 	this.draw = function (painter) {
 		painter.drawSprite(this.pos.x, this.pos.y, sprite, "#FFFF00");
