@@ -44,7 +44,9 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 
 			var level = new Level(mapData, tileSize);
 
-			var checkCollision = function (a, b) {
+			//mode tells who to nofity, "both" or "firstonly"
+			var checkCollision = function (a, b, mode) {
+				if (!mode) mode = "both";
 				if (a.live === true && b.live === true
 					&& a.pos.x < b.pos.x + b.size.x
 					&& a.pos.x + a.size.x > b.pos.x
@@ -52,7 +54,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 					&& a.pos.y + a.size.y > b.pos.y
 					) {
 					a.collisions.push(b);
-					b.collisions.push(a);
+					if (mode === "both") b.collisions.push(a);
 				}
 			}
 
@@ -80,7 +82,7 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				Events.monsters.length = 0;
 
 				//Process collisions
-				//Shots and enemies
+				//Shots collide with monsters and players
 				shots.forEach(function (shot) {
 					if (shot.live === true) {
 						if (shot.hitsMonsters === true) {
@@ -94,7 +96,13 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 						}
 					}
 				});
-
+				//Enemies collide with players
+				//(only notify the player)
+				players.forEach(function (p) {
+					monsters.forEach(function (monster) {
+						checkCollision(p, monster, "firstOnly");
+					});
+				});
 
 				shots.forEach(function (shot) {shot.update();});
 
