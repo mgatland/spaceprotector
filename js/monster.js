@@ -41,6 +41,57 @@ var WalkingThing = function (level, pos, size) {
 	}
 }
 
+var Monster2 = function (level, x, y) {
+	var dir = Dir.LEFT;
+	var moveDelay = 5;
+	var moveTimer = 0;
+	var health = 4;
+
+	var sprite =
+		" 11111111\n" +
+		"11111 1 1\n" +
+		"111111111\n" +
+		" 1111    \n" +
+		" 1111   1\n" +
+		" 1111111 \n" +
+		"11111   1\n" +
+		"11111    \n" +
+		" 1 1     \n";
+
+	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(9, 9)));
+
+	this.update = function () {
+		if (this.live === false) return;
+
+		this.tryMove(0,1);
+
+		if (moveTimer === 0) {
+			moveTimer = moveDelay;
+			var couldWalk = this.tryMove(dir.x,0);
+			if (couldWalk === false) {
+				dir = dir.reverse;
+			}
+		} else {
+			moveTimer--;
+		}
+
+		if (this.collisions.length > 0) {
+			this.collisions.length = 0;
+			health--;
+			if (health == 0) { 
+				this.live = false;
+				return;
+			}
+		}
+	};
+
+	this.draw = function (painter) {
+		if (this.live === false) return;
+		painter.drawSprite(this.pos.x, this.pos.y, sprite, "#FFFF00");
+	};
+
+}
+
 var Monster = function (level, x, y) {
 	var dir = Dir.LEFT;
 
@@ -57,11 +108,11 @@ var Monster = function (level, x, y) {
 	var moveTimer = 0;
 
 	var sprite =
-			" 111 \n" +
-			"1 1 1\n" +
-			"11111\n" +
-			" 111 \n" +
-			" 1 1 \n";
+		" 111 \n" +
+		"1 1 1\n" +
+		"11111\n" +
+		" 111 \n" +
+		" 1 1 \n";
 
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
 	this.update = function () {

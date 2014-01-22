@@ -36,10 +36,10 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 			"O        m           O          O\n" +
 			"O  O  O  O  O   OOO  O          O\n" +
 			"Om                O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"OO               mO                                            O\n" +
-			"O                OOOOOOOOO            m                        O\n" +
-			"OOOOOOO    OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO              O\n" +
-			"OOOOOOO    OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"OO               mOO k                                         O\n" +
+			"O                OOOOOOOOO    k       m                        O\n" +
+			"OOOOOOO    OO   OOOOOOOOOOOOOOOOO    OOOOOOOOOOOO              O\n" +
+			"OOOOOOO k  OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 			var level = new Level(mapData, tileSize);
