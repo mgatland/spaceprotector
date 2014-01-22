@@ -36,10 +36,15 @@ var Monster = function (level, x, y) {
 	var dir = Dir.LEFT;
 
 	var refireDelay = 60;
-	var refireTimer = 0;
+	var refireTimer = refireDelay;
 
-	var doesMove = false;
-	var moveDelay = 2;
+	var action = "shooting";
+	var walkingTime = 0;
+	var maxWalkingTime = 90;
+	var shotsInARow = 0;
+	var maxShotsInARow = 5;
+
+	var moveDelay = 5;
 	var moveTimer = 0;
 
 	var sprite =
@@ -55,13 +60,19 @@ var Monster = function (level, x, y) {
 
 		this.tryMove(0,1);
 
-		if (doesMove) {
+		if (action === "walking") {
 			if (moveTimer === 0) {
 				moveTimer = moveDelay;
 				var couldWalk = this.tryMove(dir.x,0);
 				if (couldWalk === false) dir = dir.reverse;
 			} else {
 				moveTimer--;
+			}
+			walkingTime++;
+			if (walkingTime > maxWalkingTime) {
+				action = "shooting";
+				refireTimer = refireDelay;
+				shotsInARow = 0;
 			}
 		}
 
@@ -70,11 +81,18 @@ var Monster = function (level, x, y) {
 			return;
 		}
 
-		if (refireTimer === 0) {
-			Events.shoot(new Shot(level, this.pos.clone(), dir, "monster"));
-			refireTimer = refireDelay;
-		} else {
-			refireTimer--;
+		if (action === "shooting") {
+			if (refireTimer === 0) {
+				Events.shoot(new Shot(level, this.pos.clone(), dir, "monster"));
+				refireTimer = refireDelay;
+				shotsInARow++;
+				if (shotsInARow === maxShotsInARow) {
+					action = "walking";
+					walkingTime = 0;
+				}
+			} else {
+				refireTimer--;
+			}
 		}
 
 	};
