@@ -78,6 +78,17 @@ var Level = function(mapData, tileSize) {
 		if (map[y][x] === 1) return true;
 		return false;
 	}
+
+	this.cellDepthAt = function (p) {
+		var pos = p.clone();
+		var depth = 0;
+		while (!this.isPointColliding(pos)) {
+			depth++;
+			pos.y += tileSize;
+		}
+		return depth;
+	}
+
 	this.isSolid = function(x, y) {
 		if (x < 0) return true;
 		if (y < 0) return true;

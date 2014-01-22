@@ -6,6 +6,15 @@ var WalkingThing = function (level, pos, size) {
 	this.size = size;
 	this.live = true;
 
+	this.isAtCliff = function(dir, minHeight) {
+		if (dir === Dir.RIGHT) {
+			var frontFoot = new Pos(this.pos.x + this.size.x, this.pos.y + this.size.y);
+		} else {
+			var frontFoot = new Pos(this.pos.x, this.pos.y + this.size.y);
+		}
+		return (level.cellDepthAt(frontFoot) >= minHeight);
+	}
+
 	this.tryMove = function (x, y) {
 		var ok = true;
 		while (x != 0) {
@@ -64,7 +73,13 @@ var Monster = function (level, x, y) {
 			if (moveTimer === 0) {
 				moveTimer = moveDelay;
 				var couldWalk = this.tryMove(dir.x,0);
-				if (couldWalk === false) dir = dir.reverse;
+				if (couldWalk === false) {
+					dir = dir.reverse;
+				} else if (this.isAtCliff(dir, 2)) {
+					dir = dir.reverse;
+				}
+
+
 			} else {
 				moveTimer--;
 			}
