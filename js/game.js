@@ -111,8 +111,8 @@ require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "
 				var jump = keyboard.isKeyDown(KeyEvent.DOM_VK_X);
 				var jumpHit = keyboard.isKeyHit(KeyEvent.DOM_VK_X);
 
-				var shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_C) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
-				var shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_C) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
+				var shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_Y) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
+				var shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_Y) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
 				if (Network.networkRole === Network.HOST) {
 					local = 0;
