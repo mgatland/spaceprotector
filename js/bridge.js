@@ -99,11 +99,29 @@
 		var thisSecond = null;
 		var framesThisSecond = 0;
 		var currentFps = 0;
+
+		var worstUpdateTime = 0;
+		var worstDrawTime = 0;
+		
 		window.setInterval(function () {
+			var updateStart = Date.now();
 			update(keyboard);
+			var updateTime = Date.now() - updateStart;
+			if (updateTime > worstUpdateTime) {
+				worstUpdateTime = updateTime;
+				console.log("Slowest update: " + worstUpdateTime + " ms");
+			}
 			keyboard.update();
 			requestAnimationFrame(function() {
+				var drawStart = Date.now();
 				draw(painter);
+				var drawTime = Date.now() - drawStart;
+				if (drawTime > worstDrawTime) {
+					worstDrawTime = drawTime;
+					console.log("Slowest draw: " + worstDrawTime + " ms");
+				}
+
+
 				var newSecond = Math.floor(Date.now() / 1000);
 				if (newSecond != thisSecond) {
 					thisSecond = newSecond;
