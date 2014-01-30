@@ -1,0 +1,15 @@
+.pixel {
+	width: 32px;
+	height: 32px;
+	border: 1px solid #333;
+	background-color: black;
+	display: inline-block;
+}
+
+.pixels {
+	margin: 64px;
+}
+
+.frames {
+	background-color: black;
+}

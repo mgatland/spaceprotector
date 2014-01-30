@@ -27,7 +27,14 @@ if (typeof KeyEvent == "undefined") {
         DOM_VK_Z: 90,
         DOM_VK_Y: 89,
 
-        DOM_VK_P: 80
+        DOM_VK_P: 80,
+
+        DOM_VK_C: 67,
+        DOM_VK_V: 86,
+
+        DOM_VK_EQUALS: 187, /*ditto*/
+        DOM_VK_HYPHEN_MINUS: 189 /* Non-standard, fixme!*/
+
     }
 }
 
