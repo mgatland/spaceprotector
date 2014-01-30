@@ -41,7 +41,7 @@ define(["sprite_player", "sprites"], function () {
 			} else {
 				console.log("Error animation state " + animState);
 			}
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, "#FFFF00");
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, Colors.good);
 		}
 
 		this.isOnGround = function () {

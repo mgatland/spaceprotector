@@ -19,7 +19,7 @@ var Level = function(mapData, tileSize) {
 				width = 1;
 				height = 1;
 			}
-			painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, width, height, "#FFFF00");
+			painter.drawRect(x*tileSize+drawOffsetX,y*tileSize+drawOffsetY, width, height, Colors.background);
 		}
 	}
 

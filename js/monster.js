@@ -87,7 +87,7 @@ var Monster2 = function (level, x, y) {
 
 	this.draw = function (painter) {
 		if (this.live === false) return;
-		painter.drawSprite(this.pos.x, this.pos.y, sprite, "#FFFF00");
+		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.bad);
 	};
 
 }
@@ -164,6 +164,6 @@ var Monster = function (level, x, y) {
 	};
 	this.draw = function (painter) {
 		if (this.live === false) return;
-		painter.drawSprite(this.pos.x, this.pos.y, sprite, "#FFFF00");
+		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.bad);
 	};
 };

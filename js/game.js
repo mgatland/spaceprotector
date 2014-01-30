@@ -11,6 +11,13 @@ var Events = new function () {
 	}
 };
 
+var Colors = {
+	background: "#FFBE40",
+	bad: "#6C8DD5",
+	good: "#B6BD2F",
+	highlight: "#FFFFFF"
+};
+
 require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "monster"], function(util, Player) {
 	(function() {
 		window.initGame = function () {
@@ -150,7 +157,9 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				});
 
 				shots.forEach(function (shot) {
-					if (shot.live) painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, "#FFFF00");
+					if (shot.live) {
+						painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, shot.hitsMonsters ? Colors.good : Colors.bad);
+					}
 				});
 
 				level.draw(painter);
