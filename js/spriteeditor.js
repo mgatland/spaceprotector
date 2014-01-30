@@ -1,4 +1,4 @@
-require(["keyboard"], function () {
+require(["sprites", "keyboard"], function () {
 
 	var Pixels = function (size) {
 		var _this = this;
@@ -114,7 +114,9 @@ require(["keyboard"], function () {
 		}
 
 		var currentFrame = 0;
-		var maxAnims = 6;
+		var maxAnims = 1;
+		var animFrame = 0;
+		var animFrameDelay = 0;
 		var pixelSize = 4;
 
 		var clipBoard = [];
@@ -140,6 +142,24 @@ require(["keyboard"], function () {
 			ctx.fillRect(x * pixelSize + frame * size * pixelSize, y * pixelSize, pixelSize, pixelSize);
 		}
 
+		var drawFrame = function (data, position) {
+			for (var y = 0; y < size; y++) {
+				for (var x = 0; x < size; x++) {
+					drawPixel(x, y, position, data[y*size+x] === 1 ? "red": "black");
+				}
+			}
+		}
+
+		var save = function (frames) {
+			var data = "v1.0:";
+			frames.forEach(function (frame) {
+				frame.forEach(function (val) {
+					data = data + val;
+				});
+			});
+			alert(data);
+		}
+
 		window.setInterval(function () {
 			clear();
 
@@ -147,11 +167,23 @@ require(["keyboard"], function () {
 			frames[currentFrame] = data.slice(); //inefficient
 			for (var frameN = 0; frameN < frames.length; frameN++) {
 				var frame = frames[frameN];
-				for (var y = 0; y < size; y++) {
-					for (var x = 0; x < size; x++) {
-						drawPixel(x, y, frameN, frame[y*size+x] === 1 ? "red": "black");
-					}
-				}
+				drawFrame(frame, frameN);
+			}
+
+			var anims = document.querySelector(".anims").value.split(",");
+			var maxAnimFrameDelay = parseInt(document.querySelector(".frameDelay").value);
+			if (animFrame >= anims.length) {
+				animFrame = 0;
+			}
+			var anim = anims[animFrame].split(":");
+			var frame = frames[anim[0]];
+			if (frame) {
+				drawFrame(frame, maxFrames);
+			}
+			animFrameDelay--;
+			if (animFrameDelay <= 0 || isNaN(animFrameDelay)) {
+				animFrame++;
+				animFrameDelay = maxAnimFrameDelay;
 			}
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_C)) {
@@ -177,6 +209,21 @@ require(["keyboard"], function () {
 				pixels.setData(frames[currentFrame].slice());
 				console.log("Frame " + currentFrame);
 			}
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_L)) {
+				var data = prompt("Enter v1.0 data string: ");
+				if (data && data.indexOf("v1.0:") === 0) {
+					loadFramesFromData(frames, data);
+					pixels.setData(frames[currentFrame]);
+				} else {
+					alert("Invalid data string.");
+				}
+			}
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_S)) {
+				save(frames);
+			}
+
 			keyboard.update();	
 		}, 1000/60);
 	}

@@ -11,7 +11,7 @@ var Events = new function () {
 	}
 };
 
-require(["util", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "player", "monster"], function(util) {
+require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "monster"], function(util, Player) {
 	(function() {
 		window.initGame = function () {
 

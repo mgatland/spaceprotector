@@ -49,6 +49,23 @@
 				n++;
 			}
 		}
+
+		this.drawSprite2 = function (x, y, sprite, color) {
+			ctx.fillStyle = color;
+			var n = 0;
+			var xOff = 0;
+			var yOff = 0;
+			while (n < sprite.length) {
+				if (sprite[n] === 1) drawPixel(x + xOff, y + yOff, color);
+				if (xOff === sprite.width - 1) {
+					xOff = 0;
+					yOff++
+				} else {
+					xOff++;
+				}
+				n++;
+			}
+		}
 	}
 
 	window.Bridge = function () {
