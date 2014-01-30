@@ -15,6 +15,11 @@ define(["sprite_player", "sprites"], function () {
 		var maxDeadTime = 30;
 		var deadTimer = 0;
 
+		var animFrame = 0;
+		var animDelay = 0;
+
+		var animState = "standing";
+
 		var playerSprites = [];
 		loadFramesFromData(playerSprites, playerSpriteData);
 		"  1  \n" +
@@ -24,7 +29,19 @@ define(["sprite_player", "sprites"], function () {
 		" 1 1 \n";
 
 		this.draw = function (painter) {
-			painter.drawSprite2(this.pos.x, this.pos.y, playerSprites[0], "#FFFF00");
+			var frame;
+			if (animState === "standing") {
+				frame = playerSprites[0];
+			} else if (animState === "running") {
+				frame = playerSprites[animFrame+1];
+			} else if (animState === "falling" ) {
+				frame = playerSprites[5];
+			} else if (animState === "jumping") {
+				frame = playerSprites[1];
+			} else {
+				console.log("Error animation state " + animState);
+			}
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, "#FFFF00");
 		}
 
 		this.isOnGround = function () {
@@ -38,6 +55,18 @@ define(["sprite_player", "sprites"], function () {
 		}
 
 		this.update = function (left, right, shoot, shootHit, jump, jumpHit) {
+
+			if (animState !== "running") {
+				animDelay = 0;
+				animFrame = 0;
+			} else {
+				animDelay++;
+				if (animDelay >= 5) {
+					animDelay = 0;
+					animFrame++;
+					if (animFrame === 4) animFrame = 0;				
+				}
+			}
 
 			if (!this.alive) {
 				if (deadTimer === 0) {
@@ -68,9 +97,13 @@ define(["sprite_player", "sprites"], function () {
 			if (left && !right) {
 				this.dir = Dir.LEFT;
 				this.tryMove(-1,0);
+				animState = "running";
 			} else if (right && !left) {
 				this.dir = Dir.RIGHT;
 				this.tryMove(1,0);
+				animState = "running";
+			} else {
+				animState = "standing";
 			}
 
 			if (this.isOnGround()) {
@@ -86,6 +119,7 @@ define(["sprite_player", "sprites"], function () {
 			}
 
 			if (this.state === "jumping") {
+				animState = "jumping";
 				var speed = 0;
 				if (this.jumpPhase === 1) {
 					speed = -2;
@@ -115,6 +149,7 @@ define(["sprite_player", "sprites"], function () {
 			} else if (!this.isOnGround()) {
 				this.fallingTime++;
 				if (this.fallingTime >= 3) {
+					animState = "falling";
 					var speed = this.fallingTime < 10 ? 1 : 2;
 					this.tryMove(0,speed);
 					this.canJump = false;
