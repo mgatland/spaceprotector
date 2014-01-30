@@ -24,6 +24,7 @@ var Level = function(mapData, tileSize) {
 	}
 
 	var drawTile = function (x, y, painter) {
+		if (!painter.isOnScreen(x*tileSize, y*tileSize, tileSize, tileSize)) return;
 		drawEdge(x, y, 0, -1, "horizontal", painter);
 		drawEdge(x, y, 0, 1, "horizontal", painter);
 		drawEdge(x, y, -1, 0, "vertical", painter);

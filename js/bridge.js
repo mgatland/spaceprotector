@@ -29,11 +29,21 @@
 		}
 
 		this.drawRect= function (x, y, width, height, color) {
+			if (!this.isOnScreen(x, y, width, height)) return;
 			ctx.fillStyle = color;
 			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
+		this.isOnScreen = function (x, y, width, height) {
+			if (x > pixelWindow.width + pos.x) return false;
+			if (x + width < pos.x) return false;
+			if (y > pixelWindow.height + pos.y) return false;
+			if (y + height < pos.y) return false;
+			return true;
+		}
+
 		this.drawSprite = function (x, y, sprite, color) {
+			if (!this.isOnScreen(x, y, 12, 12)) return;
 			ctx.fillStyle = color;
 			var n = 0;
 			var xN = x;
@@ -56,6 +66,7 @@
 		}
 
 		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color) {
+			if (!this.isOnScreen(x, y, sprite.width, sprite.width)) return;
 			ctx.fillStyle = color;
 			var n = 0;
 			var xOff = 0;
