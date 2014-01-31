@@ -12,10 +12,7 @@ var Events = new function () {
 };
 
 var Colors = {
-	background: "#FFBE40",
-	bad: "#6C8DD5",
-	good: "#B6BD2F",
-	highlight: "#FFFFFF"
+	background: "#5CCCCC", bad: "#8598FF", good: "#B2FFFF", highlight: "#FFFFFF"
 };
 
 require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "monster"], function(util, Player) {
