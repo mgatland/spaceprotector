@@ -2,8 +2,77 @@
 define(["sprite_player", "sprites"], function () {
 	var Player = function (level, startPos) {
 		extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
-		this.state = "falling";
-		this.canJump = true;
+
+		var states = {
+
+			jumping: new function () {
+				this.preupdate = function () {};
+				this.update = function (jumpIsHeld) {
+					animState = "jumping";
+					var speed = 0;
+					if (this.jumpPhase === 1) {
+						speed = -2;
+					} else if (this.jumpPhase === 2) {
+						speed = -1;
+					}
+					var unblocked = this.tryMove(0, speed);
+
+					this.jumpTime++;
+					if (this.jumpPhase === 1 && this.jumpTime > 3) {
+						this.jumpPhase = 2;
+						this.jumpTime = 0;
+					}
+					if (this.jumpPhase === 2 && this.jumpTime > 5 && (!jumpIsHeld || this.jumpTime > 15)) {
+						this.jumpPhase = 3;
+						this.jumpTime = 0;
+					}
+					if (!unblocked && this.jumpPhase != 3) {
+						this.jumpPhase = 3;
+						this.jumpTime = 0;
+					}
+					if (this.jumpPhase === 3 && this.jumpTime > 6) {
+						this.state = states.falling;
+						this.fallingTime = 6; //Hack so the player can't recover from this fallingness.
+					}
+				};
+			},
+
+			falling: new function () {
+				this.preupdate = function () {};
+				this.update = function () {
+					if (this.isOnGround()) {
+						this.state = states.grounded;
+						this.fallingTime = 0;
+					} else {
+						this.fallingTime++;
+						var speed = this.fallingTime < 10 ? 1 : 2;
+						this.tryMove(0,speed);
+					}
+				};
+			},
+
+			grounded: new function () {
+				this.preupdate = function () {
+					if (jumpIsQueued) {
+						this.state = states.jumping;
+						this.jumpTime = 0;
+						this.jumpPhase = 1;
+						jumpIsQueued = false;
+					}
+				};
+				this.update = function () {
+					if (!this.isOnGround()) {
+						this.fallingTime++;
+						if (this.fallingTime >= 3) {
+							this.state = states.falling;
+							animState = "falling";
+						}
+					}
+				};
+			}
+		};
+
+		this.state = states.falling;
 		this.fallingTime = 0;
 		this.loading = 0;
 		this.refireRate = 15;
@@ -56,7 +125,17 @@ define(["sprite_player", "sprites"], function () {
 			Events.shoot(new Shot(level, this.pos.clone(), this.dir, "player"));
 		}
 
-		this.update = function (left, right, shoot, shootHit, jump, jumpHit) {
+		this.update = function (left, right, shoot, shootHit, jumpIsHeld, jumpIsHit) {
+
+			if (!this.alive) {
+				if (deadTimer === 0) {
+					this.alive = true;
+					this.pos = spawnPoint.clone();
+				} else {
+					deadTimer--;
+				}
+				return;
+			}
 
 			if (animState !== "running") {
 				animDelay = 0;
@@ -68,16 +147,6 @@ define(["sprite_player", "sprites"], function () {
 					animFrame++;
 					if (animFrame === 4) animFrame = 0;
 				}
-			}
-
-			if (!this.alive) {
-				if (deadTimer === 0) {
-					this.alive = true;
-					this.pos = spawnPoint.clone();
-				} else {
-					deadTimer--;
-				}
-				return;
 			}
 
 			if (this.collisions.length > 0) {
@@ -108,63 +177,16 @@ define(["sprite_player", "sprites"], function () {
 				animState = "standing";
 			}
 
-			if (this.isOnGround()) {
-				this.fallingTime = 0;
-				this.canJump = true;
-			}
-
 			//If you hit jump and hold it down, that hit gets queued.
-			if (jumpHit) {
+			if (jumpIsHit) {
 				jumpIsQueued = true;
 			} else {
-				jumpIsQueued = jumpIsQueued && jump;
+				jumpIsQueued = jumpIsQueued && jumpIsHeld;
 			}
 
-			if (jumpIsQueued && this.canJump) { // this means you can walk off a cliff and still jump for 3 frames
-				this.state = "jumping";
-				this.canJump = false;
-				this.jumpTime = 0;
-				this.jumpPhase = 1;
-				jumpIsQueued = false;
-			}
+			this.state.preupdate.call(this);
 
-			if (this.state === "jumping") {
-				animState = "jumping";
-				var speed = 0;
-				if (this.jumpPhase === 1) {
-					speed = -2;
-				} else if (this.jumpPhase === 2) {
-					speed = -1;
-				}
-				var unblocked = this.tryMove(0, speed);
-
-				this.jumpTime++;
-				if (this.jumpPhase === 1 && this.jumpTime > 3) {
-					this.jumpPhase = 2;
-					this.jumpTime = 0;
-				}
-				if (this.jumpPhase === 2 && this.jumpTime > 5 && (!jump || this.jumpTime > 15)) {
-					this.jumpPhase = 3;
-					this.jumpTime = 0;
-				}
-				if (!unblocked && this.jumpPhase != 3) {
-					this.jumpPhase = 3;
-					this.jumpTime = 0;
-				}
-				if (this.jumpPhase === 3 && this.jumpTime > 6) {
-					this.state = "falling";
-					this.fallingTime = 6; //Hack so the player can't recover from this fallingness.
-				}
-
-			} else if (!this.isOnGround()) {
-				this.fallingTime++;
-				if (this.fallingTime >= 3) {
-					animState = "falling";
-					var speed = this.fallingTime < 10 ? 1 : 2;
-					this.tryMove(0,speed);
-					this.canJump = false;
-				}
-			}
+			this.state.update.call(this, jumpIsHeld);
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;
