@@ -20,6 +20,8 @@ define(["sprite_player", "sprites"], function () {
 
 		var animState = "standing";
 
+		var jumpIsQueued = false;
+
 		var playerSprites = [];
 		loadFramesFromData(playerSprites, playerSpriteData);
 		"  1  \n" +
@@ -64,7 +66,7 @@ define(["sprite_player", "sprites"], function () {
 				if (animDelay >= 5) {
 					animDelay = 0;
 					animFrame++;
-					if (animFrame === 4) animFrame = 0;				
+					if (animFrame === 4) animFrame = 0;
 				}
 			}
 
@@ -111,11 +113,19 @@ define(["sprite_player", "sprites"], function () {
 				this.canJump = true;
 			}
 
-			if (jumpHit && this.canJump) { // this means you can walk off a cliff and still jump for 3 frames
+			//If you hit jump and hold it down, that hit gets queued.
+			if (jumpHit) {
+				jumpIsQueued = true;
+			} else {
+				jumpIsQueued = jumpIsQueued && jump;
+			}
+
+			if (jumpIsQueued && this.canJump) { // this means you can walk off a cliff and still jump for 3 frames
 				this.state = "jumping";
 				this.canJump = false;
 				this.jumpTime = 0;
 				this.jumpPhase = 1;
+				jumpIsQueued = false;
 			}
 
 			if (this.state === "jumping") {
