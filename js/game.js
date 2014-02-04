@@ -76,7 +76,7 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			var netFramesToSkip = 0;
 			var netFrame = netFramesToSkip;
 
-			var update = function(keyboard) {
+			var update = function(keyboard, painter) {
 
 				//Pull new shots from the event system
 				Array.prototype.push.apply(shots, Events.shots);
@@ -138,12 +138,13 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				monsters.forEach(function (monster) {
 					monster.update();
 				});
+
+				painter.setPos(players[local].pos.x, players[local].groundedY);
 			}
 
 			var shotSprite0 = "111111\n";
 
 			var draw = function (painter) {
-				painter.setPos(players[local].pos.x, players[local].groundedY);
 				painter.clear();
 				players.forEach(function (player) {
 					player.draw(painter);

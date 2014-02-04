@@ -96,42 +96,81 @@
 
 		var painter = new Painter(ctx, pixelWindow, scale);
 
-		var thisSecond = null;
-		var framesThisSecond = 0;
-		var currentFps = 0;
+		var gameStartTime = (new Date).getTime();
+		var lastUpdate = 0;
+		var frameDelay = 1000/desiredFps;
 
 		var worstUpdateTime = 0;
 		var worstDrawTime = 0;
-		
-		window.setInterval(function () {
-			var updateStart = Date.now();
-			update(keyboard);
-			var updateTime = Date.now() - updateStart;
-			if (updateTime > worstUpdateTime) {
-				worstUpdateTime = updateTime;
+		var worstFrameInaccuracy = 0;
+		var worstFPS = 999;
+		var thisSecond = null;
+		var framesThisSecond = 0;
+
+		var resetWorstStats = function () {
+			worstUpdateTime = 0;
+			worstDrawTime = 0;
+			worstFrameInaccuracy = 0;
+			worstFPS = 999;
+		}
+
+		var logFrameInaccuracy = function (gameTime) {
+			var frameInaccuracy = Math.floor(Math.abs(lastUpdate - gameTime));
+			if (frameInaccuracy > worstFrameInaccuracy) {
+				worstFrameInaccuracy = frameInaccuracy;
+				console.log("Worst frame inaccuracy: " + worstFrameInaccuracy);
+			}
+		}
+
+		var logUpdateTime = function (duration) {
+			if (duration > worstUpdateTime) {
+				worstUpdateTime = duration;
 				console.log("Slowest update: " + worstUpdateTime + " ms");
 			}
-			keyboard.update();
-			requestAnimationFrame(function() {
-				var drawStart = Date.now();
-				draw(painter);
-				var drawTime = Date.now() - drawStart;
-				if (drawTime > worstDrawTime) {
-					worstDrawTime = drawTime;
-					console.log("Slowest draw: " + worstDrawTime + " ms");
-				}
+		}
 
+		var logDrawTime = function (duration) {
+			if (duration > worstDrawTime) {
+				worstDrawTime = duration;
+				console.log("Slowest draw: " + worstDrawTime + " ms");
+			}
+		}
 
-				var newSecond = Math.floor(Date.now() / 1000);
-				if (newSecond != thisSecond) {
-					thisSecond = newSecond;
-					currentFps = framesThisSecond;
-					framesThisSecond = 0;
-					//console.log(currentFps + " fps");
+		var logFPS = function () {
+			var newSecond = Math.floor(Date.now() / 1000);
+			if (newSecond != thisSecond) {
+				thisSecond = newSecond;
+				if (framesThisSecond < worstFPS && framesThisSecond != 0) {
+					worstFPS = framesThisSecond;
+					console.log("worst FPS: " + framesThisSecond);
 				}
-				framesThisSecond++;
-			});
-		}, 1000/desiredFps);
+				framesThisSecond = 0;
+			}
+			framesThisSecond++;
+		}
+
+		window.setInterval(function () {
+			var gameTime = (new Date).getTime() - gameStartTime;
+			var framesThisTick = 0;
+			while (lastUpdate <= gameTime) {
+				logFrameInaccuracy(gameTime);
+				framesThisTick++;
+				lastUpdate += frameDelay;
+				var updateStart = Date.now();
+				if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) resetWorstStats();
+				update(keyboard, painter);
+				keyboard.update();
+				logUpdateTime(Date.now() - updateStart);
+			}
+			if (framesThisTick > 0) {
+				requestAnimationFrame(function() {
+					var drawStart = Date.now();
+					draw(painter);
+					logDrawTime(Date.now() - drawStart);
+					logFPS();
+				});
+			}
+		}, frameDelay/1/10);
 		}
 	}
 })();
