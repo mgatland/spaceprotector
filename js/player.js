@@ -6,33 +6,31 @@ define(["sprite_player", "sprites"], function () {
 		var states = {
 
 			jumping: new function () {
+				var phases = [];
+				phases[1] = {ySpeed: -2, normalDuration: 3};
+				phases[2] = {ySpeed: -1, normalDuration: 5, jumpHeldDuration: 15};
+				phases[3] = {ySpeed: 0, normalDuration: 6};
 				this.preupdate = function () {};
 				this.update = function (jumpIsHeld) {
 					animState = "jumping";
-					var speed = 0;
-					if (this.jumpPhase === 1) {
-						speed = -2;
-					} else if (this.jumpPhase === 2) {
-						speed = -1;
-					}
-					var unblocked = this.tryMove(0, speed);
+					var phase = phases[this.jumpPhase];
+
+					var speed = phase.ySpeed;
+					var spaceAboveMe = this.tryMove(0, speed);
 
 					this.jumpTime++;
-					if (this.jumpPhase === 1 && this.jumpTime > 3) {
-						this.jumpPhase = 2;
+					var duration = (jumpIsHeld && phase.jumpHeldDuration) ? phase.jumpHeldDuration : phase.normalDuration;
+					if (this.jumpTime > duration) {
+						this.jumpPhase++;
 						this.jumpTime = 0;
 					}
-					if (this.jumpPhase === 2 && this.jumpTime > 5 && (!jumpIsHeld || this.jumpTime > 15)) {
+					if (!spaceAboveMe && this.jumpPhase < 3) {
 						this.jumpPhase = 3;
 						this.jumpTime = 0;
 					}
-					if (!unblocked && this.jumpPhase != 3) {
-						this.jumpPhase = 3;
-						this.jumpTime = 0;
-					}
-					if (this.jumpPhase === 3 && this.jumpTime > 6) {
+					if (this.jumpPhase === 4) {
 						this.state = states.falling;
-						this.fallingTime = 6; //Hack so the player can't recover from this fallingness.
+						this.fallingTime = 0;
 					}
 				};
 			},
@@ -40,9 +38,9 @@ define(["sprite_player", "sprites"], function () {
 			falling: new function () {
 				this.preupdate = function () {};
 				this.update = function () {
+					animState = "falling";
 					if (this.isOnGround()) {
 						this.state = states.grounded;
-						this.fallingTime = 0;
 					} else {
 						this.fallingTime++;
 						var speed = this.fallingTime < 10 ? 1 : 2;
@@ -65,8 +63,9 @@ define(["sprite_player", "sprites"], function () {
 						this.fallingTime++;
 						if (this.fallingTime >= 3) {
 							this.state = states.falling;
-							animState = "falling";
 						}
+					} else {
+						this.fallingTime = 0;
 					}
 				};
 			}
@@ -127,10 +126,11 @@ define(["sprite_player", "sprites"], function () {
 
 		this.update = function (left, right, shoot, shootHit, jumpIsHeld, jumpIsHit) {
 
-			if (!this.alive) {
+			if (!this.live) {
 				if (deadTimer === 0) {
-					this.alive = true;
+					this.live = true;
 					this.pos = spawnPoint.clone();
+					this.state = states.falling;
 				} else {
 					deadTimer--;
 				}
@@ -151,7 +151,7 @@ define(["sprite_player", "sprites"], function () {
 
 			if (this.collisions.length > 0) {
 				this.collisions.length = 0;
-				this.alive = false;
+				this.live = false;
 				deadTimer = maxDeadTime;
 			}
 
