@@ -34,17 +34,17 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			var tileSize = 10;
 
 			var mapData =
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"O                 OOOO\n" +
-			"O                 OOOOOOOOOOOOOOO\n" +
-			"O        m           O          O\n" +
-			"O  O  O  O  O   OOO  O          O\n" +
-			"Om                O  O          OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"OO               mOO k                                         O\n" +
-			"O                OOOOOOOOO    k       m                        O\n" +
-			"OOOOOOO    OO   OOOOOOOOOOOOOOOOO    OOOOOOOOOOOO              O\n" +
-			"OOOOOOO k  OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO               \n" +
+			"O                 OOOO                                 OO            O\n" +
+			"O                 OOOOOOOOOOOOOOO                    OOO      OO     O\n" +
+			"O        m           O          O                  OOO      OO       O\n" +
+			"O  O  O  O  O  OOOO  O          O     k              k    OO         O\n" +
+			"Om                O  O          OOOOOOOOOOOOOO OOOOOOOOOOOOOOOOO     O\n" +
+			"OO                OO                                           O     O\n" +
+			"O                 OOOOOOOO    k       m     OOOO               O     O\n" +
+			"OOOOOOO    OO   OOOOOOOOOOOOOOOOO    OOOOOOOOOOOO      m   m   O     O\n" +
+			"OOOOOOO k  OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO               OOOOOO\n";
 
 			var level = new Level(mapData, tileSize);
 
