@@ -5,6 +5,7 @@ var WalkingThing = function (level, pos, size) {
 	this.pos = pos;
 	this.size = size;
 	this.live = true;
+	this.deadTime = 0;
 
 	this.isAtCliff = function(dir, minHeight) {
 		if (dir === Dir.RIGHT) {
@@ -61,7 +62,10 @@ var Monster2 = function (level, x, y) {
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(9, 9)));
 
 	this.update = function () {
-		if (this.live === false) return;
+		if (this.live === false) {
+			if (this.deadTime < 30) this.deadTime++;
+			return;
+		}
 
 		this.tryMove(0,1);
 
@@ -86,7 +90,12 @@ var Monster2 = function (level, x, y) {
 	};
 
 	this.draw = function (painter) {
-		if (this.live === false) return;
+		if (this.live === false) {
+			if (this.deadTime < 30) {
+				painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.highlight);		
+			}
+			return;
+		}
 		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.bad);
 	};
 
@@ -116,7 +125,10 @@ var Monster = function (level, x, y) {
 
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
 	this.update = function () {
-		if (this.live === false) return;
+		if (this.live === false) {
+			if (this.deadTime < 30) this.deadTime++;
+			return;
+		}
 
 		this.tryMove(0,1);
 
@@ -163,7 +175,12 @@ var Monster = function (level, x, y) {
 
 	};
 	this.draw = function (painter) {
-		if (this.live === false) return;
+		if (this.live === false) {
+			if (this.deadTime < 30) {
+				painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.highlight);		
+			}
+			return;
+		}
 		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.bad);
 	};
 };
