@@ -42,97 +42,49 @@ var WalkingThing = function (level, pos, size) {
 	}
 }
 
-var Monsters = {
-	create1: function (level, x, y) {
-		return new Monster(level, x, y);
-	},
-	create2: function (level, x, y) {
-		return new Monster2(level, x, y);
-	}
-}
-
-var Monster2 = function (level, x, y) {
-	var dir = Dir.LEFT;
-	var moveDelay = 5;
-	var moveTimer = 0;
-	var health = 4;
-
-	var sprite =
-		" 11111111\n" +
-		"11111 1 1\n" +
-		"111111111\n" +
-		" 1111    \n" +
-		" 1111   1\n" +
-		" 1111111 \n" +
-		"11111   1\n" +
-		"11111    \n" +
-		" 1 1     \n";
-
-	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(9, 9)));
-
-	this.update = function () {
-		if (this.live === false) {
-			if (this.deadTime < 30) this.deadTime++;
-			return;
-		}
-
-		this.tryMove(0,1);
-
-		if (moveTimer === 0) {
-			moveTimer = moveDelay;
-			var couldWalk = this.tryMove(dir.x,0);
-			if (couldWalk === false) {
-				dir = dir.reverse;
-			}
-		} else {
-			moveTimer--;
-		}
-
-		if (this.collisions.length > 0) {
-			this.collisions.length = 0;
-			health--;
-			if (health == 0) { 
-				this.live = false;
-				return;
-			}
-		}
-	};
-
-	this.draw = function (painter) {
-		if (this.live === false) {
-			if (this.deadTime < 30) {
-				painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.highlight);		
-			}
-			return;
-		}
-		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.bad);
-	};
-
-}
-
-var Monster = function (level, x, y) {
-	var dir = Dir.LEFT;
-
-	var refireDelay = 60;
-	var refireTimer = refireDelay;
-
-	var action = "shooting";
-	var walkingTime = 0;
-	var maxWalkingTime = 90;
-	var shotsInARow = 0;
-	var maxShotsInARow = 5;
-
-	var moveDelay = 5;
-	var moveTimer = 0;
-
-	var sprite =
+var monsterSprite1 =
 		" 111 \n" +
 		"1 1 1\n" +
 		"11111\n" +
 		" 111 \n" +
 		" 1 1 \n";
 
-	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(5, 5)));
+var monsterSprite2 =
+	" 11111111\n" +
+	"11111 1 1\n" +
+	"111111111\n" +
+	" 1111    \n" +
+	" 1111   1\n" +
+	" 1111111 \n" +
+	"11111   1\n" +
+	"11111    \n" +
+	" 1 1     \n";
+
+
+var Monsters = {
+	create1: function (level, x, y) {
+		return new Monster(level, x, y, 5, 5, monsterSprite1, true, true, 1);
+	},
+	create2: function (level, x, y) {
+		return new Monster(level, x, y, 9, 9, monsterSprite2, false, false, 4);
+	}
+
+var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoot, health) {
+	var dir = Dir.LEFT;
+
+	var refireDelay = 60;
+	var refireTimer = refireDelay;
+
+	var action = canShoot === true ? "shooting" : "walking";
+	var walkingTime = 0;
+	var maxWalkingTime = 90;
+	var shotsInARow = 0;
+	var maxShotsInARow = 5;
+
+	var moveDelay = 5;
+	var moveTimer = 0;	
+
+	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
 	this.update = function () {
 		if (this.live === false) {
 			if (this.deadTime < 30) this.deadTime++;
@@ -147,16 +99,14 @@ var Monster = function (level, x, y) {
 				var couldWalk = this.tryMove(dir.x,0);
 				if (couldWalk === false) {
 					dir = dir.reverse;
-				} else if (this.isAtCliff(dir, 2)) {
+				} else if (avoidCliffs === true && this.isAtCliff(dir, 2)) {
 					dir = dir.reverse;
 				}
-
-
 			} else {
 				moveTimer--;
 			}
 			walkingTime++;
-			if (walkingTime > maxWalkingTime) {
+			if (canShoot === true && walkingTime > maxWalkingTime) {
 				action = "shooting";
 				refireTimer = refireDelay;
 				shotsInARow = 0;
@@ -164,8 +114,12 @@ var Monster = function (level, x, y) {
 		}
 
 		if (this.collisions.length > 0) {
-			this.live = false;
-			return;
+			this.collisions.length = 0;
+			health--;
+			if (health == 0) { 
+				this.live = false;
+				return;
+			}
 		}
 
 		if (action === "shooting") {
