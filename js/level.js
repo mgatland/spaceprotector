@@ -43,11 +43,11 @@ var Level = function(mapData, tileSize) {
 		map[y] = [];
 		while (mapData[n]) {
 			if (mapData[n]==="m") {
-				Events.monster(new Monster(level, x*tileSize, y*tileSize));
+				Events.monster(Monsters.create1(level, x*tileSize, y*tileSize));
 				map[y][x] = 0;
 			}
 			if (mapData[n]==="k") {
-				Events.monster(new Monster2(level, x*tileSize, y*tileSize));
+				Events.monster(Monsters.create2(level, x*tileSize, y*tileSize));
 				map[y][x] = 0;
 			}
 			if (mapData[n]==="O") {

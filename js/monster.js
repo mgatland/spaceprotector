@@ -42,6 +42,15 @@ var WalkingThing = function (level, pos, size) {
 	}
 }
 
+var Monsters = {
+	create1: function (level, x, y) {
+		return new Monster(level, x, y);
+	},
+	create2: function (level, x, y) {
+		return new Monster2(level, x, y);
+	}
+}
+
 var Monster2 = function (level, x, y) {
 	var dir = Dir.LEFT;
 	var moveDelay = 5;
