@@ -19,7 +19,7 @@
 
 		this.setPos = function (x, y) {
 			moveTowards(x - pixelWindow.width/2, cameraSlackX, "x", cameraSlackX*2, cameraSlackX*4);
-			moveTowards(y - pixelWindow.height/2, cameraSlackY, "y", pixelWindow.height/4, pixelWindow.height/2);
+			moveTowards(y - pixelWindow.height/2, cameraSlackY, "y", pixelWindow.height/2, pixelWindow.height);
 		}
 
 		this.clear = function() {
