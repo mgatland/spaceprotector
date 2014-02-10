@@ -8,14 +8,18 @@
 		var cameraSlackX = pixelWindow.width/8;
 		var cameraSlackY = 0;
 
-		this.setPos = function (x, y) {
-			var perfectX = x - pixelWindow.width/2;
-			if (perfectX > pos.x + cameraSlackX) pos.x++;
-			if (perfectX < pos.x - cameraSlackX) pos.x--;
+		var moveTowards = function(desired, slack, axis, slack2, slack3) {
+			var distance = desired - pos[axis];
+			var dir = distance ? distance < 0 ? -1:1:0;
+			var distanceAbs = Math.abs(distance);
+			if (distanceAbs > slack) pos[axis] += dir;
+			if (slack2 && distanceAbs > slack2) pos[axis] += dir*2;
+			if (slack3 && distanceAbs > slack3) pos[axis] += dir*3;
+		}
 
-			var perfectY = y - pixelWindow.height/2;
-			if (perfectY > pos.y + cameraSlackY) pos.y++;
-			if (perfectY < pos.y - cameraSlackY) pos.y--;
+		this.setPos = function (x, y) {
+			moveTowards(x - pixelWindow.width/2, cameraSlackX, "x", cameraSlackX*2, cameraSlackX*4);
+			moveTowards(y - pixelWindow.height/2, cameraSlackY, "y", pixelWindow.height/4, pixelWindow.height/2);
 		}
 
 		this.clear = function() {

@@ -99,6 +99,7 @@ define(["sprite_player", "sprites"], function () {
 		" 1 1 \n";
 
 		this.draw = function (painter) {
+			var color = this.live === true ? Colors.good : Colors.highlight;
 			var frame;
 			if (animState === "standing") {
 				frame = playerSprites[0];
@@ -111,7 +112,7 @@ define(["sprite_player", "sprites"], function () {
 			} else {
 				console.log("Error animation state " + animState);
 			}
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, Colors.good);
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, color);
 		}
 
 		this.isOnGround = function () {

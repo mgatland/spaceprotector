@@ -146,12 +146,13 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 
 			var draw = function (painter) {
 				painter.clear();
-				players.forEach(function (player) {
-					player.draw(painter);
-				});
 
 				monsters.forEach(function (monster) {
 					monster.draw(painter);
+				});
+
+				players.forEach(function (player) {
+					player.draw(painter);
 				});
 
 				shots.forEach(function (shot) {

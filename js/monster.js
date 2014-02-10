@@ -68,6 +68,7 @@ var Monsters = {
 	create2: function (level, x, y) {
 		return new Monster(level, x, y, 9, 9, monsterSprite2, false, false, 4);
 	}
+}
 
 var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoot, health) {
 	var dir = Dir.LEFT;
