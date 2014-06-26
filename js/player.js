@@ -1,6 +1,7 @@
 "use strict";
 define(["sprite_player", "sprites"], function () {
 	var Player = function (level, startPos) {
+		var _this = this;
 		extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
 
 		var states = {
@@ -78,7 +79,9 @@ define(["sprite_player", "sprites"], function () {
 		this.dir = Dir.RIGHT;
 		this.shotThisFrame = false;
 		this.groundedY = this.pos.y;
+
 		var spawnPoint = startPos.clone();
+		var currentCheckpoint = null; //The flag entity we last touched
 
 		var maxDeadTime = 30;
 		var deadTimer = 0;
@@ -150,11 +153,19 @@ define(["sprite_player", "sprites"], function () {
 				}
 			}
 
-			if (this.collisions.length > 0) {
-				this.collisions.length = 0;
-				this.live = false;
-				deadTimer = maxDeadTime;
-			}
+			this.collisions.forEach(function (other) {
+				if (other.killPlayerOnTouch) {
+					_this.live = false;
+					deadTimer = maxDeadTime;
+				}
+				if (other.isCheckpoint && other !== currentCheckpoint) {
+					if (currentCheckpoint) currentCheckpoint.selected = false;
+					spawnPoint = other.pos.clone();
+					currentCheckpoint = other;
+					currentCheckpoint.selected = true;
+				}
+			});
+			this.collisions.length = 0;
 
 			if (this.loading > 0) this.loading--;
 

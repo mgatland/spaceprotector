@@ -4,6 +4,7 @@ var Shot = function (level, pos, dir, owner) {
 	this.dir = dir;
 
 	this.hitsMonsters = (owner === "player");
+	this.killPlayerOnTouch = !this.hitsMonsters;
 
 	this.size = new Pos(5,1);
 

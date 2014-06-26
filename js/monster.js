@@ -72,6 +72,18 @@ var crateSprite =
 	"11      11\n" +
 	"1111111111\n";
 
+var flagSprite =
+	"    111111\n" +
+	"    11111 \n" +
+	"    11111 \n" +
+	"    111111\n" +
+	"    1     \n" +
+	"    1     \n" +
+	"    1     \n" +
+	"    1     \n" +
+	"    1     \n" +
+	" 11111111 \n";
+
 var Monsters = {
 	create1: function (level, x, y) {
 		return new Monster(level, x, y, 5, 5, monsterSprite1, true, true, 1, true);
@@ -81,12 +93,31 @@ var Monsters = {
 	},
 	createCrate: function (level, x, y) {
 		return new Monster(level, x, y, 10, 10, crateSprite, false, false, 1, false);
+	},
+	createFlag: function (level, x, y) {
+		return new Flag(level, x, y);
 	}
+}
+
+var Flag = function (level, x, y) {
+	this.live = true;
+	this.pos = new Pos(x, y);
+	this.size = new Pos(10, 10);
+	this.collisions = [];
+
+	this.isCheckpoint = true;
+	this.selected = false;
+
+	var sprite = flagSprite;
+	this.update = function () {
+	}
+	this.draw = function (painter) {
+		painter.drawSprite(this.pos.x, this.pos.y, sprite, this.selected ? Colors.highlight : Colors.good);
+	};
 }
 
 var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoot, health, canWalk) {
 	var dir = Dir.LEFT;
-
 	var refireDelay = 60;
 	var refireTimer = refireDelay;
 
@@ -105,6 +136,9 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 	var moveTimer = 0;	
 
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
+
+	this.killPlayerOnTouch = true;
+
 	this.update = function () {
 		if (this.live === false) {
 			if (this.deadTime < 30) this.deadTime++;
