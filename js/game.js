@@ -46,10 +46,10 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			"O O      OOO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO         OO          O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      m  OO          O\n" +
-			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO              O\n" +
-			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   m OO              O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO      OO      O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   m OO      OO      O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OO                 O\n" +
-			"O                            x mm                 OO                 O\n" +
+			"O                    O       x mm                 OO                 O\n" +
 			"O  O   m O  m O  k O         x OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"O  OOOOOOOOOOOOOOOOOOO    OOOO OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
