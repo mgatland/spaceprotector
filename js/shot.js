@@ -1,16 +1,13 @@
 var Shot = function (level, pos, dir, owner) {
+	extend(this, new Entity(pos, new Pos(5,1)));
 	var _this = this;
-	this.collisions = [];
-	this.pos = pos;
+
 	this.dir = dir;
 
 	this.hitsMonsters = (owner === "player");
 	this.killPlayerOnTouch = !this.hitsMonsters;
 
-	this.size = new Pos(5,1);
-
 	this.pos.moveXY(2,1);
-	this.live = true;
 
 	if (dir === Dir.LEFT) {
 		this.pos.moveXY(-8, 0);
