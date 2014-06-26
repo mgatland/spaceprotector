@@ -100,8 +100,8 @@
 
 		var painter = new Painter(ctx, pixelWindow, scale);
 
-		var gameStartTime = (new Date).getTime();
-		var lastUpdate = 0;
+		var gameTime = new Date();
+		var lastUpdate = null;
 		var frameDelay = 1000/desiredFps;
 
 		var worstUpdateTime = 0;
@@ -118,8 +118,7 @@
 			worstFPS = 999;
 		}
 
-		var logFrameInaccuracy = function (gameTime) {
-			var frameInaccuracy = Math.floor(Math.abs(lastUpdate - gameTime));
+		var logFrameInaccuracy = function (frameInaccuracy) {
 			if (frameInaccuracy > worstFrameInaccuracy) {
 				worstFrameInaccuracy = frameInaccuracy;
 				console.log("Worst frame inaccuracy: " + worstFrameInaccuracy);
@@ -153,28 +152,32 @@
 			framesThisSecond++;
 		}
 
-		window.setInterval(function () {
-			var gameTime = (new Date).getTime() - gameStartTime;
-			var framesThisTick = 0;
-			while (lastUpdate <= gameTime) {
-				logFrameInaccuracy(gameTime);
-				framesThisTick++;
-				lastUpdate += frameDelay;
-				var updateStart = Date.now();
-				if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) resetWorstStats();
-				update(keyboard, painter);
-				keyboard.update();
-				logUpdateTime(Date.now() - updateStart);
+		function tick(timestamp) {
+			gameTime = gameTime + 1000/60;
+			var delta = 0;
+			if (lastUpdate !== null) {
+				delta = timestamp - lastUpdate;
+				lastUpdate = timestamp;
 			}
-			if (framesThisTick > 0) {
-				requestAnimationFrame(function() {
-					var drawStart = Date.now();
-					draw(painter);
-					logDrawTime(Date.now() - drawStart);
-					logFPS();
-				});
-			}
-		}, frameDelay/1/10);
+
+			logFrameInaccuracy(gameTime - timestamp);
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) resetWorstStats();
+
+			var updateStart = Date.now();
+			update(keyboard, painter);
+			logUpdateTime(Date.now() - updateStart);
+
+			keyboard.update();
+
+			var drawStart = Date.now();
+			draw(painter);
+			logDrawTime(Date.now() - drawStart);
+			logFPS();
+			requestAnimationFrame(tick);
+		}
+		requestAnimationFrame(tick);
+
 		}
 	}
 })();
