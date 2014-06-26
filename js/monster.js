@@ -48,7 +48,10 @@ var WalkingThing = function (level, pos, size) {
 var monsterSprite1 =
 		" 111 \n" +
 		"1 1 1\n" +
-		"11111\n" +
+		"1 111\n" +
+		"1 1 1\n" +
+		"  1  \n" +
+		"  1  \n" +
 		" 111 \n" +
 		" 1 1 \n";
 
@@ -89,7 +92,7 @@ var flagSprite =
 
 var Monsters = {
 	create1: function (level, x, y) {
-		return new Monster(level, x, y, 5, 5, monsterSprite1, true, true, 1, true);
+		return new Monster(level, x, y, 5, 8, monsterSprite1, true, true, 1, true);
 	},
 	create2: function (level, x, y) {
 		return new Monster(level, x, y, 9, 9, monsterSprite2, false, false, 4, true);
@@ -181,7 +184,7 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 
 		if (action === "shooting") {
 			if (refireTimer === 0) {
-				Events.shoot(new Shot(level, this.pos.clone(), dir, "monster"));
+				Events.shoot(new Shot(level, this.pos.clone().moveXY(0, this.size.x/2), dir, "monster"));
 				refireTimer = refireDelay;
 				shotsInARow++;
 				if (shotsInARow === maxShotsInARow) {
