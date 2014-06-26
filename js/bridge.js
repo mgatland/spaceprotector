@@ -158,14 +158,13 @@
 				var updateStart = Date.now();
 				update(keyboard, painter);
 				logUpdateTime(Date.now() - updateStart);
+				keyboard.update();
 			}
 
 			/*TODO: log frame skipping\inserting less verbosely
 			if (frames != 1) {
 				console.log("Unusual ticks per frame: " + frames);
 			}*/
-
-			if (frames > 0) keyboard.update();
 
 			var drawStart = Date.now();
 			draw(painter);
