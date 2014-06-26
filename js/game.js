@@ -34,17 +34,19 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			var tileSize = 10;
 
 			var mapData =
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO               \n" +
-			"O                 OOOO                                 OO            O\n" +
-			"O                 OOOOOOOOOOOOOOO                    OOO      OO     O\n" +
-			"O        m           O          O                  OOO      OO       O\n" +
-			"O  O  O  O  O  OOOO  O          O     k              k    OO         O\n" +
-			"Om                O  O          OOOOOOOOOOOOOO OOOOOOOOOOOOOOOOO     O\n" +
-			"OO                OO                                           O     O\n" +
-			"O                 OOOOOOOO    k       m     OOOO               O     O\n" +
-			"OOOOOOO    OO   OOOOOOOOOOOOOOOOO    OOOOOOOOOOOO      m   m   O     O\n" +
-			"OOOOOOO k  OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     O\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO               OOOOOO\n";
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                                      O\n" +
+			"O     m       O   O m O m O   O                                      O\n" +
+			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO  O  O  OO O\n" +
+			"O OO OOO OOOO k O m O   O   O   OOOO                               O O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  O            O O\n" +
+			"O                                  O               m OO            O O\n" +
+			"O                                              OOOOOOOOOOOOOOOOOO  O O\n" +
+			"O                        O    m         OO  k  O                   O O\n" +
+			"O        OOO OO  k    OOOO    OOO    OOOOOOOOOOO                   O O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO k    m   m   OOOOOO O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 			var level = new Level(mapData, tileSize);
 
