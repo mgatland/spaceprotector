@@ -132,15 +132,19 @@ var Network = {};
 		});
 
 		peer.on('open', function(id) {
-  			console.log('My peer ID is: ' + id);
-  			showPeerId(id);
+			console.log('My peer ID is: ' + id);
+			showPeerId(id);
 
-  			var myHost = window.prompt("If you want to join someone else's game, enter their code here. Otherwise hit 'cancel' to start your own.");
-  			if (myHost) {
+			document.getElementById("connection-options").classList.remove('hide');
+			document.getElementById("connect-button").addEventListener('click', function (e) {
+				var myHost = document.getElementById("connect-host-input").value;
+				if (myHost) {
   				tryingToJoin = true;
   				var conn = peer.connect(myHost);
-				setupConn(conn, "guest", dataCallback);
+					setupConn(conn, "guest", dataCallback);
+  				e.preventDefault();
   			}
+			});
 		});
 	}
 
