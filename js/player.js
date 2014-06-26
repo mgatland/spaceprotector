@@ -90,6 +90,8 @@ define(["sprite_player", "sprites"], function () {
 		var animDelay = 0;
 
 		var animState = "standing";
+		var shootingAnim = false;
+		var timeSinceLastShot = 0;
 
 		var jumpIsQueued = false;
 
@@ -105,17 +107,19 @@ define(["sprite_player", "sprites"], function () {
 			var color = this.live === true ? Colors.good : Colors.highlight;
 			var frame;
 			if (animState === "standing") {
-				frame = playerSprites[0];
+				frame = 0;
 			} else if (animState === "running") {
-				frame = playerSprites[animFrame+1];
+				frame = animFrame+1;
 			} else if (animState === "falling" ) {
-				frame = playerSprites[5];
+				frame = 5;
 			} else if (animState === "jumping") {
-				frame = playerSprites[1];
+				frame = 1;
 			} else {
 				console.log("Error animation state " + animState);
 			}
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, frame, color);
+			if (shootingAnim && frame === 0) frame = 6;
+			var img = playerSprites[frame];
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, img, color);
 		}
 
 		this.isOnGround = function () {
@@ -175,6 +179,14 @@ define(["sprite_player", "sprites"], function () {
 				this.shotThisFrame = true;
 			} else {
 				this.shotThisFrame = false;
+			}
+
+			if (shoot) {
+				shootingAnim = true;
+				timeSinceLastShot = 0;
+			} else {
+				timeSinceLastShot++;
+				if (timeSinceLastShot > 30) shootingAnim = false;
 			}
 
 			if (left && !right) {
