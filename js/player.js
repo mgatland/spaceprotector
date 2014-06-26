@@ -140,7 +140,7 @@ define(["sprite_player", "sprites"], function () {
 
 			if (animState !== "running") {
 				animDelay = 0;
-				animFrame = 0;
+				animFrame = 3; //first frame when we start running after landing\standing still
 			} else {
 				animDelay++;
 				if (animDelay >= 5) {

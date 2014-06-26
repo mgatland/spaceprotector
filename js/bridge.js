@@ -165,7 +165,7 @@
 				console.log("Unusual ticks per frame: " + frames);
 			}*/
 
-			keyboard.update();
+			if (frames > 0) keyboard.update();
 
 			var drawStart = Date.now();
 			draw(painter);
