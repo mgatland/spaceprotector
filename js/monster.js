@@ -108,6 +108,8 @@ var Flag = function (level, x, y) {
 	this.isCheckpoint = true;
 	this.selected = false;
 
+	this.ignoreShots = true;
+
 	var sprite = flagSprite;
 	this.update = function () {
 	}
