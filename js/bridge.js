@@ -100,13 +100,11 @@
 
 		var painter = new Painter(ctx, pixelWindow, scale);
 
-		var gameTime = new Date();
-		var lastUpdate = null;
+		var gameTime = null;
 		var frameDelay = 1000/desiredFps;
 
 		var worstUpdateTime = 0;
 		var worstDrawTime = 0;
-		var worstFrameInaccuracy = 0;
 		var worstFPS = 999;
 		var thisSecond = null;
 		var framesThisSecond = 0;
@@ -114,15 +112,7 @@
 		var resetWorstStats = function () {
 			worstUpdateTime = 0;
 			worstDrawTime = 0;
-			worstFrameInaccuracy = 0;
 			worstFPS = 999;
-		}
-
-		var logFrameInaccuracy = function (frameInaccuracy) {
-			if (frameInaccuracy > worstFrameInaccuracy) {
-				worstFrameInaccuracy = frameInaccuracy;
-				console.log("Worst frame inaccuracy: " + worstFrameInaccuracy);
-			}
 		}
 
 		var logUpdateTime = function (duration) {
@@ -153,20 +143,26 @@
 		}
 
 		function tick(timestamp) {
-			gameTime = gameTime + 1000/60;
-			var delta = 0;
-			if (lastUpdate !== null) {
-				delta = timestamp - lastUpdate;
-				lastUpdate = timestamp;
+			if (gameTime === null || gameTime < timestamp - frameDelay * 3) {
+				gameTime = timestamp - 1; //first frame of the game.
+				//Or: First frame after pausing the game for a while
+				console.log("(Re)starting game timing");
 			}
-
-			logFrameInaccuracy(gameTime - timestamp);
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) resetWorstStats();
 
-			var updateStart = Date.now();
-			update(keyboard, painter);
-			logUpdateTime(Date.now() - updateStart);
+			var frames = 0;
+			while (gameTime < timestamp) {
+				frames++;
+				gameTime += frameDelay;
+				var updateStart = Date.now();
+				update(keyboard, painter);
+				logUpdateTime(Date.now() - updateStart);
+			}
+
+			if (frames != 1) {
+				console.log("Unusual ticks per frame: " + frames);
+			}
 
 			keyboard.update();
 
