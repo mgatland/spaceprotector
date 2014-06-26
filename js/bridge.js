@@ -142,6 +142,14 @@
 			framesThisSecond++;
 		}
 
+		//arguments: logging function, function, function arguments...
+		function runAndBenchmark(logFunc, func) {
+			var startTime = Date.now();
+			var extraArgs = Array.prototype.slice.call(arguments, 2);
+			func.apply(null, extraArgs);
+			logFunc(Date.now() - startTime);
+		}
+
 		function tick(timestamp) {
 			if (gameTime === null || gameTime < timestamp - frameDelay * 3) {
 				gameTime = timestamp - 1; //first frame of the game.
@@ -155,9 +163,7 @@
 			while (gameTime < timestamp) {
 				frames++;
 				gameTime += frameDelay;
-				var updateStart = Date.now();
-				update(keyboard, painter);
-				logUpdateTime(Date.now() - updateStart);
+				runAndBenchmark(logUpdateTime, update, keyboard, painter);
 				keyboard.update();
 			}
 
@@ -166,9 +172,7 @@
 				console.log("Unusual ticks per frame: " + frames);
 			}*/
 
-			var drawStart = Date.now();
-			draw(painter);
-			logDrawTime(Date.now() - drawStart);
+			runAndBenchmark(logDrawTime, draw, painter);
 			logFPS();
 			requestAnimationFrame(tick);
 		}
