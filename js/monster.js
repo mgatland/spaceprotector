@@ -1,11 +1,14 @@
 "use strict";
 
-var WalkingThing = function (level, pos, size) {
+var Entity = function (pos, size) {
 	this.collisions = [];
 	this.pos = pos;
 	this.size = size;
 	this.live = true;
-	this.deadTime = 0;
+}
+
+var WalkingThing = function (level, pos, size) {
+	extend(this, new Entity(pos, size));
 
 	this.isAtCliff = function(dir, minHeight) {
 		if (dir === Dir.RIGHT) {
@@ -100,10 +103,7 @@ var Monsters = {
 }
 
 var Flag = function (level, x, y) {
-	this.live = true;
-	this.pos = new Pos(x, y);
-	this.size = new Pos(10, 10);
-	this.collisions = [];
+	extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
 
 	this.isCheckpoint = true;
 	this.selected = false;
@@ -120,6 +120,7 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 	var dir = Dir.LEFT;
 	var refireDelay = 60;
 	var refireTimer = refireDelay;
+	var deadTime = 0;
 
 	var action = null;
 	if (canShoot === true) {
@@ -141,7 +142,7 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 
 	this.update = function () {
 		if (this.live === false) {
-			if (this.deadTime < 30) this.deadTime++;
+			if (deadTime < 30) deadTime++;
 			return;
 		}
 
@@ -193,7 +194,7 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 	};
 	this.draw = function (painter) {
 		if (this.live === false) {
-			if (this.deadTime < 30) {
+			if (deadTime < 30) {
 				painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.highlight);		
 			}
 			return;
