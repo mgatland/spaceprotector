@@ -160,9 +160,10 @@
 				logUpdateTime(Date.now() - updateStart);
 			}
 
+			/*TODO: log frame skipping\inserting less verbosely
 			if (frames != 1) {
 				console.log("Unusual ticks per frame: " + frames);
-			}
+			}*/
 
 			keyboard.update();
 
