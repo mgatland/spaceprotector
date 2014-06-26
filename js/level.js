@@ -50,6 +50,10 @@ var Level = function(mapData, tileSize) {
 				Events.monster(Monsters.create2(level, x*tileSize, y*tileSize));
 				map[y][x] = 0;
 			}
+			if (mapData[n]==="x") {
+				Events.monster(Monsters.createCrate(level, x*tileSize, y*tileSize));
+				map[y][x] = 0;
+			}
 			if (mapData[n]==="O") {
 				map[y][x] = 1;
 			}

@@ -60,23 +60,42 @@ var monsterSprite2 =
 	"11111    \n" +
 	" 1 1     \n";
 
+var crateSprite =
+	"1111111111\n" +
+	"11      11\n" +
+	"1 1    1 1\n" +
+	"1  1  1  1\n" +
+	"1   11   1\n" +
+	"1   11   1\n" +
+	"1  1  1  1\n" +
+	"1 1    1 1\n" +
+	"11      11\n" +
+	"1111111111\n";
 
 var Monsters = {
 	create1: function (level, x, y) {
-		return new Monster(level, x, y, 5, 5, monsterSprite1, true, true, 1);
+		return new Monster(level, x, y, 5, 5, monsterSprite1, true, true, 1, true);
 	},
 	create2: function (level, x, y) {
-		return new Monster(level, x, y, 9, 9, monsterSprite2, false, false, 4);
+		return new Monster(level, x, y, 9, 9, monsterSprite2, false, false, 4, true);
+	},
+	createCrate: function (level, x, y) {
+		return new Monster(level, x, y, 10, 10, crateSprite, false, false, 1, false);
 	}
 }
 
-var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoot, health) {
+var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoot, health, canWalk) {
 	var dir = Dir.LEFT;
 
 	var refireDelay = 60;
 	var refireTimer = refireDelay;
 
-	var action = canShoot === true ? "shooting" : "walking";
+	var action = null;
+	if (canShoot === true) {
+		action = "shooting";
+	} else if (canWalk === true) {
+		action = "walking";
+	}
 	var walkingTime = 0;
 	var maxWalkingTime = 90;
 	var shotsInARow = 0;
@@ -92,7 +111,7 @@ var Monster = function (level, x, y, width, height, sprite, avoidCliffs, canShoo
 			return;
 		}
 
-		this.tryMove(0,1);
+		if (canWalk) this.tryMove(0,1); //gravity
 
 		if (action === "walking") {
 			if (moveTimer === 0) {

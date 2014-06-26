@@ -35,17 +35,23 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 
 			var mapData =
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                                      O\n" +
-			"O     m       O   O m O m O   O                                      O\n" +
-			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO  O  O  OO O\n" +
-			"O OO OOO OOOO k O m O   O   O   OOOO                               O O\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  O            O O\n" +
-			"O                                  O               m OO            O O\n" +
-			"O                                              OOOOOOOOOOOOOOOOOO  O O\n" +
-			"O                        O    m         OO  k  O                   O O\n" +
-			"O        OOO OO  k    OOOO    OOO    OOOOOOOOOOO                   O O\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO k    m   m   OOOOOO O\n" +
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      O\n" +
+			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   x                      O           O\n" +
+			"O     m       O   O m O m O   O   x                      O           O\n" +
+			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO           O\n" +
+			"O OO OOO OOOO k O m O   O   O   OOOO                   OOO    OO     O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  OOOO    OO  m  O\n" +
+			"O O                                O               m OOOOO        OO O\n" +
+			"O O                                            OOOOOOOOOOO     m  OO O\n" +
+			"O O                      O    m         OO  k  O              OO     O\n" +
+			"O O      OOO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO         OO          O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      m  OO          O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO              O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   m OO              O\n" +
+			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OO                 O\n" +
+			"O                            x mm                 OO                 O\n" +
+			"O  O   m O  m O  k O         x OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"O  OOOOOOOOOOOOOOOOOOO    OOOO OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 			var level = new Level(mapData, tileSize);
@@ -68,8 +74,8 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT)); //test shot
 
 			var players = [];
-			players.push(new Player(level, new Pos(30, 70)));
-			players.push(new Player(level, new Pos(50, 70)));
+			players.push(new Player(level, new Pos(40, 90)));
+			players.push(new Player(level, new Pos(50, 90)));
 			var local = 0;
 			var other = 1;
 
