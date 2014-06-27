@@ -196,23 +196,13 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 			var draw = function (painter) {
 				painter.clear();
 
-				monsters.forEach(function (monster) {
-					monster.draw(painter);
-				});
+				var drawOne = function (x) { x.draw(painter);}
 
-				players.forEach(function (player) {
-					player.draw(painter);
-				});
-
-				shots.forEach(function (shot) {
-					shot.draw(painter);
-				});
-
-				explosions.forEach(function (exp) {
-					exp.draw(painter);
-				});
-
-				level.draw(painter);
+				monsters.forEach(drawOne);
+				players.forEach(drawOne);
+				shots.forEach(drawOne);
+				explosions.forEach(drawOne);
+				drawOne(level);
 
 				if (winTimer > 0) {
 					var barHeight = Math.min(winTimer*2, 45);
