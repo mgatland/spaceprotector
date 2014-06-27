@@ -109,41 +109,60 @@ define(["shot"], function (Shot) {
 		var _this = this;
 
 		//constants
+		var initialHealth = 5;
 		var moveDelay = 5;
+		var fastMoveDelay = 0;
+		var maxAggro = 30;
+		var stunDuration = 20;
 
 		//state
 		var moveTimer = 0;
+		var aggro = 0; //includes stun time as well
+
+		var onHit = function (collisions) {
+			if (aggro === 0) {
+				aggro = maxAggro + stunDuration;
+			} else {
+				aggro = Math.max(aggro, maxAggro);
+			}
+		}
 
 		var ai = function () {
 			_this.tryMove(0,1); //gravity
 
-			//if (action === "walking") {
-				if (moveTimer === 0) {
-					moveTimer = moveDelay;
-					var couldWalk = _this.tryMove(_this.dir.x,0);
-					if (couldWalk === false) {
-						_this.dir = _this.dir.reverse;
-					} else if (_this.isAtCliff(_this.dir, 2)) {
-						_this.dir = _this.dir.reverse;
-					}
-				} else {
-					moveTimer--;
+			if (aggro > 0) aggro--;
+
+			if (aggro > maxAggro) {
+				//I'm so angry I can't move.
+				return;
+			}
+			if (moveTimer === 0) {
+				moveTimer = aggro > 0 ? fastMoveDelay : moveDelay;
+				var couldWalk = _this.tryMove(_this.dir.x,0);
+				if (couldWalk === false) {
+					_this.dir = _this.dir.reverse;
+				} else if (_this.isAtCliff(_this.dir, 2)) {
+					_this.dir = _this.dir.reverse;
 				}
-			//}
+			} else {
+				moveTimer--;
+			}
 		}
 
 		this.toData = function () {
 			var data = this.monsterToData();
 			data.moveTimer = moveTimer;
+			data.stunned = stunned;
 			return data;
 		}
 
 		this.fromData = function (data) {
 			this.monsterFromData(data);
 			moveTimer = data.moveTimer;
+			stunned = data.stunned;
 		}
 
-		extend(this, new Monster(level, x, y, 9, 9, walkerSprites, walkerAnims, ai, 5));
+		extend(this, new Monster(level, x, y, 9, 9, walkerSprites, walkerAnims, ai, initialHealth, onHit));
 		this.startAnimation("walk");
 	}
 
@@ -234,7 +253,7 @@ define(["shot"], function (Shot) {
 		this.startAnimation("shoot");
 	}
 
-	var Monster = function (level, x, y, width, height, sprites, anims, ai, health) {
+	var Monster = function (level, x, y, width, height, sprites, anims, ai, health, onHit) {
 
 		//constants
 		this.killPlayerOnTouch = true;
@@ -325,8 +344,9 @@ define(["shot"], function (Shot) {
 			if (ai) ai();
 
 			if (this.collisions.length > 0) {
-				this.collisions.length = 0;
 				this.health--;
+				if (onHit) onHit();
+				this.collisions.length = 0;
 				if (this.health == 0) { 
 					this.live = false;
 					Events.playSound("mdead", this.pos.clone());
