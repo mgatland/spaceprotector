@@ -43,9 +43,9 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			var mapData =
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   x                      O           O\n" +
-			"O !   m       O   O m O m O   O ! x                !     O           O\n" +
+			"O !   m       O ! O m O m O   O   x !                    O           O\n" +
 			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO    !      O\n" +
-			"O OO OOO OOOO k O m O ! O   O   OOOO                   OOO    OO     O\n" +
+			"O OO OOO OOOO k O m O   O   O   OOOO                   OOO    OO     O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  OOOO    OO  m  O\n" +
 			"O O                                O               m OOOOO        OO O\n" +
 			"O O                                            OOOOOOOOOOO     m  OO O\n" +
