@@ -157,7 +157,7 @@ require(["sprites", "keyboard"], function () {
 					data = data + val;
 				});
 			});
-			alert(data);
+			document.getElementById("alerts").innerHTML = data;
 		}
 
 		window.setInterval(function () {
