@@ -2,7 +2,81 @@
 define(["sprite_player", "sprites"], function () {
 	var Player = function (level, startPos) {
 		var _this = this;
+		
 		extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
+
+		//Replicated variables
+		this.state = "falling";
+		this.fallingTime = 0;
+		this.loading = 0;
+		this.refireRate = 15;
+		this.dir = Dir.RIGHT;
+		this.shotThisFrame = false;
+		this.groundedY = this.pos.y;
+
+		var spawnPoint = startPos.clone();
+		var currentCheckpoint = null; //The flag entity we last touched
+
+		var deadTimer = 0;
+		var animFrame = 0;
+		var animDelay = 0;
+
+		var animState = "standing";
+		var shootingAnim = false;
+		var timeSinceLastShot = 0;
+
+		var jumpIsQueued = false;
+
+		this.toData = function () {
+			var data = {};
+			data.state = this.state;
+			data.fallingTime = this.fallingTime;
+			data.loading = this.loading;
+			data.dir = Dir.toId(this.dir);
+			data.shotThisFrame = this.shotThisFrame;
+			data.groundedY = this.groundedY;
+
+			data.spawnPoint = spawnPoint.toData();
+			//currentCheckpoint
+			data.deadTimer = deadTimer;
+			data.animFrame = animFrame;
+			data.animDelay = animDelay;
+			data.animState = animState;
+			data.shootingAnim = shootingAnim;
+			data.timeSinceLastShot = timeSinceLastShot;
+			data.jumpIsQueued = jumpIsQueued;
+
+			Entity.toData(this, data);
+			return data;
+		}
+
+		this.fromData = function (data) {
+			this.state = data.state;
+			this.fallingTime = data.fallingTime;
+			this.loading = data.loading;
+			this.dir = Dir.fromId(data.dir);
+			this.shotThisFrame = data.shotThisFrame;
+			this.groundedY = data.groundedY;
+
+			spawnPoint = Pos.fromData(data.spawnPoint);
+			//currentCheckpoint
+			deadTimer = data.deadTimer;
+			animFrame = data.animFrame;
+			animDelay = data.animDelay;
+			animState = data.animState;
+			shootingAnim = data.shootingAnim;
+			timeSinceLastShot = data.timeSinceLastShot;
+			jumpIsQueued = data.jumpIsQueued;
+
+			Entity.fromData(this, data);
+		}
+
+		//Constants or not replicated
+
+		var maxDeadTime = 30;
+		var playerSprites = [];
+
+		//functions
 
 		var states = {
 
@@ -30,7 +104,7 @@ define(["sprite_player", "sprites"], function () {
 						this.jumpTime = 0;
 					}
 					if (this.jumpPhase === 4) {
-						this.state = states.falling;
+						this.state = "falling";
 						this.fallingTime = 0;
 					}
 				};
@@ -41,7 +115,7 @@ define(["sprite_player", "sprites"], function () {
 				this.update = function () {
 					animState = "falling";
 					if (this.isOnGround()) {
-						this.state = states.grounded;
+						this.state = "grounded";
 					} else {
 						this.fallingTime++;
 						var speed = this.fallingTime < 10 ? 1 : 2;
@@ -53,7 +127,7 @@ define(["sprite_player", "sprites"], function () {
 			grounded: new function () {
 				this.preupdate = function () {
 					if (jumpIsQueued) {
-						this.state = states.jumping;
+						this.state = "jumping";
 						this.jumpTime = 0;
 						this.jumpPhase = 1;
 						jumpIsQueued = false;
@@ -63,7 +137,7 @@ define(["sprite_player", "sprites"], function () {
 					if (!this.isOnGround()) {
 						this.fallingTime++;
 						if (this.fallingTime >= 3) {
-							this.state = states.falling;
+							this.state = "falling";
 						}
 					} else {
 						this.fallingTime = 0;
@@ -71,37 +145,6 @@ define(["sprite_player", "sprites"], function () {
 				};
 			}
 		};
-
-		this.state = states.falling;
-		this.fallingTime = 0;
-		this.loading = 0;
-		this.refireRate = 15;
-		this.dir = Dir.RIGHT;
-		this.shotThisFrame = false;
-		this.groundedY = this.pos.y;
-
-		var spawnPoint = startPos.clone();
-		var currentCheckpoint = null; //The flag entity we last touched
-
-		var maxDeadTime = 30;
-		var deadTimer = 0;
-
-		var animFrame = 0;
-		var animDelay = 0;
-
-		var animState = "standing";
-		var shootingAnim = false;
-		var timeSinceLastShot = 0;
-
-		var jumpIsQueued = false;
-
-		var playerSprites = [];
-		loadFramesFromData(playerSprites, playerSpriteData);
-		"  1  \n" +
-		" 111 \n" +
-		"1 1 1\n" +
-		" 1 1 \n" +
-		" 1 1 \n";
 
 		this.draw = function (painter) {
 			var color = this.live === true ? Colors.good : Colors.highlight;
@@ -138,7 +181,7 @@ define(["sprite_player", "sprites"], function () {
 				if (deadTimer === 0) {
 					this.live = true;
 					this.pos = spawnPoint.clone();
-					this.state = states.falling;
+					this.state = "falling";
 				} else {
 					deadTimer--;
 				}
@@ -208,14 +251,20 @@ define(["sprite_player", "sprites"], function () {
 				jumpIsQueued = jumpIsQueued && jumpIsHeld;
 			}
 
-			this.state.preupdate.call(this);
+			getState().preupdate.call(this);
 
-			this.state.update.call(this, jumpIsHeld);
+			getState().update.call(this, jumpIsHeld);
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;
 			}
 		}
+
+		var getState = function () {
+			return states[_this.state];
+		}
+
+		loadFramesFromData(playerSprites, playerSpriteData);
 	}
 	return Player;
 });

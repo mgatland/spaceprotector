@@ -9,6 +9,16 @@ Dir.DOWN.reverse = Dir.UP;
 Dir.LEFT.reverse = Dir.RIGHT;
 Dir.RIGHT.reverse = Dir.LEFT;
 
+Dir.list = [Dir.UP, Dir.DOWN, Dir.LEFT, Dir.RIGHT];
+
+Dir.fromId = function (id) {
+    return Dir.list[id];
+}
+
+Dir.toId = function (dir) {
+    return Dir.list.indexOf(dir);
+}
+
 //Pos is a mutable x and y coordinate pair. Use clone() to clone it.
 var Pos = function (x, y) {
 	this.x = x;
@@ -75,6 +85,14 @@ Pos.prototype.floor = function () {
     this.x = Math.floor(this.x);
     this.y = Math.floor(this.y);
     return this;
+}
+
+Pos.prototype.toData = function () {
+    return {x:this.x, y:this.y};
+}
+
+Pos.fromData = function (data) {
+    return new Pos(data.x, data.y);
 }
 
 //End of Pos.prototype

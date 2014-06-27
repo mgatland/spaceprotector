@@ -20,13 +20,11 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 		window.initGame = function () {
 
 			var gotData = function (data) {
-				if (data.x !== undefined && data.y !== undefined) {
-					players[other].pos.x = data.x;
-					players[other].pos.y = data.y;
-					players[other].dir = data.dir == 0 ? Dir.LEFT : Dir.RIGHT;
-					if (data.shot === 1) players[other]._shoot();
+				if (data.pos !== undefined) {
+					players[other].fromData(data);
+					if (players[other].shotThisFrame) players[other]._shoot();
 				} else {
-					console.log("Weird data: " + data);
+					console.log("Weird data: ", data);
 				}
 			}
 			Network.connectToServer(gotData);
@@ -135,8 +133,7 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				}
 				players[local].update(left, right, shoot, shootHit, jump, jumpHit);
 				if (netFrame === 0) {
-					var netData = {x:players[local].pos.x, y:players[local].pos.y, dir:players[local].dir == Dir.LEFT ? 0 : 1};
-					if (players[local].shotThisFrame === true) netData.shot = 1;
+					var netData = players[local].toData();
 					Network.send(netData);
 					netFrame = netFramesToSkip;
 				} else {
