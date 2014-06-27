@@ -4,6 +4,7 @@ var Events = new function () {
 	this.shots = [];
 	this.monsters = [];
 	this.wonLevel = false;
+	this.sounds = [];
 	this.shoot = function (shot) {
 		this.shots.push(shot);
 	}
@@ -11,7 +12,13 @@ var Events = new function () {
 		this.monsters.push(m);
 	}
 	this.winLevel = function () {
+		if (this.wonLevel) return;
 		this.wonLevel = true;
+		Events.playSound("winlevel", null);
+	}
+	this.playSound = function (name, pos) {
+		this.sounds.push({name: name, pos:pos});
+		console.log("New sound queued");
 	}
 };
 
@@ -19,7 +26,9 @@ var Colors = {
 	background: "#5CCCCC", bad: "#8598FF", good: "#B2FFFF", highlight: "#FFFFFF"
 };
 
-require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level", "shot", "monster"], function(util, Player) {
+require(["util", "player", "level", "bridge", "keyboard", "network", 
+	"lib/peer", "shot", "monster", "audio"], 
+	function(util, Player, Level) {
 	(function() {
 		window.initGame = function () {
 
@@ -206,11 +215,21 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				}
 			}
 
-	        var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
-	        var scale = 4;
+			var updateAudio = function (audio, painter) {
+				Events.sounds.forEach(function (sound) {
+					if (sound.pos === null || painter.isOnScreen(sound.pos.x, sound.pos.y, 10, 10)) {
+						audio.play(sound.name);
+						console.log("sound played");
+					}
+				});
+				Events.sounds.length = 0;
+			}
 
-	        var desiredFps = 60;
-			new Bridge().showGame(update, draw, pixelWindow, scale, desiredFps);
+      var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
+      var scale = 4;
+
+      var desiredFps = 60;
+			new Bridge().showGame(update, draw, updateAudio, pixelWindow, scale, desiredFps);
 		}
 	})();
 

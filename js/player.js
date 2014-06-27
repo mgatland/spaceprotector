@@ -115,6 +115,7 @@ define(["sprite_player", "sprites"], function () {
 				this.update = function () {
 					animState = "falling";
 					if (this.isOnGround()) {
+						Events.playSound("land", this.pos.clone());
 						this.state = "grounded";
 					} else {
 						this.fallingTime++;
@@ -131,6 +132,7 @@ define(["sprite_player", "sprites"], function () {
 						this.jumpTime = 0;
 						this.jumpPhase = 1;
 						jumpIsQueued = false;
+						Events.playSound("jump", this.pos.clone());
 					}
 				};
 				this.update = function () {
@@ -173,6 +175,7 @@ define(["sprite_player", "sprites"], function () {
 
 		this._shoot = function () {
 			Events.shoot(new Shot(level, this.pos.clone(), this.dir, "player"));
+			Events.playSound("pshoot", this.pos.clone());
 		}
 
 		this.update = function (left, right, shoot, shootHit, jumpIsHeld, jumpIsHit) {
@@ -204,12 +207,14 @@ define(["sprite_player", "sprites"], function () {
 				if (other.killPlayerOnTouch) {
 					_this.live = false;
 					deadTimer = maxDeadTime;
+					Events.playSound("pdead", null);
 				}
 				if (other.isCheckpoint && other !== currentCheckpoint) {
 					if (currentCheckpoint) currentCheckpoint.selected = false;
 					spawnPoint = other.pos.clone();
 					currentCheckpoint = other;
 					currentCheckpoint.selected = true;
+					Events.playSound("checkpoint", _this.pos.clone());
 				}
 				if (other.isEnd) {
 					Events.winLevel();

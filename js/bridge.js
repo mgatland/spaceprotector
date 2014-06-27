@@ -1,6 +1,5 @@
 "use strict";
-(function() {
-
+define(["audio"], function (Audio) {
 	var Painter = function (ctx, pixelWindow, pixelSize) {
 		var backgroundColor = "#000000";
 		var pos = new Pos(0,0);
@@ -94,7 +93,7 @@
 	}
 
 	window.Bridge = function () {
-		this.showGame = function (update, draw, pixelWindow, scale, desiredFps) {
+		this.showGame = function (update, draw, updateAudio, pixelWindow, scale, desiredFps) {
 		console.log("initGame");
 		var keyboard = new Keyboard();
 
@@ -178,6 +177,7 @@
 			}*/
 
 			runAndBenchmark(logDrawTime, draw, painter);
+			updateAudio(Audio, painter);
 			logFPS();
 			requestAnimationFrame(tick);
 		}
@@ -185,4 +185,5 @@
 
 		}
 	}
-})();
+	return Painter;
+});

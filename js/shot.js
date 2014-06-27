@@ -30,6 +30,7 @@ var Shot = function (level, pos, dir, owner) {
 		var left = level.isPointColliding(this.pos);
 		var right = level.isPointColliding(this.pos.clone().moveXY(this.size.x,0));
 		if (left || right) {
+			if (owner === "player") Events.playSound("hitwall", this.pos.clone());
 			//destroy it
 			this.live = false;
 		}
