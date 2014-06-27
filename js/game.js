@@ -20,9 +20,15 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 		window.initGame = function () {
 
 			var gotData = function (data) {
-				if (data.pos !== undefined) {
-					players[other].fromData(data);
+				if (data.player !== undefined) {
+					players[other].fromData(data.player);
 					if (players[other].shotThisFrame) players[other]._shoot();
+
+					if (data.monsters !== undefined) {
+						monsters.forEach(function (monster, index) {
+							monster.fromData(data.monsters[index]);
+						});
+					}
 				} else {
 					console.log("Weird data: ", data);
 				}
@@ -133,7 +139,15 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				}
 				players[local].update(left, right, shoot, shootHit, jump, jumpHit);
 				if (netFrame === 0) {
-					var netData = players[local].toData();
+					var netData = {};
+					netData.player = players[local].toData();
+
+					if (Network.networkRole === Network.HOST) {
+						netData.monsters = [];
+						monsters.forEach(function (monster, index) {
+								netData.monsters[index] = monster.toData();	
+							});
+					}
 					Network.send(netData);
 					netFrame = netFramesToSkip;
 				} else {
