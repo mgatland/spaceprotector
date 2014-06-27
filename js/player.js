@@ -74,7 +74,7 @@ define(["shot", "sprite_player", "sprites"], function (Shot) {
 		//Constants or not replicated
 
 		var maxDeadTime = 30;
-		var playerSprites = [];
+		var playerSprites = loadFramesFromData(playerSpriteData);
 
 		//functions
 
@@ -272,7 +272,6 @@ define(["shot", "sprite_player", "sprites"], function (Shot) {
 			return states[_this.state];
 		}
 
-		loadFramesFromData(playerSprites, playerSpriteData);
 	}
 	return Player;
 });

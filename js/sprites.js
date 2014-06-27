@@ -1,7 +1,8 @@
 "use strict";
 var spriteWidth = 12;
 
-var loadFramesFromData = function (frames, data) {
+var loadFramesFromData = function (data) {
+	var frames = [];
 	var frameSize = spriteWidth * spriteWidth;
 	var pointer = 0 + "v1.0:".length;
 	var frameToLoad = 0;
@@ -15,4 +16,5 @@ var loadFramesFromData = function (frames, data) {
 		}
 		frameToLoad++;
 	}
+	return frames;
 }

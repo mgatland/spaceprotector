@@ -213,7 +213,10 @@ require(["sprites", "keyboard"], function () {
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_L)) {
 				var data = prompt("Enter v1.0 data string: ");
 				if (data && data.indexOf("v1.0:") === 0) {
-					loadFramesFromData(frames, data);
+					frames = loadFramesFromData(data);
+					while (frames.length < maxFrames) {
+						frames.push();
+					}
 					pixels.setData(frames[currentFrame]);
 				} else {
 					alert("Invalid data string.");
