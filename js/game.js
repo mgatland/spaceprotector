@@ -19,7 +19,6 @@ var Events = new function () {
 	}
 	this.playSound = function (name, pos) {
 		this.sounds.push({name: name, pos:pos});
-		console.log("New sound queued");
 	}
 	this.explosion = function (exp) {
 		this.explosions.push(exp);
@@ -216,7 +215,6 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 				Events.sounds.forEach(function (sound) {
 					if (sound.pos === null || painter.isOnScreen(sound.pos.x, sound.pos.y, 10, 10)) {
 						audio.play(sound.name);
-						console.log("sound played");
 					}
 				});
 				Events.sounds.length = 0;
