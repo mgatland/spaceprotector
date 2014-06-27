@@ -169,14 +169,14 @@ define(["shot"], function (Shot) {
 		this.toData = function () {
 			var data = this.monsterToData();
 			data.moveTimer = moveTimer;
-			data.stunned = stunned;
+			data.aggro = aggro;
 			return data;
 		}
 
 		this.fromData = function (data) {
 			this.monsterFromData(data);
 			moveTimer = data.moveTimer;
-			stunned = data.stunned;
+			aggro = data.aggro;
 		}
 
 		extend(this, new Monster(level, x, y, 9, 9, walkerSprites, walkerAnims, ai, initialHealth, onHit));
