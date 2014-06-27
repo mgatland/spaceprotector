@@ -126,7 +126,7 @@ var Flag = function (level, x, y) {
 	this.fromData = function () {/*not replicated*/};
 }
 
-define([], function () {
+define(["shot"], function (Shot) {
 	var Monster = function (level, x, y, width, height, spriteData, anims, avoidCliffs, canShoot, health, canWalk) {
 
 		//constants

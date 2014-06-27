@@ -5,6 +5,7 @@ var Events = new function () {
 	this.monsters = [];
 	this.wonLevel = false;
 	this.sounds = [];
+	this.explosions = [];
 	this.shoot = function (shot) {
 		this.shots.push(shot);
 	}
@@ -20,6 +21,9 @@ var Events = new function () {
 		this.sounds.push({name: name, pos:pos});
 		console.log("New sound queued");
 	}
+	this.explosion = function (exp) {
+		this.explosions.push(exp);
+	}
 };
 
 var Colors = {
@@ -27,7 +31,7 @@ var Colors = {
 };
 
 require(["util", "player", "level", "bridge", "keyboard", "network", 
-	"lib/peer", "shot", "monster", "audio"], 
+	"lib/peer", "shot", "explosion", "monster", "audio"], 
 	function(util, Player, Level) {
 	(function() {
 		window.initGame = function () {
@@ -91,8 +95,7 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 			}
 
 			var shots = [];
-			Events.shoot(new Shot(level, new Pos(20,50), Dir.RIGHT)); //test shot
-
+			var explosions = [];
 			var players = [];
 			players.push(new Player(level, new Pos(40, 90)));
 			players.push(new Player(level, new Pos(50, 90)));
@@ -119,6 +122,9 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 				Array.prototype.push.apply(monsters, Events.monsters);
 				Events.monsters.length = 0;
 
+				Array.prototype.push.apply(explosions, Events.explosions);
+				Events.explosions.length = 0;
+
 				//Process collisions
 				//Shots collide with monsters and players
 				shots.forEach(function (shot) {
@@ -143,6 +149,7 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 				});
 
 				shots.forEach(function (shot) {shot.update();});
+				explosions.forEach(function (exp) {exp.update();});
 
 				var left = keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT);
 				var right = keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT);
@@ -203,6 +210,10 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 					if (shot.live) {
 						painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, shot.hitsMonsters ? Colors.good : Colors.bad);
 					}
+				});
+
+				explosions.forEach(function (exp) {
+					exp.draw(painter);
 				});
 
 				level.draw(painter);

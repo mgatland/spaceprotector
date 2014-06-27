@@ -1,5 +1,5 @@
 "use strict";
-define(["sprite_player", "sprites"], function () {
+define(["shot", "sprite_player", "sprites"], function (Shot) {
 	var Player = function (level, startPos) {
 		var _this = this;
 		
