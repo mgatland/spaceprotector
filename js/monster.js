@@ -98,11 +98,11 @@ define(["shot"], function (Shot) {
 		this.fromData = function () {/*not replicated*/};
 	}
 
-	var walkerSpriteData = "v1.0:011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000010100000000000000000000000000000000000000000000";
+	var walkerSpriteData = "v1.0:011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000010100000000000000000000000000000000000000000000011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000100010000000000000000000000000000000000000000000011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000010100000000000000000000000000000000000000000000011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000100010000000000000000000000000000000000000000000011111111000111110101000111111111000011110000000011110001000011111110000111110001000111110000000010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 	var walkerSprites = [];
 	var walkerSprites = loadFramesFromData(walkerSpriteData);
 	var walkerAnims = {
-		walk: {frames: [0], delay: 0}
+		walk: {frames: [0,1], delay: 5}
 	};
 
 	var WalkMonster = function (level, x, y) {
@@ -130,14 +130,17 @@ define(["shot"], function (Shot) {
 		var ai = function () {
 			_this.tryMove(0,1); //gravity
 
-			if (aggro > 0) aggro--;
+			if (aggro > 0) {
+				aggro--;
+			}
 
 			if (aggro > maxAggro) {
 				//I'm so angry I can't move.
 				return;
 			}
-			if (moveTimer === 0) {
-				moveTimer = aggro > 0 ? fastMoveDelay : moveDelay;
+			var delay = aggro > 0 ? fastMoveDelay : moveDelay
+			if (moveTimer >= delay) {
+				moveTimer = 0;
 				var couldWalk = _this.tryMove(_this.dir.x,0);
 				if (couldWalk === false) {
 					_this.dir = _this.dir.reverse;
@@ -145,7 +148,7 @@ define(["shot"], function (Shot) {
 					_this.dir = _this.dir.reverse;
 				}
 			} else {
-				moveTimer--;
+				moveTimer++;
 			}
 		}
 
@@ -274,13 +277,8 @@ define(["shot"], function (Shot) {
 			var data = {};
 			data.health = this.health;
 			data.dir = Dir.toId(this.dir);
-			//data.refireTimer = refireTimer;
 			data.deadTime = deadTime;
 			data.anim = anim;
-			//!!data.action = action;
-			//data.walkingTime = walkingTime;
-			//data.shotsInARow = shotsInARow;
-			//data.moveTimer = moveTimer;
 			data.animFrame = animFrame;
 			data.animDelay = animDelay;
 			Entity.toData(this, data);
@@ -290,13 +288,8 @@ define(["shot"], function (Shot) {
 		this.monsterFromData = function (data) {
 			this.health = data.health;
 			this.dir = Dir.fromId(data.dir);
-			//refireTimer = data.refireTimer;
 			deadTime = data.deadTime;
 			anim = data.anim;
-			//!!action = data.action;
-			//walkingTime = data.walkingTime;
-			//shotsInARow = data.shotsInARow;
-			//moveTimer = data.moveTimer;
 			animFrame = data.animFrame;
 			animDelay = data.animDelay;
 			Entity.fromData(this, data);
