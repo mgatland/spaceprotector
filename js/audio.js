@@ -6,6 +6,10 @@ define([], function () {
 	var loaded = 0;
 	var sounds = {};
 
+	var gainNode = ctx.createGain();
+	gainNode.connect(ctx.destination);
+	gainNode.gain.value = 0.1;
+
 	soundNames.forEach(function (name) {
 		loadFile(name);
 	});
@@ -30,8 +34,7 @@ define([], function () {
     //create a source node from the buffer 
     var src = ctx.createBufferSource();  
     src.buffer = sounds[name]; 
-    //connect to the final output node (the speakers) 
-    src.connect(ctx.destination); 
+    src.connect(gainNode);
     //play immediately 
     src.noteOn(0); 
 	}
