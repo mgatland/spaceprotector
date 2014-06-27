@@ -1,5 +1,8 @@
 "use strict";
 define(["explosion"], function (Explosion) {
+
+	var shotSprite0 = "111111\n";
+
 	var Shot = function (level, pos, dir, owner) {
 		extend(this, new Entity(pos, new Pos(5,1)));
 		var _this = this;
@@ -51,6 +54,13 @@ define(["explosion"], function (Explosion) {
 				if (this.dir === Dir.RIGHT) checkPos.moveXY(-4, 0);
 				checkPos.moveXY(0, -2); //explosion starts above the shot
 				Events.explosion(new Explosion(this.dir, owner, checkPos));
+			}
+		}
+
+		this.draw = function (painter) {
+			if (this.live) {
+				var color = this.hitsMonsters ? Colors.good : Colors.bad;
+				painter.drawSprite(this.pos.x, this.pos.y, shotSprite0, color);
 			}
 		}
 	}

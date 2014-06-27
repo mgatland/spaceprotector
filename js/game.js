@@ -193,8 +193,6 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 				painter.setPos(players[local].pos.x, players[local].groundedY);
 			}
 
-			var shotSprite0 = "111111\n";
-
 			var draw = function (painter) {
 				painter.clear();
 
@@ -207,9 +205,7 @@ require(["util", "player", "level", "bridge", "keyboard", "network",
 				});
 
 				shots.forEach(function (shot) {
-					if (shot.live) {
-						painter.drawSprite(shot.pos.x, shot.pos.y, shotSprite0, shot.hitsMonsters ? Colors.good : Colors.bad);
-					}
+					shot.draw(painter);
 				});
 
 				explosions.forEach(function (exp) {
