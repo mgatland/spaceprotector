@@ -83,6 +83,18 @@ var flagSprite =
 	"    1     \n" +
 	" 11111111 \n";
 
+var endSprite =
+	"          \n" +
+	"1111111111\n" +
+	"1        1\n" +
+	"1        1\n" +
+	" 1      1 \n" +
+	" 1      1 \n" +
+	"  1    1  \n" +
+	"  1    1  \n" +
+	"   1  1   \n" +
+	"   1111   \n";
+
 var Monsters = {
 	create1: function (level, x, y) {
 		return new Monster(level, x, y, 7, 9, shootMonsterSprite, shootMonsterAnims, true, true, 1, true);
@@ -95,7 +107,23 @@ var Monsters = {
 	},
 	createFlag: function (level, x, y) {
 		return new Flag(level, x, y);
+	},
+	createEnd: function (level, x, y) {
+		return new End(level, x, y);
 	}
+}
+
+var End = function (level, x, y) {
+	extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
+	this.isEnd = true;
+	this.ignoreShots = true;
+	var sprite = endSprite;
+	this.update = function () {}
+	this.draw = function (painter) {
+		painter.drawSprite(this.pos.x, this.pos.y, sprite, Colors.good);
+	};
+	this.toData = function () { return null};
+	this.fromData = function () {/*not replicated*/};
 }
 
 var Flag = function (level, x, y) {

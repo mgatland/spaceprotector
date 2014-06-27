@@ -211,6 +211,9 @@ define(["sprite_player", "sprites"], function () {
 					currentCheckpoint = other;
 					currentCheckpoint.selected = true;
 				}
+				if (other.isEnd) {
+					Events.winLevel();
+				}
 			});
 			this.collisions.length = 0;
 

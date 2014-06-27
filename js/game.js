@@ -3,11 +3,15 @@
 var Events = new function () {
 	this.shots = [];
 	this.monsters = [];
+	this.wonLevel = false;
 	this.shoot = function (shot) {
 		this.shots.push(shot);
 	}
 	this.monster = function (m) {
 		this.monsters.push(m);
+	}
+	this.winLevel = function () {
+		this.wonLevel = true;
 	}
 };
 
@@ -44,7 +48,7 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   x                      O           O\n" +
 			"O !   m       O ! O m O m O   O   x !                    O           O\n" +
-			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO    !      O\n" +
+			"O OO OOO OOOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO    @      O\n" +
 			"O OO OOO OOOO k O m O   O   O   OOOO                   OOO    OO     O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  OOOO    OO  m  O\n" +
 			"O O                                O               m OOOOO        OO O\n" +
@@ -57,8 +61,8 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   m OO      OO      O\n" +
 			"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OO                 O\n" +
 			"O  !                 O       x mm            !    OO                 O\n" +
-			"O  O   m O  m O  k O !       x OO   OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-			"O  OOOOOOOOOOOOOOOOOOO    OOOO OO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"O  O   m O  m O  k O !       x OO           OOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+			"O  OOOOOOOOOOOOOOOOOOO    OOOO OO  OOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 			var level = new Level(mapData, tileSize);
@@ -91,7 +95,13 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 			var netFramesToSkip = 0;
 			var netFrame = netFramesToSkip;
 
+			var winTimer = 0; //TODO: move into game state
+
 			var update = function(keyboard, painter) {
+
+				if (Events.wonLevel) {
+					winTimer++;
+				}
 
 				//Pull new shots from the event system
 				Array.prototype.push.apply(shots, Events.shots);
@@ -187,6 +197,13 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 				});
 
 				level.draw(painter);
+
+				if (winTimer > 0) {
+					var barHeight = Math.min(winTimer*2, 45);
+					var barY = winTimer * 2;
+					painter.drawAbsRect(0, pixelWindow.height/2-barY, pixelWindow.width, barHeight, Colors.good);
+					painter.drawAbsRect(0, pixelWindow.height/2+barY-barHeight, pixelWindow.width, barHeight, Colors.good);
+				}
 			}
 
 	        var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale

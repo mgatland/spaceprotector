@@ -38,6 +38,11 @@
 			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
+		this.drawAbsRect= function (x, y, width, height, color) {
+			ctx.fillStyle = color;
+			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);
+		}
+
 		this.isOnScreen = function (x, y, width, height) {
 			if (x > pixelWindow.width + pos.x) return false;
 			if (x + width < pos.x) return false;

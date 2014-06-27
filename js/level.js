@@ -58,6 +58,10 @@ var Level = function(mapData, tileSize) {
 				Events.monster(Monsters.createFlag(level, x*tileSize, y*tileSize));
 				map[y][x] = 0;
 			}
+			if (mapData[n]==="@") {
+				Events.monster(Monsters.createEnd(level, x*tileSize, y*tileSize));
+				map[y][x] = 0;
+			}
 			if (mapData[n]==="O") {
 				map[y][x] = 1;
 			}
