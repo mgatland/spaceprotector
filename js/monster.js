@@ -130,6 +130,8 @@ var Monster = function (level, x, y, width, height, spriteData, anims, avoidClif
 	//state
 	extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
 
+	this.isNetDirty = true;
+
 	var dir = Dir.LEFT;
 	var refireTimer = refireDelay;
 	var deadTime = 0;

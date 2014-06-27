@@ -26,7 +26,10 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 
 					if (data.monsters !== undefined) {
 						monsters.forEach(function (monster, index) {
-							monster.fromData(data.monsters[index]);
+							var monsterData = data.monsters[index];
+							if (monsterData) {
+								monster.fromData(data.monsters[index]);
+							}
 						});
 					}
 				} else {
@@ -145,8 +148,11 @@ require(["util", "player", "bridge", "keyboard", "network", "lib/peer", "level",
 					if (Network.networkRole === Network.HOST) {
 						netData.monsters = [];
 						monsters.forEach(function (monster, index) {
+							if (monster.isNetDirty) {
 								netData.monsters[index] = monster.toData();	
-							});
+								monster.isNetDirty = false;
+							}
+						});
 					}
 					Network.send(netData);
 					netFrame = netFramesToSkip;
