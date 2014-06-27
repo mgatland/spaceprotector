@@ -243,6 +243,7 @@ define(["shot"], function (Shot) {
 		extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
 
 		this.isNetDirty = true;
+		this.health = health;
 
 		this.dir = Dir.LEFT;
 		var deadTime = 0;
@@ -252,6 +253,7 @@ define(["shot"], function (Shot) {
 
 		this.monsterToData = function () {
 			var data = {};
+			data.health = this.health;
 			data.dir = Dir.toId(this.dir);
 			//data.refireTimer = refireTimer;
 			data.deadTime = deadTime;
@@ -267,6 +269,7 @@ define(["shot"], function (Shot) {
 		}
 
 		this.monsterFromData = function (data) {
+			this.health = data.health;
 			this.dir = Dir.fromId(data.dir);
 			//refireTimer = data.refireTimer;
 			deadTime = data.deadTime;
@@ -323,8 +326,8 @@ define(["shot"], function (Shot) {
 
 			if (this.collisions.length > 0) {
 				this.collisions.length = 0;
-				health--;
-				if (health == 0) { 
+				this.health--;
+				if (this.health == 0) { 
 					this.live = false;
 					Events.playSound("mdead", this.pos.clone());
 					return;
