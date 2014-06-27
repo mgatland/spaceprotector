@@ -3,9 +3,9 @@ var Network = {};
 
 	Network.debug = {};
 	var simulateNetworkProblems = false;
-	Network.debug.fakeLag = 100;
-	Network.debug.fakeJitter = 400;
-	Network.debug.fakePacketLoss = 0.1;
+	Network.debug.fakeLag = 50;
+	Network.debug.fakeJitter = 50;
+	Network.debug.fakePacketLoss = 0.02;
 
 	Network.debug.simulateNetworkProblems = function (value) {
 		simulateNetworkProblems = value ? true : false;
