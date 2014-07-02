@@ -97,6 +97,10 @@ define(["audio"], function (Audio) {
 		console.log("initGame");
 		var keyboard = new Keyboard();
 
+		var gameArea = document.querySelector('.gamecontainer');
+		var htmlBody = document.body;
+		var widthToHeight = pixelWindow.width / pixelWindow.height;
+
 		var canvas = document.getElementById('gamescreen');
 		canvas.width = pixelWindow.width*scale;
 		canvas.height = pixelWindow.height*scale;
@@ -112,6 +116,43 @@ define(["audio"], function (Audio) {
 		var worstFPS = 999;
 		var thisSecond = null;
 		var framesThisSecond = 0;
+		var borderThickness = 4;
+
+		//http://www.html5rocks.com/en/tutorials/
+		//	casestudies/gopherwoord-studios-resizing-html5-games/
+		var resizeGame = function() {
+			var newWidth = window.innerWidth;
+			var newHeight = window.innerHeight;
+
+			if (newWidth > pixelWindow.width * scale + borderThickness * 2
+				&& newHeight > pixelWindow.height * scale + borderThickness * 2) {
+				//We're on a large screen. Draw at proper size.
+				newWidth = pixelWindow.width * scale + borderThickness * 2;
+				newHeight = pixelWindow.height * scale + borderThickness * 2;
+				gameArea.style.width = newWidth;
+				gameArea.style.height = newHeight;
+			} else {
+				var newWidthToHeight = newWidth / newHeight;
+				if (newWidthToHeight > widthToHeight) {
+				  newWidth = newHeight * widthToHeight;
+				} else {
+				  newHeight = newWidth / widthToHeight;
+				}
+				gameArea.style.height = newHeight + 'px';
+				gameArea.style.width = newWidth + 'px';
+			}
+
+			//Center
+			gameArea.style.marginTop = (-newHeight / 2) + 'px';
+			gameArea.style.marginLeft = (-newWidth / 2) + 'px';
+
+			/*font size must be a multiple of 3*/
+			var fontScale = (newWidth / pixelWindow.width);
+			var fontSize = Math.floor(fontScale*18/scale/3)*3; 
+			if (fontSize < 6) fontSize = 6;
+			htmlBody.style.fontSize = fontSize + "px";
+
+		}
 
 		var resetWorstStats = function () {
 			worstUpdateTime = 0;
@@ -181,7 +222,13 @@ define(["audio"], function (Audio) {
 			logFPS();
 			requestAnimationFrame(tick);
 		}
+
+		window.addEventListener('resize', resizeGame, false);
+		window.addEventListener('orientationchange', resizeGame, false);
+		resizeGame();
+		gameArea.classList.remove("hide");
 		requestAnimationFrame(tick);
+
 
 		}
 	}
