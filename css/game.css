@@ -1,16 +1,23 @@
+@font-face {
+	/*font by Anna Anthropy*/
+    font-family: 'Star Perv';
+    src: url('StarPerv.ttf');
+}
+
+body {
+	background-color: black;
+	color: #8598FF;
+	font-family: "Star Perv", monospace;
+	font-style: 18px;
+	text-align: center;
+}
+
 .gamecontainer {
 	margin-top: 128px;
 }
 
 canvas {
 	border: 4px solid #8598FF;
-}
-
-body {
-	background-color: black;
-	color: #8598FF;
-	font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
-	text-align: center;
 }
 
 .hide {
@@ -23,7 +30,8 @@ input {
 	padding: 6px;
 	border: none;
 	border-left: 6px solid #B2FFFF;
-	font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-family: "Star Perv", monospace;
+	font-size: 18px;
 	font-weight: bold;
 }
 
