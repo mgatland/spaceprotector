@@ -38,16 +38,26 @@ if (typeof KeyEvent == "undefined") {
     }
 }
 
-function Keyboard() {
+function Keyboard(touch) {
 
     var keysDown = {};
     var keysHit = {};
 
-    window.addEventListener("keydown", function (e) {
-        if (!keysDown[e.keyCode]) { //ignore repeated triggering of keyhit when key is held down
-            keysDown[e.keyCode] = true;
-            keysHit[e.keyCode] = true;
+    function keyDown (code) {
+        if (!keysDown[code]) { //ignore repeated triggering of keyhit when key is held down
+            keysDown[code] = true;
+            keysHit[code] = true;
         }
+    }
+
+    function keyUp (code) {
+        if (keysDown[code]) {
+            delete keysDown[code];
+        }
+    }
+
+    window.addEventListener("keydown", function (e) {
+        keyDown(e.keyCode);
         switch(e.keyCode) {
             case KeyEvent.DOM_VK_DOWN:
             case KeyEvent.DOM_VK_UP:
@@ -57,9 +67,14 @@ function Keyboard() {
             break;
         }
     }, false);
+
     window.addEventListener("keyup", function (e) {
-        delete keysDown[e.keyCode];
+        keyUp(e.keyCode);
     }, false);
+
+    if (touch) {
+        touch.setCallbacks(keyDown, keyUp);
+    }
 
     this.isKeyDown = function (keyCode) {
         return keysDown[keyCode];

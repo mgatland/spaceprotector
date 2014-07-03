@@ -1,5 +1,5 @@
 "use strict";
-define(["audio"], function (Audio) {
+define(["audio", "touch"], function (Audio, Touch) {
 	var Painter = function (ctx, pixelWindow, pixelSize) {
 		var backgroundColor = "#000000";
 		var pos = new Pos(0,0);
@@ -37,9 +37,17 @@ define(["audio"], function (Audio) {
 			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
-		this.drawAbsRect= function (x, y, width, height, color) {
+		this.drawAbsRect= function (x, y, width, height, color, thickness) {
 			ctx.fillStyle = color;
-			ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);
+			if (thickness) {
+				ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*thickness, pixelSize*height);
+				ctx.fillRect((x + width - thickness) * pixelSize, y * pixelSize, pixelSize*thickness, pixelSize*height);
+				ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*thickness);
+				ctx.fillRect(x * pixelSize, (y + height - thickness) * pixelSize, pixelSize*width, pixelSize*thickness);
+			} else {
+				//soild square
+				ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);	
+			}
 		}
 
 		this.isOnScreen = function (x, y, width, height) {
@@ -95,7 +103,6 @@ define(["audio"], function (Audio) {
 	window.Bridge = function () {
 		this.showGame = function (update, draw, updateAudio, pixelWindow, scale, desiredFps) {
 		console.log("initGame");
-		var keyboard = new Keyboard();
 
 		var gameArea = document.querySelector('.gamecontainer');
 		var htmlBody = document.body;
@@ -107,6 +114,9 @@ define(["audio"], function (Audio) {
 		var ctx = canvas.getContext("2d");
 
 		var painter = new Painter(ctx, pixelWindow, scale);
+
+		var touch = new Touch(gameArea, pixelWindow, scale);
+		var keyboard = new Keyboard(touch);
 
 		var gameTime = null;
 		var frameDelay = 1000/desiredFps;
@@ -218,6 +228,7 @@ define(["audio"], function (Audio) {
 			}*/
 
 			runAndBenchmark(logDrawTime, draw, painter);
+			touch.draw(painter);
 			updateAudio(Audio, painter);
 			logFPS();
 			requestAnimationFrame(tick);
