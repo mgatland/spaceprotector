@@ -20,13 +20,13 @@ define(["audio", "touch"], function (Audio, Touch) {
 			var dir = distance ? distance < 0 ? -1:1:0;
 			var distanceAbs = Math.abs(distance);
 			if (distanceAbs > slack) pos[axis] += dir;
-			if (slack2 && distanceAbs > slack2) pos[axis] += dir*2;
-			if (slack3 && distanceAbs > slack3) pos[axis] += dir*3;
+			if (slack2 && distanceAbs > slack2) pos[axis] += dir;
+			if (slack3 && distanceAbs > slack3) pos[axis] += dir*4;
 		}
 
 		this.setPos = function (x, y) {
 			moveTowards(x - pixelWindow.width/2, cameraSlackX, "x", cameraSlackX*2, cameraSlackX*4);
-			moveTowards(y - pixelWindow.height/2, cameraSlackY, "y", pixelWindow.height/2, pixelWindow.height);
+			moveTowards(y - pixelWindow.height/2, cameraSlackY, "y", pixelWindow.height/2-12, pixelWindow.height);
 		}
 
 		this.clear = function() {
