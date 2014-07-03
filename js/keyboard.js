@@ -66,6 +66,11 @@ function Keyboard(touch) {
             e.preventDefault();
             break;
         }
+
+        if (touch) {
+            touch.hide();
+            touch = null;
+        }
     }, false);
 
     window.addEventListener("keyup", function (e) {

@@ -1,6 +1,7 @@
 define([], function () {
 	var Touch = function (canvas, pixelWindow, pixelSize) {
 
+		var visible = true;
 		//callbacks
 		var onKeyDown = null;
 		var onKeyUp = null;
@@ -101,10 +102,15 @@ define([], function () {
 		}
 
 		this.draw = function (painter) {
+			if (!visible) return;
 			buttons.forEach(function (button) {
 				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
 					button.active ? Colors.good: Colors.background, 1);
 			});
+		}
+
+		this.hide = function () {
+			visible = false;
 		}
 
 		canvas.addEventListener('touchstart', touchStart);
