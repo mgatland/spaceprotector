@@ -7,6 +7,14 @@ define(["audio", "touch"], function (Audio, Touch) {
 		var cameraSlackX = pixelWindow.width/8;
 		var cameraSlackY = 0;
 
+		var currentColor = null;
+
+		var setColor = function(color) {
+			if (color === currentColor) return;
+			currentColor = color;
+			ctx.fillStyle = color;
+		}
+
 		var moveTowards = function(desired, slack, axis, slack2, slack3) {
 			var distance = desired - pos[axis];
 			var dir = distance ? distance < 0 ? -1:1:0;
@@ -22,23 +30,23 @@ define(["audio", "touch"], function (Audio, Touch) {
 		}
 
 		this.clear = function() {
-			ctx.fillStyle = backgroundColor;
+			setColor(backgroundColor);
 			ctx.fillRect(0, 0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
 		}
 
 		var drawPixel = function (x, y, color) {
-			ctx.fillStyle = color;
+			setColor(color);
 			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize, pixelSize);
 		}
 
 		this.drawRect= function (x, y, width, height, color) {
 			if (!this.isOnScreen(x, y, width, height)) return;
-			ctx.fillStyle = color;
+			setColor(color);
 			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize*width, pixelSize*height);
 		}
 
 		this.drawAbsRect= function (x, y, width, height, color, thickness) {
-			ctx.fillStyle = color;
+			setColor(color);
 			if (thickness) {
 				ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*thickness, pixelSize*height);
 				ctx.fillRect((x + width - thickness) * pixelSize, y * pixelSize, pixelSize*thickness, pixelSize*height);
@@ -67,7 +75,7 @@ define(["audio", "touch"], function (Audio, Touch) {
 
 		this.drawSprite = function (x, y, sprite, color) {
 			if (!this.isOnScreen(x, y, 12, 12)) return;
-			ctx.fillStyle = color;
+			setColor(color);
 			var n = 0;
 			var xN = x;
 			var yN = y;
@@ -90,7 +98,7 @@ define(["audio", "touch"], function (Audio, Touch) {
 
 		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color) {
 			if (!this.isOnScreen(x, y, sprite.width, sprite.width)) return;
-			ctx.fillStyle = color;
+			setColor(color);
 			var n = 0;
 			var xOff = 0;
 			var yOff = 0;
