@@ -114,13 +114,18 @@ define(["monster"], function (Monster) {
 			return true;
 		}
 		this.draw = function(painter) {
-			map.forEach(function (row, y) {
-				row.forEach(function (value, x) {
-					if (value === 1) {
-						drawTile(x, y, painter);
+			var bounds = painter.screenBounds();
+			var minX = Math.floor(bounds.minX / tileSize);
+			var minY = Math.floor(bounds.minY / tileSize);
+			var maxX = Math.floor(bounds.maxX / tileSize);
+			var maxY = Math.floor(bounds.maxY / tileSize);
+			for (var y = minY; y <= maxY; y++) {
+				for (var x = minX; x <= maxX; x++) {
+					if (map[y] && map[y][x] === 1) {
+						drawTile(x, y, painter);	
 					}
-				});
-			});
+				}
+			}
 		}
 		loadMap(mapData);
 	};

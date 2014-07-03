@@ -50,6 +50,13 @@ define(["audio", "touch"], function (Audio, Touch) {
 			}
 		}
 
+		this.screenBounds = function () {
+			return {minX: pos.x,
+				maxX: pos.x + pixelWindow.width,
+				minY: pos.y,
+				maxY: pos.y + pixelWindow.height};
+		}
+
 		this.isOnScreen = function (x, y, width, height) {
 			if (x > pixelWindow.width + pos.x) return false;
 			if (x + width < pos.x) return false;
