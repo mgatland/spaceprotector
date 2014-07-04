@@ -1,37 +1,8 @@
 "use strict";
-
-var Events = new function () {
-	this.shots = [];
-	this.monsters = [];
-	this.wonLevel = false;
-	this.sounds = [];
-	this.explosions = [];
-	this.shoot = function (shot) {
-		this.shots.push(shot);
-	}
-	this.monster = function (m) {
-		this.monsters.push(m);
-	}
-	this.winLevel = function () {
-		if (this.wonLevel) return;
-		this.wonLevel = true;
-		Events.playSound("winlevel", null);
-	}
-	this.playSound = function (name, pos) {
-		this.sounds.push({name: name, pos:pos});
-	}
-	this.explosion = function (exp) {
-		this.explosions.push(exp);
-	}
-};
-
-var Colors = {
-	background: "#5CCCCC", bad: "#8598FF", good: "#B2FFFF", highlight: "#FFFFFF"
-};
-
-require(["util", "player", "level", "bridge", "keyboard", "network", 
+require(["util", "player", "level", "events", "colors",
+	"network", "pos", "bridge",
 	"lib/peer", "shot", "explosion", "monster", "audio"], 
-	function(util, Player, Level) {
+	function(util, Player, Level, Events, Colors, Network, Pos) {
 	(function() {
 		window.initGame = function () {
 

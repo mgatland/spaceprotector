@@ -1,5 +1,6 @@
 "use strict";
-define(["audio", "touch"], function (Audio, Touch) {
+define(["audio", "keyboard", "touch", "dir", "pos"], 
+	function (Audio, Keyboard, Touch, Dir, Pos) {
 	var Painter = function (ctx, pixelWindow, pixelSize) {
 		var backgroundColor = "#000000";
 		var pos = new Pos(0,0);

@@ -38,59 +38,62 @@ if (typeof KeyEvent == "undefined") {
     }
 }
 
-function Keyboard(touch) {
+define([], function () {
+    function Keyboard(touch) {
 
-    var keysDown = {};
-    var keysHit = {};
+        var keysDown = {};
+        var keysHit = {};
 
-    function keyDown (code) {
-        if (!keysDown[code]) { //ignore repeated triggering of keyhit when key is held down
-            keysDown[code] = true;
-            keysHit[code] = true;
+        function keyDown (code) {
+            if (!keysDown[code]) { //ignore repeated triggering of keyhit when key is held down
+                keysDown[code] = true;
+                keysHit[code] = true;
+            }
         }
-    }
 
-    function keyUp (code) {
-        if (keysDown[code]) {
-            delete keysDown[code];
+        function keyUp (code) {
+            if (keysDown[code]) {
+                delete keysDown[code];
+            }
         }
-    }
 
-    window.addEventListener("keydown", function (e) {
-        keyDown(e.keyCode);
-        switch(e.keyCode) {
-            case KeyEvent.DOM_VK_DOWN:
-            case KeyEvent.DOM_VK_UP:
-            case KeyEvent.DOM_VK_RIGHT:
-            case KeyEvent.DOM_VK_LEFT:
-            e.preventDefault();
-            break;
-        }
+        window.addEventListener("keydown", function (e) {
+            keyDown(e.keyCode);
+            switch(e.keyCode) {
+                case KeyEvent.DOM_VK_DOWN:
+                case KeyEvent.DOM_VK_UP:
+                case KeyEvent.DOM_VK_RIGHT:
+                case KeyEvent.DOM_VK_LEFT:
+                e.preventDefault();
+                break;
+            }
+
+            if (touch) {
+                touch.hide();
+                touch = null;
+            }
+        }, false);
+
+        window.addEventListener("keyup", function (e) {
+            keyUp(e.keyCode);
+        }, false);
 
         if (touch) {
-            touch.hide();
-            touch = null;
+            touch.setCallbacks(keyDown, keyUp);
         }
-    }, false);
 
-    window.addEventListener("keyup", function (e) {
-        keyUp(e.keyCode);
-    }, false);
+        this.isKeyDown = function (keyCode) {
+            return keysDown[keyCode];
+        }
 
-    if (touch) {
-        touch.setCallbacks(keyDown, keyUp);
+        this.isKeyHit = function (keyCode) {
+            return keysHit[keyCode];
+        }
+
+        this.update = function () {
+            keysHit = {};
+        }
+
     }
-
-    this.isKeyDown = function (keyCode) {
-        return keysDown[keyCode];
-    }
-
-    this.isKeyHit = function (keyCode) {
-        return keysHit[keyCode];
-    }
-
-    this.update = function () {
-        keysHit = {};
-    }
-
-}
+    return Keyboard;
+});

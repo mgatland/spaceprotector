@@ -1,4 +1,5 @@
-define([], function () {
+"use strict";
+define(["colors"], function (Colors) {
 	var Touch = function (canvas, pixelWindow, pixelSize) {
 
 		var visible = true;

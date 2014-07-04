@@ -1,10 +1,12 @@
 "use strict";
-define(["explosion"], function (Explosion) {
+define(["explosion", "events", "colors", "entity", "dir", "pos", "util"], 
+	function (Explosion, Events, Colors, Entity, Dir, Pos, Util) {
 
+	console.log("Define Shot");
 	var shotSprite0 = "111111\n";
 
 	var Shot = function (level, pos, dir, owner) {
-		extend(this, new Entity(pos, new Pos(5,1)));
+		Util.extend(this, new Entity(pos, new Pos(5,1)));
 		var _this = this;
 
 		this.dir = dir;

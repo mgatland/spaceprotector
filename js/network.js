@@ -1,11 +1,20 @@
-var Network = {};
-(function(){
-
+"use strict";
+define([], function () {
+	var Network = {};
 	Network.debug = {};
 	var simulateNetworkProblems = false;
 	Network.debug.fakeLag = 50;
 	Network.debug.fakeJitter = 50;
 	Network.debug.fakePacketLoss = 0.02;
+
+	Network.networkRole = null;
+	//consts
+	Network.HOST = "HOST";
+	Network.CLIENT = "GUEST";
+
+	var connection;
+	var connectionIsReady = false;
+	var tryingToJoin = false; //guest only
 
 	Network.debug.simulateNetworkProblems = function (value) {
 		simulateNetworkProblems = value ? true : false;
@@ -28,11 +37,6 @@ var Network = {};
 		window.setTimeout(processData, lag, data, dataCallback);
 	}
 
-	Network.networkRole = null;
-	//consts
-	Network.HOST = "HOST";
-	Network.CLIENT = "GUEST";
-
 	var setNetworkMessage = function (message) {
 		document.getElementById('netinfo').innerHTML = message;
 	}
@@ -51,10 +55,6 @@ var Network = {};
 
 	    return text;
 	}
-
-	var connection;
-	var connectionIsReady = false;
-	var tryingToJoin = false; //guest only
 
 	var setupConn = function (conn, type, dataCallback) {
 
@@ -153,4 +153,6 @@ var Network = {};
 			connection.send(data);
 		}
 	}
-})();
+
+	return Network;
+});

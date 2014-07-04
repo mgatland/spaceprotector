@@ -1,3 +1,4 @@
+"use strict";
 require(["sprites", "keyboard"], function () {
 
 	var Pixels = function (size) {

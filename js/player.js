@@ -1,9 +1,11 @@
 "use strict";
-define(["shot", "sprite_player", "sprites"], function (Shot) {
+define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "util"], 
+	function (Shot, Events, Colors, WalkingThing, Sprites, Dir, Pos, Util) {
+
 	var Player = function (level, startPos) {
 		var _this = this;
 		
-		extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
+		Util.extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
 
 		//Replicated variables
 		this.state = "falling";
@@ -46,7 +48,7 @@ define(["shot", "sprite_player", "sprites"], function (Shot) {
 			data.timeSinceLastShot = timeSinceLastShot;
 			data.jumpIsQueued = jumpIsQueued;
 
-			Entity.toData(this, data);
+			WalkingThing.toData(this, data);
 			return data;
 		}
 
@@ -68,13 +70,13 @@ define(["shot", "sprite_player", "sprites"], function (Shot) {
 			timeSinceLastShot = data.timeSinceLastShot;
 			jumpIsQueued = data.jumpIsQueued;
 
-			Entity.fromData(this, data);
+			WalkingThing.fromData(this, data);
 		}
 
 		//Constants or not replicated
-
 		var maxDeadTime = 30;
-		var playerSprites = loadFramesFromData(playerSpriteData);
+		var playerSpriteData = "v1.0:0011000000000010000000001111100000000010000000000101000000000101000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001111100000000010000000000011000000000101000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001111100000000010000000001111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001111100000000010000000001111000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001111100000000010000000000110000000000010000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001111100000000010000000000010000000001101000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000011000000000010000000000011100000000010000000000101000000001001";
+		var playerSprites = Sprites.loadFramesFromData(playerSpriteData);
 
 		//functions
 
