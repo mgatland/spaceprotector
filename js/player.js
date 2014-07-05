@@ -193,18 +193,6 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				return;
 			}
 
-			if (animState !== "running") {
-				animDelay = 0;
-				animFrame = 3; //first frame when we start running after landing\standing still
-			} else {
-				animDelay++;
-				if (animDelay >= 5) {
-					animDelay = 0;
-					animFrame++;
-					if (animFrame === 4) animFrame = 0;
-				}
-			}
-
 			this.collisions.forEach(function (other) {
 				if (other.killPlayerOnTouch) {
 					_this.live = false;
@@ -242,16 +230,15 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				if (timeSinceLastShot > 30) shootingAnim = false;
 			}
 
+			var movingDir = null;
 			if (keys.left && !keys.right) {
 				this.dir = Dir.LEFT;
+				movingDir = Dir.LEFT;
 				this.tryMove(-1,0);
-				animState = "running";
 			} else if (keys.right && !keys.left) {
 				this.dir = Dir.RIGHT;
+				movingDir = Dir.RIGHT;
 				this.tryMove(1,0);
-				animState = "running";
-			} else {
-				animState = "standing";
 			}
 
 			//If you hit jump and hold it down, that hit gets queued.
@@ -267,6 +254,26 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;
+			}
+
+			if (this.state  === "grounded") {
+				if (movingDir === null) {
+					animState = "standing";
+				} else {
+					animState = "running";					
+				}
+			}
+
+			if (animState !== "running") {
+				animDelay = 0;
+				animFrame = 3; //first frame when we start running after landing\standing still
+			} else {
+				animDelay++;
+				if (animDelay >= 5) {
+					animDelay = 0;
+					animFrame++;
+					if (animFrame === 4) animFrame = 0;
+				}
 			}
 		}
 
