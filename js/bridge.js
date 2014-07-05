@@ -10,6 +10,9 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 
 		var currentColor = null;
 
+		ctx.font = (pixelSize * 10) + "px Star Perv";
+		ctx.textBaseline = "top";
+
 		var setColor = function(color) {
 			if (color === currentColor) return;
 			currentColor = color;
@@ -57,6 +60,11 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 				//soild square
 				ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize*width, pixelSize*height);	
 			}
+		}
+
+		this.drawText = function(x, y, text, color) {
+			setColor(color);
+			ctx.fillText(text, x * pixelSize, y * pixelSize);
 		}
 
 		this.screenBounds = function () {

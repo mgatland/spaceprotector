@@ -1,14 +1,21 @@
 "use strict";
-require(["events", "colors", "network", "bridge", "playingstate", "lib/peer"], 
-	function(Events, Colors, Network, Bridge, PlayingState) {
+require(["events", "colors", "network", "bridge", "playingstate",
+	"titlestate", "lib/peer"], 
+	function(Events, Colors, Network, Bridge, PlayingState, TitleState) {
 	var initGame = function () {
 
 		var playingState = new PlayingState();
+		var titleState = new TitleState();
+		var state = titleState;
 		Network.connectToServer(playingState.gotData);
 
 		var winTimer = 0; //TODO: move into game state
 
 		var update = function(keyboard, painter) {
+
+			if (state.transition === true) {
+				state = playingState;
+			}
 
 			if (Events.wonLevel) {
 				winTimer++;
@@ -23,13 +30,15 @@ require(["events", "colors", "network", "bridge", "playingstate", "lib/peer"],
 			keys.shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_Y) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
 			keys.shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_Y) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
-			playingState.update(keys, painter, Network, Events);
+			keys.start = keyboard.isKeyDown(KeyEvent.DOM_VK_ENTER) || keyboard.isKeyDown(KeyEvent.DOM_VK_RETURN) || keyboard.isKeyDown(KeyEvent.DOM_VK_SPACE);
+
+			state.update(keys, painter, Network, Events);
 		}
 
 		var draw = function (painter) {
 			painter.clear();
 
-			playingState.draw(painter);
+			state.draw(painter);
 
 			if (winTimer > 0) {
 				var barHeight = Math.min(winTimer*2, 45);
