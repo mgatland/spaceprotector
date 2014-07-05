@@ -180,7 +180,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			Events.playSound("pshoot", this.pos.clone());
 		}
 
-		this.update = function (left, right, shoot, shootHit, jumpIsHeld, jumpIsHit) {
+		this.update = function (keys) {
 
 			if (!this.live) {
 				if (deadTimer === 0) {
@@ -226,7 +226,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 			if (this.loading > 0) this.loading--;
 
-			if (shootHit || shoot && this.loading === 0) {
+			if (keys.shootHit || keys.shoot && this.loading === 0) {
 				this.loading = this.refireRate;
 				this._shoot();
 				this.shotThisFrame = true;
@@ -234,7 +234,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				this.shotThisFrame = false;
 			}
 
-			if (shoot) {
+			if (keys.shoot) {
 				shootingAnim = true;
 				timeSinceLastShot = 0;
 			} else {
@@ -242,11 +242,11 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				if (timeSinceLastShot > 30) shootingAnim = false;
 			}
 
-			if (left && !right) {
+			if (keys.left && !keys.right) {
 				this.dir = Dir.LEFT;
 				this.tryMove(-1,0);
 				animState = "running";
-			} else if (right && !left) {
+			} else if (keys.right && !keys.left) {
 				this.dir = Dir.RIGHT;
 				this.tryMove(1,0);
 				animState = "running";
@@ -255,15 +255,15 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}
 
 			//If you hit jump and hold it down, that hit gets queued.
-			if (jumpIsHit) {
+			if (keys.jumpIsHit) {
 				jumpIsQueued = true;
 			} else {
-				jumpIsQueued = jumpIsQueued && jumpIsHeld;
+				jumpIsQueued = jumpIsQueued && keys.jumpIsHeld;
 			}
 
 			getState().preupdate.call(this);
 
-			getState().update.call(this, jumpIsHeld);
+			getState().update.call(this, keys.jumpIsHeld);
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;
