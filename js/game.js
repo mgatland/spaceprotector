@@ -1,17 +1,17 @@
 "use strict";
 require(["util", "player", "level", "events", "colors",
-	"network", "pos", "bridge",
+	"network", "pos", "bridge", "entity",
 	"lib/peer", "shot", "explosion", "monster", "audio"], 
-	function(util, Player, Level, Events, Colors, Network, Pos, Bridge) {
+	function(util, Player, Level, Events, Colors, Network, Pos, Bridge, Entity) {
 	var initGame = function () {
 
 		var gotData = function (data) {
 			if (data.player !== undefined) {
-				players[other].fromData(data.player);
-				if (players[other].shotThisFrame) players[other]._shoot();
+				gs.players[gs.other].fromData(data.player);
+				if (gs.players[gs.other].shotThisFrame) gs.players[gs.other]._shoot();
 
 				if (data.monsters !== undefined) {
-					monsters.forEach(function (monster, index) {
+					gs.monsters.forEach(function (monster, index) {
 						var monsterData = data.monsters[index];
 						if (monsterData) {
 							monster.fromData(data.monsters[index]);
@@ -49,34 +49,27 @@ require(["util", "player", "level", "events", "colors",
 
 		var level = new Level(mapData, tileSize);
 
-		//mode tells who to nofity, "both" or "firstonly"
-		var checkCollision = function (a, b, mode) {
-			if (!mode) mode = "both";
-			if (a.live === true && b.live === true
-				&& a.pos.x < b.pos.x + b.size.x
-				&& a.pos.x + a.size.x > b.pos.x
-				&& a.pos.y < b.pos.y + b.size.y
-				&& a.pos.y + a.size.y > b.pos.y
-				) {
-				a.collisions.push(b);
-				if (mode === "both") b.collisions.push(a);
-			}
-		}
-
-		var shots = [];
-		var explosions = [];
-		var players = [];
-		players.push(new Player(level, new Pos(40, 90)));
-		players.push(new Player(level, new Pos(50, 90)));
-		var local = 0;
-		var other = 1;
-
-		var monsters = [];
+		//game state:
+		var gs = {
+			shots: [],
+			explosions: [],
+			players: [],
+			local: 0,
+			other: 1,
+			monsters: []
+		};
+		gs.players.push(new Player(level, new Pos(40, 90)));
+		gs.players.push(new Player(level, new Pos(50, 90)));
 
 		var netFramesToSkip = 0;
 		var netFrame = netFramesToSkip;
 
 		var winTimer = 0; //TODO: move into game state
+
+		function moveElementsTo(dest, source) {
+			Array.prototype.push.apply(dest, source);
+			source.length = 0;	
+		}
 
 		var update = function(keyboard, painter) {
 
@@ -84,41 +77,35 @@ require(["util", "player", "level", "events", "colors",
 				winTimer++;
 			}
 
-			//Pull new shots from the event system
-			Array.prototype.push.apply(shots, Events.shots);
-			Events.shots.length = 0;
-
-			Array.prototype.push.apply(monsters, Events.monsters);
-			Events.monsters.length = 0;
-
-			Array.prototype.push.apply(explosions, Events.explosions);
-			Events.explosions.length = 0;
+			moveElementsTo(gs.shots, Events.shots);
+			moveElementsTo(gs.monsters, Events.monsters);
+			moveElementsTo(gs.explosions, Events.explosions);
 
 			//Process collisions
 			//Shots collide with monsters and players
-			shots.forEach(function (shot) {
+			gs.shots.forEach(function (shot) {
 				if (shot.live === true) {
 					if (shot.hitsMonsters === true) {
-						monsters.forEach(function (monster) {
-							checkCollision(shot, monster);
+						gs.monsters.forEach(function (monster) {
+							Entity.checkCollision(shot, monster);
 						});
 					} else {
-						players.forEach(function (player) {
-							checkCollision(shot, player);
+						gs.players.forEach(function (player) {
+							Entity.checkCollision(shot, player);
 						});
 					}
 				}
 			});
 			//Enemies collide with players
 			//(only notify the player)
-			players.forEach(function (p) {
-				monsters.forEach(function (monster) {
-					checkCollision(p, monster, "firstOnly");
+			gs.players.forEach(function (p) {
+				gs.monsters.forEach(function (monster) {
+					Entity.checkCollision(p, monster, "firstOnly");
 				});
 			});
 
-			shots.forEach(function (shot) {shot.update();});
-			explosions.forEach(function (exp) {exp.update();});
+			gs.shots.forEach(function (shot) {shot.update();});
+			gs.explosions.forEach(function (exp) {exp.update();});
 
 			var left = keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT);
 			var right = keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT);
@@ -129,20 +116,20 @@ require(["util", "player", "level", "events", "colors",
 			var shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_Y) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
 			if (Network.networkRole === Network.HOST) {
-				local = 0;
-				other = 1;
+				gs.local = 0;
+				gs.other = 1;
 			} else if (Network.networkRole === Network.CLIENT) {
-				local = 1;
-				other = 0;
+				gs.local = 1;
+				gs.other = 0;
 			}
-			players[local].update(left, right, shoot, shootHit, jump, jumpHit);
+			gs.players[gs.local].update(left, right, shoot, shootHit, jump, jumpHit);
 			if (netFrame === 0) {
 				var netData = {};
-				netData.player = players[local].toData();
+				netData.player = gs.players[gs.local].toData();
 
 				if (Network.networkRole === Network.HOST) {
 					netData.monsters = [];
-					monsters.forEach(function (monster, index) {
+					gs.monsters.forEach(function (monster, index) {
 						if (monster.isNetDirty) {
 							netData.monsters[index] = monster.toData();	
 							monster.isNetDirty = false;
@@ -155,11 +142,11 @@ require(["util", "player", "level", "events", "colors",
 				netFrame--;
 			}
 
-			monsters.forEach(function (monster) {
+			gs.monsters.forEach(function (monster) {
 				monster.update();
 			});
 
-			painter.setPos(players[local].pos.x, players[local].groundedY);
+			painter.setPos(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
 		}
 
 		var draw = function (painter) {
@@ -167,10 +154,10 @@ require(["util", "player", "level", "events", "colors",
 
 			var drawOne = function (x) { x.draw(painter);}
 
-			monsters.forEach(drawOne);
-			players.forEach(drawOne);
-			shots.forEach(drawOne);
-			explosions.forEach(drawOne);
+			gs.monsters.forEach(drawOne);
+			gs.players.forEach(drawOne);
+			gs.shots.forEach(drawOne);
+			gs.explosions.forEach(drawOne);
 			drawOne(level);
 
 			if (winTimer > 0) {
