@@ -1,8 +1,9 @@
 "use strict";
-define(["colors"], function (Colors) {
+define(["colors", "audio"], function (Colors, Audio) {
 	var Touch = function (canvas, pixelWindow, pixelSize) {
 
-		var visible = true;
+		var hasBeenUsed = false;
+		var visible = false;
 		//callbacks
 		var onKeyDown = null;
 		var onKeyUp = null;
@@ -25,6 +26,11 @@ define(["colors"], function (Colors) {
 		buttons.push({x:160, y:80, w:19, h:20,
 			dx:160, dy:80, dw:49, dh:20, 
 			key:KeyEvent.DOM_VK_X});
+
+		//Hack for the menus - tapping anywhere counts as pressing enter
+		buttons.push({x:0, y:0, w:0, h:0,
+			dx:0, dy:0, dw:9000, dh:9000, 
+			key:KeyEvent.DOM_VK_ENTER});
 
 		//http://mobiforge.com/design-development/html5-mobile-web-touch-events
 		function getDomElementOffset(obj) {
@@ -82,7 +88,16 @@ define(["colors"], function (Colors) {
 			oldKeys = keysDown;
 		}
 
+		function onFirstTouch () {
+			hasBeenUsed = true;
+			visible = true;
+			Audio.unmuteIOSHack();
+		}
+
 		function touchStart (e) {
+			if (!hasBeenUsed) {
+				onFirstTouch();
+			}
 			e.preventDefault();
 			updateTouches(e.touches);
 		}
@@ -108,10 +123,6 @@ define(["colors"], function (Colors) {
 				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
 					button.active ? Colors.good: Colors.background, 1);
 			});
-		}
-
-		this.hide = function () {
-			visible = false;
 		}
 
 		canvas.addEventListener('touchstart', touchStart);
