@@ -6,6 +6,7 @@ define([], function () {
 		this.wonLevel = false;
 		this.sounds = [];
 		this.explosions = [];
+		this.players = [];
 		this.shoot = function (shot) {
 			this.shots.push(shot);
 		}
@@ -22,6 +23,9 @@ define([], function () {
 		}
 		this.explosion = function (exp) {
 			this.explosions.push(exp);
+		}
+		this.player = function(p) {
+			this.players.push(p);
 		}
 	};
 	return Events;

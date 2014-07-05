@@ -1,9 +1,8 @@
 "use strict";
-define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Level) {
+define(["entity", "level"], function (Entity, Level) {
 	var PlayingState = function () {
 
 		var tileSize = 10;
-
 		var mapData =
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   x                      O           O\n" +
@@ -14,7 +13,7 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 		"O O                                O               m OOOOO        OO O\n" +
 		"O O                                            OOOOOOOOOOO     m  OO O\n" +
 		"O O                    ! O    m       ! OO  k  O              OO     O\n" +
-		"O O   !  OOO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
+		"O Opp !  OOO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO         OO          O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      m  OO   !      O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO      OO      O\n" +
@@ -41,15 +40,17 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 			monsters: []
 		};
 
-		gs.players.push(new Player(level, new Pos(40, 90)));
-		gs.players.push(new Player(level, new Pos(50, 90)));
-
 		function moveElementsTo(dest, source) {
 			Array.prototype.push.apply(dest, source);
 			source.length = 0;	
 		}
 
 		this.update = function (keys, painter, Network, Events) {
+
+			moveElementsTo(gs.shots, Events.shots);
+			moveElementsTo(gs.monsters, Events.monsters);
+			moveElementsTo(gs.explosions, Events.explosions);
+			moveElementsTo(gs.players, Events.players);
 
 			if (!initialized) {
 				initialized = true;
@@ -59,10 +60,6 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 				gs.players[gs.local].groundedY = gs.players[gs.local].pos.y;
 				painter.jumpTo(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
 			}
-
-			moveElementsTo(gs.shots, Events.shots);
-			moveElementsTo(gs.monsters, Events.monsters);
-			moveElementsTo(gs.explosions, Events.explosions);
 
 			//Process collisions
 			//Shots collide with monsters and players

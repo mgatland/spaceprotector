@@ -1,5 +1,6 @@
 "use strict";
-define(["monster", "events", "colors"], function (Monster, Events, Colors) {
+define(["monster", "player", "events", "colors"],
+	function (Monster, Player, Events, Colors) {
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods
 		var map = [];
@@ -43,6 +44,10 @@ define(["monster", "events", "colors"], function (Monster, Events, Colors) {
 			var y = 0;
 			map[y] = [];
 			while (mapData[n]) {
+				if (mapData[n]==="p") {
+					Events.player(new Player(level, x*tileSize, y*tileSize));
+					map[y][x] = 0;
+				}
 				if (mapData[n]==="m") {
 					Events.monster(Monster.create1(level, x*tileSize, y*tileSize));
 					map[y][x] = 0;

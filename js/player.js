@@ -2,9 +2,10 @@
 define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "util"], 
 	function (Shot, Events, Colors, WalkingThing, Sprites, Dir, Pos, Util) {
 
-	var Player = function (level, startPos) {
+	var Player = function (level, x, y) {
 		var _this = this;
 		
+		var startPos = new Pos(x, y);
 		Util.extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
 
 		//Replicated variables
