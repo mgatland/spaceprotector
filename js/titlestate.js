@@ -2,7 +2,8 @@
 define(["colors"], function (Colors) {
 	var TitleState = function () {
 		this.update = function (keys, painter, Network, Events) {
-			if (keys.start) {
+			if (keys.start || keys.up || keys.left || keys.right || keys.down ||
+				keys.shoot || keys.jumpIsHeld) {
 				this.transition = true;
 			}
 		};
