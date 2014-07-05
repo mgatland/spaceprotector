@@ -30,7 +30,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			keys.shoot = keyboard.isKeyDown(KeyEvent.DOM_VK_Y) || keyboard.isKeyDown(KeyEvent.DOM_VK_Z);
 			keys.shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_Y) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
-			keys.start = keyboard.isKeyDown(KeyEvent.DOM_VK_ENTER) || keyboard.isKeyDown(KeyEvent.DOM_VK_RETURN) || keyboard.isKeyDown(KeyEvent.DOM_VK_SPACE);
+			keys.start = keyboard.isKeyHit(KeyEvent.DOM_VK_ENTER) || keyboard.isKeyDown(KeyEvent.DOM_VK_RETURN) || keyboard.isKeyHit(KeyEvent.DOM_VK_SPACE);
 			keys.esc = keyboard.isKeyHit(KeyEvent.DOM_VK_ESCAPE);
 
 			if (keys.esc) {

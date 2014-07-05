@@ -15,19 +15,19 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 		var oldKeys = []; //keys from last frame that are no longer down
 		var buttons = [];
 
-		buttons.push({x:10, y:80, w:19, h:20, sprite:sprites[0],
+		buttons.push({x:10, y:90, w:19, h:13, sprite:sprites[0],
 			dx:0, dy:50, dw:29, dh:80,
 			key:KeyEvent.DOM_VK_LEFT});
 
-		buttons.push({x:30, y:80, w:19, h:20, sprite:sprites[1],
+		buttons.push({x:30, y:90, w:19, h:13, sprite:sprites[1],
 			dx:30, dy:50, dw:59, dh:80,
 			key:KeyEvent.DOM_VK_RIGHT});
 
-		buttons.push({x:140, y:80, w:19, h:20, sprite:sprites[2],
+		buttons.push({x:140, y:90, w:19, h:13, sprite:sprites[2],
 			dx:90, dy:50, dw:69, dh:80,
 			key:KeyEvent.DOM_VK_X});
 
-		buttons.push({x:160, y:80, w:19, h:20, sprite:sprites[3],
+		buttons.push({x:160, y:90, w:19, h:13, sprite:sprites[3],
 			dx:160, dy:50, dw:49, dh:80, 
 			key:KeyEvent.DOM_VK_Z});
 
@@ -36,7 +36,7 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 			dx:0, dy:0, dw:9000, dh:9000, 
 			key:KeyEvent.DOM_VK_ENTER});
 
-		buttons.push({x:0, y:0, w:13, h:11, sprite:sprites[4],
+		buttons.push({x:-1, y:-1, w:13, h:11, sprite:sprites[4],
 			dx:0, dy:0, dw:29, dh:29, color: Colors.bad,
 			key:KeyEvent.DOM_VK_ESCAPE});
 
@@ -130,6 +130,8 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 			buttons.forEach(function (button) {
 				var color = button.color ? button.color: Colors.background;
 				color = button.active ? Colors.good: color;
+				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
+					Colors.blank);
 				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
 					color, 1);
 				if (button.sprite) {

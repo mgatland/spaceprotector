@@ -1,7 +1,6 @@
 "use strict";
-define(["pos", "dir"], function (Pos, Dir) {
+define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 	var Painter = function (ctx, pixelWindow, pixelSize) {
-		var backgroundColor = "#000000";
 		var pos = new Pos(0,0);
 		var noOffset = new Pos(0,0);
 
@@ -39,7 +38,7 @@ define(["pos", "dir"], function (Pos, Dir) {
 		}
 
 		this.clear = function() {
-			setColor(backgroundColor);
+			setColor(Colors.blank);
 			ctx.fillRect(0, 0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
 		}
 

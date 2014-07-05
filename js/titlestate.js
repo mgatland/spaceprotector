@@ -5,6 +5,7 @@ define(["colors"], function (Colors) {
 			if (keys.start || keys.up || keys.left || keys.right || keys.down ||
 				keys.shoot || keys.jumpIsHeld) {
 				this.transition = true;
+			} else {
 			}
 		};
 		this.draw = function (painter) {
