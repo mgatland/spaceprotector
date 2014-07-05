@@ -1,6 +1,10 @@
 "use strict";
-define(["colors", "audio"], function (Colors, Audio) {
+define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, Dir) {
 	var Touch = function (canvas, pixelWindow, pixelSize) {
+
+		var spriteData = 
+		"v1.0:000000000000000000000000000010000000000100000000001000000000011111111000001000000000000100000000000010000000000000000000000000000000000000000000000000000000000000000000000000100000000000010000000000001000001111111100000000001000000000010000000000100000000000000000000000000000000000000000000001000000000011100000000101010000001001001000000001000000000001000000000001000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000111000111111111100000000111000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		var sprites = Sprites.loadFramesFromData(spriteData);
 
 		var hasBeenUsed = false;
 		var visible = false;
@@ -11,24 +15,24 @@ define(["colors", "audio"], function (Colors, Audio) {
 		var oldKeys = []; //keys from last frame that are no longer down
 		var buttons = [];
 
-		buttons.push({x:10, y:80, w:19, h:20, 
+		buttons.push({x:10, y:80, w:19, h:20, sprite:sprites[0],
 			dx:0, dy:80, dw:29, dh:20,
 			key:KeyEvent.DOM_VK_LEFT});
 
-		buttons.push({x:30, y:80, w:19, h:20,
+		buttons.push({x:30, y:80, w:19, h:20, sprite:sprites[1],
 			dx:30, dy:80, dw:59, dh:20,
 			key:KeyEvent.DOM_VK_RIGHT});
 
-		buttons.push({x:140, y:80, w:19, h:20,
+		buttons.push({x:140, y:80, w:19, h:20, sprite:sprites[2],
 			dx:90, dy:80, dw:69, dh:20,
-			key:KeyEvent.DOM_VK_Z});
-
-		buttons.push({x:160, y:80, w:19, h:20,
-			dx:160, dy:80, dw:49, dh:20, 
 			key:KeyEvent.DOM_VK_X});
 
+		buttons.push({x:160, y:80, w:19, h:20, sprite:sprites[3],
+			dx:160, dy:80, dw:49, dh:20, 
+			key:KeyEvent.DOM_VK_Z});
+
 		//Hack for the menus - tapping anywhere counts as pressing enter
-		buttons.push({x:0, y:0, w:0, h:0,
+		buttons.push({x:0, y:0, w:0, h:0, sprite:null,
 			dx:0, dy:0, dw:9000, dh:9000, 
 			key:KeyEvent.DOM_VK_ENTER});
 
@@ -120,8 +124,15 @@ define(["colors", "audio"], function (Colors, Audio) {
 		this.draw = function (painter) {
 			if (!visible) return;
 			buttons.forEach(function (button) {
+				var color = button.active ? Colors.good: Colors.background;
 				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
-					button.active ? Colors.good: Colors.background, 1);
+					color, 1);
+				if (button.sprite) {
+					var sX = button.x + Math.floor(button.w / 2) - 5;
+					var sY = button.y + Math.floor(button.h / 2) - 5;
+					painter.drawSprite2(sX, sY, 10, Dir.RIGHT,
+					button.sprite, color, true);
+				}
 			});
 		}
 

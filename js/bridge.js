@@ -4,6 +4,7 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 	var Painter = function (ctx, pixelWindow, pixelSize) {
 		var backgroundColor = "#000000";
 		var pos = new Pos(0,0);
+		var noOffset = new Pos(0,0);
 
 		var cameraSlackX = pixelWindow.width/8;
 		var cameraSlackY = 0;
@@ -38,9 +39,10 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 			ctx.fillRect(0, 0, pixelWindow.width*pixelSize, pixelWindow.height*pixelSize);
 		}
 
-		var drawPixel = function (x, y, color) {
+		var drawPixel = function (x, y, color, absolute) {
 			setColor(color);
-			ctx.fillRect(x * pixelSize - pos.x * pixelSize, y * pixelSize - pos.y * pixelSize, pixelSize, pixelSize);
+			var offset = (absolute === true ? noOffset : pos);
+			ctx.fillRect(x * pixelSize - offset.x * pixelSize, y * pixelSize - offset.y * pixelSize, pixelSize, pixelSize);
 		}
 
 		this.drawRect= function (x, y, width, height, color) {
@@ -105,14 +107,16 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 			return x;
 		}
 
-		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color) {
-			if (!this.isOnScreen(x, y, sprite.width, sprite.width)) return;
+		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color, absolute) {
+			if (!absolute && !this.isOnScreen(x, y, sprite.width, sprite.width)) return;
 			setColor(color);
 			var n = 0;
 			var xOff = 0;
 			var yOff = 0;
 			while (n < sprite.length) {
-				if (sprite[n] === 1) drawPixel(x + getX(xOff, dir, actualWidth), y + yOff, color);
+				if (sprite[n] === 1) drawPixel(
+					x + getX(xOff, dir, actualWidth),
+					y + yOff, color, absolute);
 				if (xOff === sprite.width - 1) {
 					xOff = 0;
 					yOff++

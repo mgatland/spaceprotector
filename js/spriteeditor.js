@@ -1,5 +1,5 @@
 "use strict";
-require(["sprites", "keyboard"], function () {
+require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 
 	var Pixels = function (size) {
 		var _this = this;
@@ -214,7 +214,7 @@ require(["sprites", "keyboard"], function () {
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_L)) {
 				var data = prompt("Enter v1.0 data string: ");
 				if (data && data.indexOf("v1.0:") === 0) {
-					var newFrames = loadFramesFromData(data);
+					var newFrames = Sprites.loadFramesFromData(data);
 					newFrames.forEach(function (frame, index) {
 						frames[index] = frame;
 					});
