@@ -116,7 +116,7 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 		}
 	}
 
-	window.Bridge = function () {
+	var Bridge = function () {
 		this.showGame = function (update, draw, updateAudio, pixelWindow, scale, desiredFps) {
 		console.log("initGame");
 
@@ -259,5 +259,5 @@ define(["audio", "keyboard", "touch", "dir", "pos"],
 
 		}
 	}
-	return Painter;
+	return Bridge;
 });
