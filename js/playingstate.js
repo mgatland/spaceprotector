@@ -25,6 +25,7 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 		"O  OOOOOOOOOOOOOOOOOOO    OOOO OO OOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
+		var initialized = false;
 		var level = new Level(mapData, tileSize);
 
 		var netFramesToSkip = 0;
@@ -49,6 +50,16 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 		}
 
 		this.update = function (keys, painter, Network, Events) {
+
+			if (!initialized) {
+				initialized = true;
+				//Hacks to make the player start on the ground
+				//with the camera correctly positioned.
+				gs.players[gs.local].tryMove(0, 10);
+				gs.players[gs.local].groundedY = gs.players[gs.local].pos.y;
+				painter.jumpTo(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
+			}
+
 			moveElementsTo(gs.shots, Events.shots);
 			moveElementsTo(gs.monsters, Events.monsters);
 			moveElementsTo(gs.explosions, Events.explosions);
@@ -111,7 +122,7 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 				monster.update();
 			});
 
-			painter.setPos(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
+			painter.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
 		};
 
 		this.draw = function (painter) {
@@ -141,7 +152,7 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 			} else {
 				console.log("Weird data: ", data);
 			}
-		}		
+		};
 	};
 
 	return PlayingState;
