@@ -94,14 +94,14 @@ define([], function () {
 			if (type === "host") {
 				Network.networkRole = Network.HOST;
 				console.log("Someone connected to you!");
-				setNetworkMessage("You are hosting a game.");
+				setNetworkMessage("<b style='color: red'>You are hosting a game.</b>");
 				conn.send('Thanks for joining!');
 			} else {
 				console.log("You connected to the host!");
 				tryingToJoin = false;
 				connection = conn;
 				Network.networkRole = Network.GUEST;
-				setNetworkMessage("You have joined a game.");
+				setNetworkMessage("<b style='color: red'>You have joined a game.</b>");
 		  		conn.send('Thank you for hosting me!');
 			}
 		});
