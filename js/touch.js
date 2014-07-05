@@ -3,7 +3,7 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 	var Touch = function (canvas, pixelWindow, pixelSize) {
 
 		var spriteData = 
-		"v1.0:000000000000000000000000000010000000000100000000001000000000011111111000001000000000000100000000000010000000000000000000000000000000000000000000000000000000000000000000000000100000000000010000000000001000001111111100000000001000000000010000000000100000000000000000000000000000000000000000000001000000000011100000000101010000001001001000000001000000000001000000000001000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000111000111111111100000000111000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		"v1.0:000000000000000000000000000010000000000100000000001000000000011111111000001000000000000100000000000010000000000000000000000000000000000000000000000000000000000000000000000000100000000000010000000000001000001111111100000000001000000000010000000000100000000000000000000000000000000000000000000001000000000011100000000101010000001001001000000001000000000001000000000001000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000111000111111111100000000111000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111100000000000000011111111100000000000000011111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 		var sprites = Sprites.loadFramesFromData(spriteData);
 
 		var hasBeenUsed = false;
@@ -16,25 +16,29 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 		var buttons = [];
 
 		buttons.push({x:10, y:80, w:19, h:20, sprite:sprites[0],
-			dx:0, dy:80, dw:29, dh:20,
+			dx:0, dy:50, dw:29, dh:80,
 			key:KeyEvent.DOM_VK_LEFT});
 
 		buttons.push({x:30, y:80, w:19, h:20, sprite:sprites[1],
-			dx:30, dy:80, dw:59, dh:20,
+			dx:30, dy:50, dw:59, dh:80,
 			key:KeyEvent.DOM_VK_RIGHT});
 
 		buttons.push({x:140, y:80, w:19, h:20, sprite:sprites[2],
-			dx:90, dy:80, dw:69, dh:20,
+			dx:90, dy:50, dw:69, dh:80,
 			key:KeyEvent.DOM_VK_X});
 
 		buttons.push({x:160, y:80, w:19, h:20, sprite:sprites[3],
-			dx:160, dy:80, dw:49, dh:20, 
+			dx:160, dy:50, dw:49, dh:80, 
 			key:KeyEvent.DOM_VK_Z});
 
 		//Hack for the menus - tapping anywhere counts as pressing enter
 		buttons.push({x:0, y:0, w:0, h:0, sprite:null,
 			dx:0, dy:0, dw:9000, dh:9000, 
 			key:KeyEvent.DOM_VK_ENTER});
+
+		buttons.push({x:0, y:0, w:13, h:11, sprite:sprites[4],
+			dx:0, dy:0, dw:29, dh:29, color: Colors.bad,
+			key:KeyEvent.DOM_VK_ESCAPE});
 
 		//http://mobiforge.com/design-development/html5-mobile-web-touch-events
 		function getDomElementOffset(obj) {
@@ -75,8 +79,8 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 				for (var i = 0; i < touches.length; i++) {
 					var touch = touches[i];
 					var pos = getTouchPosWithOffset(touch, canvasOffset);
-					//ignore y - all buttons are infinitely tall
-					if (pos.x > scaled.x && pos.x < scaled.x + scaled.w) {
+					if (pos.x > scaled.x && pos.x < scaled.x + scaled.w &&
+						pos.y > scaled.y && pos.y < scaled.y + scaled.h) {
 						button.active = true;
 					}
 				}
@@ -124,7 +128,8 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 		this.draw = function (painter) {
 			if (!visible) return;
 			buttons.forEach(function (button) {
-				var color = button.active ? Colors.good: Colors.background;
+				var color = button.color ? button.color: Colors.background;
+				color = button.active ? Colors.good: color;
 				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
 					color, 1);
 				if (button.sprite) {
@@ -139,6 +144,14 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 		canvas.addEventListener('touchstart', touchStart);
 		canvas.addEventListener('touchend', touchEnd);
 		canvas.addEventListener('touchmove', touchMove);
+
+		function noBubble(e) {
+			e.stopPropagation();
+		}
+
+		document.querySelector("#instructions").addEventListener('touchstart', noBubble);
+		document.querySelector("#instructions").addEventListener('touchend', noBubble);
+		document.querySelector("#instructions").addEventListener('touchmove', noBubble);
 	};
 	return Touch;
 });

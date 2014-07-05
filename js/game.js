@@ -31,7 +31,16 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			keys.shootHit = keyboard.isKeyHit(KeyEvent.DOM_VK_Y) || keyboard.isKeyHit(KeyEvent.DOM_VK_Z);
 
 			keys.start = keyboard.isKeyDown(KeyEvent.DOM_VK_ENTER) || keyboard.isKeyDown(KeyEvent.DOM_VK_RETURN) || keyboard.isKeyDown(KeyEvent.DOM_VK_SPACE);
+			keys.esc = keyboard.isKeyHit(KeyEvent.DOM_VK_ESCAPE);
 
+			if (keys.esc) {
+				state.paused = !state.paused;
+				if (state.paused) {
+					document.querySelector("#instructions").classList.remove("hide");
+				} else {
+					document.querySelector("#instructions").classList.add("hide");
+				}
+			}
 			state.update(keys, painter, Network, Events);
 		}
 

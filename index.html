@@ -17,9 +17,12 @@ icon: spaceprotector/spaceprotector-icon.png
 	<body>
 		<div class="gamecontainer hide">
 			<canvas id="gamescreen">Unfortunately, your browser cannot run this game because it does not support the HTML5 canvas element.</canvas>
-			<div id="instructions">
+			<div id="instructions" class="hide">
+				<p>Space Protector by Matthew Gatland.</p>
 				<p>
-					Arrow keys: move | Z or Y: shoot | X: jump | <span id="netinfo">A second player can connect with this code: <b id="netcode">...</b></span>
+					Keyboard controls: Left, Right, Z, X.
+				</p>
+				<p>Multiplayer (beta):<br><span id="netinfo">A second player can connect with this code: <b id="netcode">...</b></span>
 				</p>
 				<div id="connection-options" class="hide">
 					To join someone else's game, enter their code here.
