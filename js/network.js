@@ -10,7 +10,7 @@ define([], function () {
 	Network.networkRole = null;
 	//consts
 	Network.HOST = "HOST";
-	Network.CLIENT = "GUEST";
+	Network.GUEST = "GUEST";
 
 	var connection;
 	var connectionIsReady = false;

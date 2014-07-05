@@ -93,9 +93,13 @@ define(["player", "pos", "entity", "level"], function (Player, Pos, Entity, Leve
 			if (Network.networkRole === Network.HOST) {
 				gs.local = 0;
 				gs.other = 1;
-			} else if (Network.networkRole === Network.CLIENT) {
+				gs.players[1].hidden = false;
+			} else if (Network.networkRole === Network.GUEST) {
 				gs.local = 1;
 				gs.other = 0;
+				gs.players[1].hidden = false;
+			} else {
+				gs.players[1].hidden = true;
 			}
 			gs.players[gs.local].update(keys);
 
