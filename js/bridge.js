@@ -142,7 +142,6 @@ define(["audio", "keyboard", "touch", "painter"],
 		gameArea.classList.remove("hide");
 		requestAnimationFrame(tick);
 
-
 		}
 	}
 	return Bridge;

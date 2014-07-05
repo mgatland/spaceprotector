@@ -1,5 +1,5 @@
 "use strict";
-define(["monster", "events", "Colors"], function (Monster, Events, Colors) {
+define(["monster", "events", "colors"], function (Monster, Events, Colors) {
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods
 		var map = [];

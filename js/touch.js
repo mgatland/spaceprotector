@@ -1,5 +1,6 @@
 "use strict";
-define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, Dir) {
+define(["colors", "fullscreen", "audio", "sprites", "dir"], 
+	function (Colors, Fullscreen, Audio, Sprites, Dir) {
 	var Touch = function (canvas, pixelWindow, pixelSize) {
 
 		var spriteData = 
@@ -100,6 +101,7 @@ define(["colors", "audio", "sprites", "dir"], function (Colors, Audio, Sprites, 
 			hasBeenUsed = true;
 			visible = true;
 			Audio.unmuteIOSHack();
+			Fullscreen.goFullscreenIfRequired(canvas, pixelWindow, pixelSize);
 		}
 
 		function touchStart (e) {
