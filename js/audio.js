@@ -1,5 +1,12 @@
 "use strict";
 define([], function () {
+
+	if (!webkitAudioContext && !AudioContext) {
+		var doNothing = function () {};
+		console.log("No audio supported.");
+		return {play: doNothing, unmuteIOSHack:doNothing};
+	}
+
 	var ctx = webkitAudioContext ? new webkitAudioContext(): new AudioContext();
 	var soundNames = ["pshoot", "mshoot", "mdead", "mhit", "pdead", 
 	"hitwall", "checkpoint", "jump", "land", "winlevel"];
