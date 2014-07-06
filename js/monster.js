@@ -215,6 +215,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 
 		//constants
 		this.killPlayerOnTouch = true;
+		this.killIsCounted = true;
 
 		//state
 		Util.extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));

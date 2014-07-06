@@ -1,6 +1,11 @@
 "use strict";
-define(["entity", "level"], function (Entity, Level) {
-	var PlayingState = function () {
+define(["entity", "level", "camera"],
+	function (Entity, Level, Camera) {
+
+	//Events is only passed in so we can access changes made
+	//by the Level initialization. Let's change that, let level
+	//push changes directly to the game state.
+	var PlayingState = function (Events, camera) {
 
 		var tileSize = 10;
 		var mapData =
@@ -24,11 +29,11 @@ define(["entity", "level"], function (Entity, Level) {
 		"O  OOOOOOOOOOOOOOOOOOO    OOOO OO OOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
-		var initialized = false;
 		var level = new Level(mapData, tileSize);
-
 		var netFramesToSkip = 0;
 		var netFrame = netFramesToSkip;
+		var ticks = 0;
+		var tickDurationInSeconds = 1/60; //FIXME: derive from Framerate
 
 		//game state:
 		var gs = {
@@ -45,21 +50,24 @@ define(["entity", "level"], function (Entity, Level) {
 			source.length = 0;	
 		}
 
-		this.update = function (keys, painter, Network, Events) {
-
+		var processEvents = function (Events) {
 			moveElementsTo(gs.shots, Events.shots);
 			moveElementsTo(gs.monsters, Events.monsters);
 			moveElementsTo(gs.explosions, Events.explosions);
-			moveElementsTo(gs.players, Events.players);
+			moveElementsTo(gs.players, Events.players);			
+		};
 
-			if (!initialized) {
-				initialized = true;
+		var initialize = function () {
 				//Hacks to make the player start on the ground
 				//with the camera correctly positioned.
 				gs.players[gs.local].tryMove(0, 10);
 				gs.players[gs.local].groundedY = gs.players[gs.local].pos.y;
-				painter.jumpTo(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
-			}
+				camera.jumpTo(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);			
+		};
+
+		this.update = function (keys, Network, Events) {
+			ticks++;
+			processEvents(Events);
 
 			//Process collisions
 			//Shots collide with monsters and players
@@ -123,10 +131,12 @@ define(["entity", "level"], function (Entity, Level) {
 				monster.update();
 			});
 
-			painter.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
+			camera.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
 		};
 
 		this.draw = function (painter) {
+
+			painter.setPosFromCamera(camera); //only needs to be set once per level
 
 			var drawOne = function (x) { x.draw(painter);}			
 
@@ -154,6 +164,19 @@ define(["entity", "level"], function (Entity, Level) {
 				console.log("Weird data: ", data);
 			}
 		};
+
+		this.getStats = function () {
+			return {
+				deaths: gs.players[gs.local].getDeaths(),
+				time: ticks * tickDurationInSeconds,
+				mercy: gs.monsters.filter(
+					function (f) {return f.live && f.killIsCounted;}
+					).length
+			};
+		}
+
+		processEvents(Events);
+		initialize();
 	};
 
 	return PlayingState;
