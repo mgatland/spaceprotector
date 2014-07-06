@@ -61,10 +61,13 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			state.update(keys, Network, Events);
 		}
 
-		var draw = function (painter) {
+		var draw = function (painter, touch) {
 			painter.clear();
 
 			state.draw(painter);
+			if (state.showTouchButtons) {
+				touch.draw(painter);
+			}
 
 			if (winTimer > 0) {
 				var barHeight = Math.min(winTimer*2, 45);

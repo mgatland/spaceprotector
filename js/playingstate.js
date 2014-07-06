@@ -6,6 +6,7 @@ define(["entity", "level", "camera"],
 	//by the Level initialization. Let's change that, let level
 	//push changes directly to the game state.
 	var PlayingState = function (Events, camera) {
+		this.showTouchButtons = true;
 
 		var tileSize = 10;
 		var mapData =

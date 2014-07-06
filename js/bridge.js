@@ -129,8 +129,7 @@ define(["audio", "keyboard", "touch", "painter"],
 				console.log("Unusual ticks per frame: " + frames);
 			}*/
 
-			runAndBenchmark(logDrawTime, draw, painter);
-			touch.draw(painter);
+			runAndBenchmark(logDrawTime, draw, painter, touch);
 			updateAudio(Audio, painter);
 			logFPS();
 			requestAnimationFrame(tick);
