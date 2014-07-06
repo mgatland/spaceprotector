@@ -112,6 +112,14 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 				n++;
 			}
 		}
+
+		this.drawWinTransition = function (frame) {
+			var barHeight = Math.min(frame * 2, 45);
+			var barY = frame * 2;
+			this.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barY * 2, Colors.blank);
+			this.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barHeight, Colors.good);
+			this.drawAbsRect(0, pixelWindow.height / 2 + barY - barHeight, pixelWindow.width, barHeight, Colors.good);
+		}
 	};
 	return Painter;
 });

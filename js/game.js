@@ -5,6 +5,8 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		TitleState, EndLevelState, Camera) {
 	var initGame = function () {
 
+		var level = 0; //TODO: replicate?
+
 		var state = new TitleState();
 		Network.connectToServer(function (data) {
 			if (state.gotData) {
@@ -16,25 +18,14 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			}
 		});
 
-		var winTimer = 0;
-		var winStats = null;
-
 		var update = function(keyboard) {
 
 			if (state.transition === true) {
-				state = new PlayingState(Events, camera);
-			}
-
-			if (Events.wonLevel) {
-				if (winTimer === 0) {
-					winStats = state.getStats();
-				}
-				winTimer++;
-				if (winTimer > 50) {
-					state = new EndLevelState(winStats);
-					winTimer = 0;
-					Events.wonLevel = false;
-					winStats = null;
+				if (state.endStats) {
+					state = new EndLevelState(state.endStats);
+					level++;
+				} else {
+					state = new PlayingState(Events, camera, level);	
 				}
 			}
 
@@ -67,14 +58,6 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			state.draw(painter);
 			if (state.showTouchButtons) {
 				touch.draw(painter);
-			}
-
-			if (winTimer > 0) {
-				var barHeight = Math.min(winTimer*2, 45);
-				var barY = winTimer * 2;
-				painter.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barY * 2, Colors.blank);
-				painter.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barHeight, Colors.good);
-				painter.drawAbsRect(0, pixelWindow.height / 2 + barY - barHeight, pixelWindow.width, barHeight, Colors.good);
 			}
 		};
 

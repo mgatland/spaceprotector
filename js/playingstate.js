@@ -2,14 +2,8 @@
 define(["entity", "level", "camera"],
 	function (Entity, Level, Camera) {
 
-	//Events is only passed in so we can access changes made
-	//by the Level initialization. Let's change that, let level
-	//push changes directly to the game state.
-	var PlayingState = function (Events, camera) {
-		this.showTouchButtons = true;
-
-		var tileSize = 10;
-		var mapData =
+		var mapData = [];
+		mapData[0] =
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   x                      O           O\n" +
 		"O !    m      O ! O m O m O   O   x !                    O           O\n" +
@@ -28,13 +22,27 @@ define(["entity", "level", "camera"],
 		"O  !                 O       x mm            !    OO                 O\n" +
 		"O  O   m O  m O  k O !       x OO           OOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 		"O  OOOOOOOOOOOOOOOOOOO    OOOO OO OOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
-		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
+		"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+		"";
 
-		var level = new Level(mapData, tileSize);
+	//TODO: Events is only passed in so we can access changes made
+	//by the Level initialization. Let's change that, let level
+	//push changes directly to the game state.
+	var PlayingState = function (Events, camera, levelNum) {
+		this.showTouchButtons = true;
+
+		var tileSize = 10;
+
+		var level = new Level(mapData[levelNum % mapData.length], tileSize);
 		var netFramesToSkip = 0;
 		var netFrame = netFramesToSkip;
 		var ticks = 0;
 		var tickDurationInSeconds = 1/60; //FIXME: derive from Framerate
+
+		//todo: think about how level transitions are replicated
+		var winTimer = 0;
+		var winAnimationPlaying = false;
+		var winStats = null;
 
 		//game state:
 		var gs = {
@@ -55,7 +63,7 @@ define(["entity", "level", "camera"],
 			moveElementsTo(gs.shots, Events.shots);
 			moveElementsTo(gs.monsters, Events.monsters);
 			moveElementsTo(gs.explosions, Events.explosions);
-			moveElementsTo(gs.players, Events.players);			
+			moveElementsTo(gs.players, Events.players);
 		};
 
 		var initialize = function () {
@@ -133,6 +141,23 @@ define(["entity", "level", "camera"],
 			});
 
 			camera.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);
+
+			if (Events.wonLevel && !winAnimationPlaying) {
+				winAnimationPlaying = true;
+				this.endStats = this.getStats();
+				this.showTouchButtons = false;
+			}
+			if (winAnimationPlaying) {
+				winTimer++;
+				if (winTimer === 90) {
+					//FIXME: Events.wonLevel can leak into the next level
+					//making you instantly win it. Currently to prevent it you
+					//have to clear Events.wonLevel after all other updates
+					//before transitioning to the next level.
+					Events.wonLevel = false;
+					this.transition = true;
+				}
+			}
 		};
 
 		this.draw = function (painter) {
@@ -146,6 +171,10 @@ define(["entity", "level", "camera"],
 			gs.shots.forEach(drawOne);
 			gs.explosions.forEach(drawOne);
 			level.draw(painter);
+
+			if (winTimer > 0) {
+				painter.drawWinTransition(winTimer);
+			}
 		};
 
 		this.gotData = function (data) {
