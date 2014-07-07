@@ -213,9 +213,6 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		this.killIsCounted = true;
 		var maxDeadTime = 30;
 
-		//TODO: decide if replicated
-		var hitPos;
-
 		//state
 		Util.extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
 
@@ -227,6 +224,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		var anim = "walk"; //default
 		var animFrame = 0;
 		var animDelay = 0;
+		var hitPos = null;
 
 		this.monsterToData = function () {
 			var data = {};
@@ -236,6 +234,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			data.anim = anim;
 			data.animFrame = animFrame;
 			data.animDelay = animDelay;
+			data.hitPos = hitPos ? hitPos.toData() : null;
 			WalkingThing.toData(this, data);
 			return data;
 		}
@@ -247,6 +246,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			anim = data.anim;
 			animFrame = data.animFrame;
 			animDelay = data.animDelay;
+			hitPos = Pos.fromData(data.hitPos);
 			WalkingThing.fromData(this, data);
 		}
 

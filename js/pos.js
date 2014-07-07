@@ -89,6 +89,7 @@ define(["dir"], function (Dir) {
     }
 
     Pos.fromData = function (data) {
+        if (data === null || data === undefined) return data;
         return new Pos(data.x, data.y);
     }
     return Pos;

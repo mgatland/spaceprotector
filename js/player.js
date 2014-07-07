@@ -21,6 +21,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 		var currentCheckpoint = null; //The flag entity we last touched
 
 		var deadTimer = 0;
+		var hitPos = null;
 		var animFrame = 0;
 		var animDelay = 0;
 
@@ -42,6 +43,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			data.spawnPoint = spawnPoint.toData();
 			//currentCheckpoint
 			data.deadTimer = deadTimer;
+			data.hitPos = hitPos ? hitPos.toData() : null;
 			data.animFrame = animFrame;
 			data.animDelay = animDelay;
 			data.animState = animState;
@@ -64,6 +66,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			spawnPoint = Pos.fromData(data.spawnPoint);
 			//currentCheckpoint
 			deadTimer = data.deadTimer;
+			hitPos = Pos.fromData(data.hitPos);
 			animFrame = data.animFrame;
 			animDelay = data.animDelay;
 			animState = data.animState;
@@ -81,7 +84,6 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 		//TODO: decide if replicated
 		var deaths = 0;
-		var hitPos = null;
 
 		//functions
 

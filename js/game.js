@@ -13,7 +13,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 				state.gotData(data);
 			} else {
 				console.log("Got data but game is not running. Start it!");
-				state = new PlayingState(Events, camera);
+				state = new PlayingState(Events, camera, level);
 				state.gotData(data);
 			}
 		});
