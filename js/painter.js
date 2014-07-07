@@ -93,16 +93,29 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 			return x;
 		}
 
-		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color, absolute) {
+		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color, absolute, decay, decayPos) {
 			if (!absolute && !this.isOnScreen(x, y, sprite.width, sprite.width)) return;
 			setColor(color);
 			var n = 0;
 			var xOff = 0;
 			var yOff = 0;
 			while (n < sprite.length) {
-				if (sprite[n] === 1) drawPixel(
-					x + getX(xOff, dir, actualWidth),
-					y + yOff, color, absolute);
+				if (sprite[n] === 1) { 
+					var pX = x + getX(xOff, dir, actualWidth);
+					var pY = y + yOff;
+					var drawn = true;
+					if (decay) {
+						var dist = decayPos.distanceToXY(pX, pY)/sprite.width;
+						var odds;
+						if (dist < decay / 2) {
+							odds = 1;
+						} else {
+							odds = decay;
+						}
+						if (Math.random() < odds) drawn = false;
+					}
+					if (drawn) drawPixel(pX, pY, color, absolute);
+				}
 				if (xOff === sprite.width - 1) {
 					xOff = 0;
 					yOff++

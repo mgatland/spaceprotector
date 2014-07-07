@@ -78,8 +78,10 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 		var maxDeadTime = 30;
 		var playerSprites = Sprites.loadFramesFromData(SpriteData.player);
 		this.hidden = false;
+
 		//TODO: decide if replicated
 		var deaths = 0;
+		var hitPos = null;
 
 		//functions
 
@@ -156,7 +158,6 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 		this.draw = function (painter) {
 			if (this.hidden) return;
 
-			var color = this.live === true ? Colors.good : Colors.highlight;
 			var frame;
 			if (animState === "standing") {
 				frame = 0;
@@ -171,7 +172,15 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}
 			if (shootingAnim && frame === 0) frame = 6;
 			var img = playerSprites[frame];
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, img, color);
+			if (this.live) {
+				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
+					this.dir, img, Colors.good);
+			} else {
+				var decay = (maxDeadTime - deadTimer) / maxDeadTime;
+				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
+					this.dir, img, Colors.highlight, false, decay, hitPos);
+			}
+			
 		}
 
 		this.isOnGround = function () {
@@ -205,6 +214,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				if (other.killPlayerOnTouch) {
 					_this.live = false;
 					deadTimer = maxDeadTime;
+					hitPos = other.pos.clone().clampWithin(_this.pos, _this.size);
 					deaths++;
 					Events.playSound("pdead", null);
 				}

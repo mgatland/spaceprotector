@@ -211,6 +211,10 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		//constants
 		this.killPlayerOnTouch = true;
 		this.killIsCounted = true;
+		var maxDeadTime = 30;
+
+		//TODO: decide if replicated
+		var hitPos;
 
 		//state
 		Util.extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
@@ -272,7 +276,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 
 		this.update = function () {
 			if (this.live === false) {
-				if (deadTime < 30) deadTime++;
+				if (deadTime < maxDeadTime) deadTime++;
 				return;
 			}
 
@@ -289,6 +293,8 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 
 			if (this.collisions.length > 0) {
 				this.health--;
+				hitPos = this.collisions[0].pos.clone();
+				hitPos.clampWithin(this.pos, this.size);
 				if (onHit) onHit();
 				this.collisions.length = 0;
 				if (this.health == 0) { 
@@ -303,8 +309,8 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 
 		this.draw = function (painter) {
 			if (this.live === false) {
-				if (deadTime < 30) {
-					painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, sprites[getAnimation().frames[animFrame]], Colors.highlight);
+				if (deadTime < maxDeadTime) {
+					painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, sprites[getAnimation().frames[animFrame]], Colors.highlight, false, deadTime/maxDeadTime, hitPos);
 				}
 				return;
 			}
