@@ -115,6 +115,7 @@ define(["monster", "player", "events", "colors"],
 		this.isSolid = function(x, y) {
 			if (x < 0) return true;
 			if (y < 0) return true;
+			if (map[y] === undefined) return true;
 			if (map[y][x] === 0) return false;
 			return true;
 		}

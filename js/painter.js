@@ -9,9 +9,9 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 		ctx.font = (pixelSize * 10) + "px Star Perv";
 		ctx.textBaseline = "top";
 
-		this.setPosFromCamera = function (camera) {
-			pos.x = camera.pos.x;
-			pos.y = camera.pos.y;
+		this.setPos = function (cameraPos) {
+			pos.x = cameraPos.x;
+			pos.y = cameraPos.y;
 		}
 
 		var setColor = function(color) {

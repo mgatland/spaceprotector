@@ -162,7 +162,7 @@ define(["entity", "level", "camera"],
 
 		this.draw = function (painter) {
 
-			painter.setPosFromCamera(camera); //only needs to be set once per level
+			painter.setPos(camera.pos); //only needs to be set once per level
 
 			var drawOne = function (x) { x.draw(painter);}			
 
