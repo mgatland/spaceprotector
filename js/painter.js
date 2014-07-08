@@ -126,9 +126,11 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 			}
 		}
 
-		this.drawWinTransition = function (frame) {
-			var barHeight = Math.min(frame * 2, 45);
-			var barY = frame * 2;
+		var maxBarHeight = 45;
+		var maxBarDistance = pixelWindow.height / 2 + maxBarHeight; //97
+		this.drawWinTransition = function (animPercent) {
+			var barHeight = Math.min(animPercent * 180, maxBarHeight);
+			var barY = animPercent * maxBarDistance;
 			this.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barY * 2, Colors.blank);
 			this.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barHeight, Colors.good);
 			this.drawAbsRect(0, pixelWindow.height / 2 + barY - barHeight, pixelWindow.width, barHeight, Colors.good);

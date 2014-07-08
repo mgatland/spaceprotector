@@ -41,6 +41,7 @@ define(["entity", "level", "camera"],
 
 		//todo: think about how level transitions are replicated
 		var winTimer = 0;
+		var maxWinTimer = 25;
 		var winAnimationPlaying = false;
 		var winStats = null;
 
@@ -149,7 +150,7 @@ define(["entity", "level", "camera"],
 			}
 			if (winAnimationPlaying) {
 				winTimer++;
-				if (winTimer === 90) {
+				if (winTimer === maxWinTimer) {
 					//FIXME: Events.wonLevel can leak into the next level
 					//making you instantly win it. Currently to prevent it you
 					//have to clear Events.wonLevel after all other updates
@@ -173,7 +174,7 @@ define(["entity", "level", "camera"],
 			level.draw(painter);
 
 			if (winTimer > 0) {
-				painter.drawWinTransition(winTimer);
+				painter.drawWinTransition(winTimer/maxWinTimer);
 			}
 		};
 
