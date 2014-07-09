@@ -120,8 +120,8 @@ require(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 	function getMapPosFromScreenPos(screenX, screenY) {
 		var canvasOffset = getDomElementOffset(canvas);
-		var x = Math.floor((screenX - canvasOffset.left) / tileSize / pixelSize - cameraPos.x);
-		var y = Math.floor((screenY - canvasOffset.top) / tileSize / pixelSize - cameraPos.y);	
+		var x = Math.floor((screenX - canvasOffset.left) / tileSize / pixelSize + cameraPos.x / tileSize);
+		var y = Math.floor((screenY - canvasOffset.top) / tileSize / pixelSize + cameraPos.y / tileSize);
 		return {x:x, y:y};
 	}
 
