@@ -29,6 +29,7 @@ define([], function () {
 	        //decode the loaded data 
 	        ctx.decodeAudioData(req.response, function(buffer) { 
 	            sounds[name] = buffer;
+	            sounds[name].coolDown = 0;
 	            loaded++;
 	        }); 
 	    }; 
@@ -38,12 +39,20 @@ define([], function () {
 	//play the loaded file 
 	function play(name) { 
 		if (loaded < soundNames.length) return; //haven't loaded yet
-    //create a source node from the buffer 
-    var src = ctx.createBufferSource();  
-    src.buffer = sounds[name]; 
-    src.connect(gainNode);
-    //play immediately 
-    src.noteOn(0); 
+		if (sounds[name].coolDown > 0) return ; //Don't repeat a sound too quickly.	
+		sounds[name].coolDown = 3;
+	    //create a source node from the buffer 
+	    var src = ctx.createBufferSource();  
+	    src.buffer = sounds[name]; 
+	    src.connect(gainNode);
+	    //play immediately 
+	    src.noteOn(0); 
+	}
+
+	function update() {
+		Object.keys(sounds).forEach(function(key) {
+		    if (sounds[key].coolDown > 0) sounds[key].coolDown--;
+		});
 	}
 
 	function unmuteIOSHack() {
@@ -57,5 +66,5 @@ define([], function () {
 		//if this was called on a user action, sound will be enabled.
 	}
 
-	return {play: play, unmuteIOSHack:unmuteIOSHack};
+	return {play: play, unmuteIOSHack:unmuteIOSHack, update:update};
 });

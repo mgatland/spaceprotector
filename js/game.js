@@ -68,6 +68,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 				}
 			});
 			Events.sounds.length = 0;
+			audio.update();
 		}
 
 	var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
