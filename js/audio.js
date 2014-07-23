@@ -1,13 +1,16 @@
 "use strict";
 define([], function () {
 
-	if (!webkitAudioContext && !AudioContext) {
+	if (typeof webkitAudioContext != "undefined") {
+		var ctx = new webkitAudioContext();
+	} else if (typeof AudioContext != "undefined") {
+		var ctx = new AudioContext();
+	} else {
 		var doNothing = function () {};
 		console.log("No audio supported.");
 		return {play: doNothing, unmuteIOSHack:doNothing};
 	}
 
-	var ctx = webkitAudioContext ? new webkitAudioContext(): new AudioContext();
 	var soundNames = ["pshoot", "mshoot", "mdead", "mhit", "pdead", 
 	"hitwall", "checkpoint", "jump", "land", "winlevel"];
 	var loaded = 0;
@@ -46,7 +49,7 @@ define([], function () {
 	    src.buffer = sounds[name]; 
 	    src.connect(gainNode);
 	    //play immediately 
-	    src.noteOn(0); 
+	    src.noteOn ? src.noteOn(0) : src.start(0);
 	}
 
 	function update() {
@@ -62,7 +65,7 @@ define([], function () {
 		var source = ctx.createBufferSource();
 		source.buffer = buffer;
 		source.connect(ctx.destination);
-		source.noteOn(0);
+		src.noteOn ? src.noteOn(0) : src.start(0);
 		//if this was called on a user action, sound will be enabled.
 	}
 
