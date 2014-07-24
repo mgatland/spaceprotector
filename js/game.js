@@ -87,6 +87,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 
 			if (levelEditor && state.getLevel) {
 				levelEditor.setLevel(state.getLevel());
+				levelEditor.update(keyboard);
 			}
 
 			if (!levelEditor && keyboard.isKeyDown(KeyEvent.DOM_VK_E) &&

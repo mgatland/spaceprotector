@@ -11,14 +11,12 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		var brushes = [];
 		brushes.push({code:0, spriteData: null});
 		brushes.push({code:1, spriteData: null});
-		/*brushes.push({code:" ", spriteData: null});
-		brushes.push({code:"O", spriteData: null});
 		brushes.push({code:"p", spriteData: SpriteData.player});
 		brushes.push({code:"m", spriteData: SpriteData.shooter});
 		brushes.push({code:"k", spriteData: SpriteData.walker});
 		brushes.push({code:"x", spriteData: SpriteData.crate});
 		brushes.push({code:"!", spriteData: SpriteData.flag});
-		brushes.push({code:"@", spriteData: SpriteData.end});*/
+		brushes.push({code:"@", spriteData: SpriteData.end});
 
 		brushes.forEach(function (brush) {
 			if (brush.spriteData) {
@@ -58,11 +56,22 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		}
 
 		var setMapCell = function (x, y, value) {
-
+			if (!level) return;
 			console.log("Setting " + x + ", " + y + ", " + value);
-			if (level) {
+
+			//remove existing spawner at that location
+			level.setSpawners(
+				level.getSpawners().filter(function (s) {
+					return s.x != x || s.y != y
+				}));
+			if (value === 0 || value === 1) {
 				level.setCell(x, y, value);
+			} else {
+				level.setCell(x, y, 0);
+				level.getSpawners().push({x:x, y:y, type:value});
 			}
+
+			console.log("spawner count: " + level.getSpawners().length);
 
 			/*lines = mapData.split("\n");
 
@@ -107,14 +116,38 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			level = newLevel;
 		}
 
+		this.update = function (keyboard) {
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_A)) {
+				updateBrush(-1);
+			}
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_D)) {
+				updateBrush(1);
+			}
+		}
+
 		this.draw = function (painter) {
 			if (!level) return;
 			var spawners = level.getSpawners();
 			spawners.forEach(function (s) {
-				painter.drawText(s.x * tileSize, 
-					s.y * tileSize,
-					s.type, Colors.good, true);
+				brushes.forEach(function (b) {
+					if (b.code === s.type) {
+						painter.drawSprite2(
+						s.x * tileSize,
+						s.y * tileSize,
+						12, null, b.sprite, Colors.good);
+					}
+				});
 			});
+
+			var brush = getBrush();
+			if (brush.sprite) {
+				painter.drawSprite2(0, 0, 12, null, 
+					brush.sprite, Colors.highlight, true);
+			} else if (brush.code === 0) {
+				painter.drawAbsRect(0, 0, 12, 12, Colors.highlight, 1);
+			} else if (brush.code === 1) {
+				painter.drawAbsRect(0, 0, 12, 12, Colors.highlight);
+			}
 		}
 
 		updateBrush(0);
@@ -147,21 +180,8 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			saveMap(mapData);
 		}
 
-		if (keyboard.isKeyHit(KeyEvent.DOM_VK_Z)) {
-			updateBrush(-1);
-		}
-		if (keyboard.isKeyHit(KeyEvent.DOM_VK_X)) {
-			updateBrush(1);
-		}
-
 		if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) showCells = !showCells;
 
-		keyboard.update();
-
-		var painter = new Painter(ctx, canvas, pixelSize);
-		painter.clear();
-		painter.setPos(cameraPos);
-		level.draw(painter);
 		var x = 0;
 		var y = 0;
 		for (var i = 0; i < mapData.length; i++) {
@@ -186,20 +206,6 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 				x++;
 			}
 		}
-
-		//draw current brush in the corner
-		var brush = getBrush();
-		if (brush.sprite) {
-			painter.drawSprite2(0, 0, 12, null, 
-				brush.sprite, Colors.highlight, true);
-		} else if (brush.code === " ") {
-			painter.drawAbsRect(0, 0, 12, 12, Colors.highlight, 1);
-		} else if (brush.code === "O") {
-			painter.drawAbsRect(0, 0, 12, 12, Colors.highlight);
-		}
-
-		requestAnimationFrame(tick);
-
 	}
 
 	function loadMap () {
