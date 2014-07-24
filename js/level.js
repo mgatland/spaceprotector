@@ -4,6 +4,7 @@ define(["monster", "player", "events", "colors"],
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods
 		var map = [];
+		var spawners = [];
 
 		var drawEdge = function(x, y, checkX, checkY, mode, painter) {
 			if (!level.isSolid(x+checkX, y+checkY)) {
@@ -44,45 +45,47 @@ define(["monster", "player", "events", "colors"],
 			var y = 0;
 			map[y] = [];
 			while (mapData[n]) {
-				if (mapData[n]==="p") {
-					Events.player(new Player(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
-				if (mapData[n]==="m") {
-					Events.monster(Monster.create1(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
-				if (mapData[n]==="k") {
-					Events.monster(Monster.create2(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
-				if (mapData[n]==="x") {
-					Events.monster(Monster.createCrate(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
-				if (mapData[n]==="!") {
-					Events.monster(Monster.createFlag(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
-				if (mapData[n]==="@") {
-					Events.monster(Monster.createEnd(level, x*tileSize, y*tileSize));
-					map[y][x] = 0;
-				}
 				if (mapData[n]==="O") {
 					map[y][x] = 1;
-				}
-				if (mapData[n]===" ") {
+					x++;
+				} else if (mapData[n]===" ") {
 					map[y][x] = 0;
-				}
-				if (mapData[n] === "\n") {
+					x++;
+				} else if (mapData[n] === "\n") {
 					x = 0;
 					y++;
 					map[y] = [];
 				} else {
+					map[y][x] = 0;
+					spawners.push({x:x, y:y, type:mapData[n]});
 					x++;
 				}
 				n++;
 			}
+			spawnEntities();
+		}
+
+		var spawnEntities = function () {
+			spawners.forEach(function (s) {
+				if (s.type==="p") {
+					Events.player(new Player(level, s.x*tileSize, s.y*tileSize));
+				}
+				if (s.type==="m") {
+					Events.monster(Monster.create1(level, s.x*tileSize, s.y*tileSize));
+				}
+				if (s.type==="k") {
+					Events.monster(Monster.create2(level, s.x*tileSize, s.y*tileSize));
+				}
+				if (s.type==="x") {
+					Events.monster(Monster.createCrate(level, s.x*tileSize, s.y*tileSize));
+				}
+				if (s.type==="!") {
+					Events.monster(Monster.createFlag(level, s.x*tileSize, s.y*tileSize));
+				}
+				if (s.type==="@") {
+					Events.monster(Monster.createEnd(level, s.x*tileSize, s.y*tileSize));
+				}
+			});
 		}
 
 		this.isColliding = function (player) {
