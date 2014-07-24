@@ -206,6 +206,11 @@ define(["entity", "level", "camera"],
 			};
 		}
 
+		//for level editor only
+		this.getLevel = function () {
+			return level;
+		}
+
 		processEvents(Events);
 		initialize();
 	};

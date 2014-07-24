@@ -81,8 +81,19 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		var touch = bridge.createTouch();
 		var keyboard = bridge.createKeyboard(touch);
 		var painter = bridge.createPainter();
+		var levelEditor = null;
 
 		var bridgeUpdate = function () {
+
+			if (levelEditor && state.getLevel) {
+				levelEditor.setLevel(state.getLevel());
+			}
+
+			if (!levelEditor && keyboard.isKeyDown(KeyEvent.DOM_VK_E) &&
+				keyboard.isKeyDown(KeyEvent.DOM_VK_L)) {
+				levelEditor = bridge.createLevelEditor(camera);
+			}
+
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) {
 				bridge.resetWorstStats();
 			}

@@ -98,8 +98,7 @@ define(["monster", "player", "events", "colors"],
 		this.isPointColliding = function (pos) {
 			var x = Math.floor(pos.x / tileSize);
 			var y = Math.floor(pos.y / tileSize);
-			if (map[y][x] === 1) return true;
-			return false;
+			return this.isSolid(x, y);
 		}
 
 		this.cellDepthAt = function (p) {
@@ -133,6 +132,15 @@ define(["monster", "player", "events", "colors"],
 				}
 			}
 		}
+
+		//for editor only
+		this.setCell = function(x, y, value) {
+			if (!map[y]) {
+				map[y] = [];
+			}
+			map[y][x] = value;
+		}
+
 		loadMap(mapData);
 	};
 	return Level;

@@ -1,6 +1,6 @@
 "use strict";
-define(["keyboard", "touch", "painter"], 
-	function (Keyboard, Touch, Painter) {
+define(["keyboard", "touch", "painter", "leveleditor"], 
+	function (Keyboard, Touch, Painter, LevelEditor) {
 
 	//Bridge links the game to the browser.
 	//It deals with browser-related functionality like when the page is resized.
@@ -37,6 +37,11 @@ define(["keyboard", "touch", "painter"],
 		this.createKeyboard = function (touch) {
 			return new Keyboard(touch); 
 		};
+
+		this.createLevelEditor = function (camera) {
+			var canvas = document.getElementById('gamescreen');
+			return new LevelEditor(camera, canvas, scale);
+		}
 
 		this.resetWorstStats = function () {
 			worstUpdateTime = 0;
