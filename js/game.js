@@ -1,8 +1,8 @@
 "use strict";
 require(["events", "colors", "network", "bridge", "playingstate",
-	"titlestate", "endlevelstate", "camera", "lib/peer"], 
+	"titlestate", "endlevelstate", "camera", "audio", "lib/peer"], 
 	function(Events, Colors, Network, Bridge, PlayingState,
-		TitleState, EndLevelState, Camera) {
+		TitleState, EndLevelState, Camera, Audio) {
 	var initGame = function () {
 
 		var level = 0; //TODO: replicate?
@@ -71,12 +71,29 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			audio.update();
 		}
 
-	var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
-	var camera = new Camera(pixelWindow);
-	var scale = 4;
+		var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
+		var camera = new Camera(pixelWindow);
+		var scale = 4;
 
-	var desiredFps = 60;
-		new Bridge().showGame(update, draw, updateAudio, pixelWindow, scale, desiredFps);
+		var desiredFps = 60;
+
+		var bridge = new Bridge(pixelWindow, scale, desiredFps);
+		var touch = bridge.createTouch();
+		var keyboard = bridge.createKeyboard(touch);
+		var painter = bridge.createPainter();
+
+		var bridgeUpdate = function () {
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) {
+				bridge.resetWorstStats();
+			}
+			update(keyboard, painter);
+			keyboard.update();
+		}
+		var bridgeDraw = function () {
+			draw(painter, touch);
+			updateAudio(Audio, painter);
+		}
+		bridge.showGame(bridgeUpdate, bridgeDraw);
 	}
 
 	initGame();
