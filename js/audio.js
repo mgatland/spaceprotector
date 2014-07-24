@@ -62,9 +62,9 @@ define([], function () {
 		console.log("unmute sound on iOS");
 		// create and play an empty buffer
 		var buffer = ctx.createBuffer(1, 1, 22050);
-		var source = ctx.createBufferSource();
-		source.buffer = buffer;
-		source.connect(ctx.destination);
+		var src = ctx.createBufferSource();
+		src.buffer = buffer;
+		src.connect(ctx.destination);
 		src.noteOn ? src.noteOn(0) : src.start(0);
 		//if this was called on a user action, sound will be enabled.
 	}
