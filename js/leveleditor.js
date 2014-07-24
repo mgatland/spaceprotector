@@ -107,6 +107,16 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			level = newLevel;
 		}
 
+		this.draw = function (painter) {
+			if (!level) return;
+			var spawners = level.getSpawners();
+			spawners.forEach(function (s) {
+				painter.drawText(s.x * tileSize, 
+					s.y * tileSize,
+					s.type, Colors.good, true);
+			});
+		}
+
 		updateBrush(0);
 	};
 

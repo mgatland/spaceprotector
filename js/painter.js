@@ -50,9 +50,11 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 			}
 		}
 
-		this.drawText = function(x, y, text, color) {
+		//relative defaults to false
+		this.drawText = function(x, y, text, color, relative) {
+			var myPos = (relative === true ? pos : noOffset);
 			setColor(color);
-			ctx.fillText(text, x * pixelSize, y * pixelSize);
+			ctx.fillText(text, (x - myPos.x) * pixelSize, (y - myPos.y) * pixelSize);
 		}
 
 		this.screenBounds = function () {

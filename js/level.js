@@ -144,6 +144,11 @@ define(["monster", "player", "events", "colors"],
 			map[y][x] = value;
 		}
 
+		//for editor only
+		this.getSpawners = function () {
+			return spawners;
+		}
+
 		loadMap(mapData);
 	};
 	return Level;

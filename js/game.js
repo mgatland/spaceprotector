@@ -102,6 +102,9 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		}
 		var bridgeDraw = function () {
 			draw(painter, touch);
+			if (levelEditor) {
+				levelEditor.draw(painter);
+			}
 			updateAudio(Audio, painter);
 		}
 		bridge.showGame(bridgeUpdate, bridgeDraw);
