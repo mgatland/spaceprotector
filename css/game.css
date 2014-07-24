@@ -4,8 +4,11 @@
     src: url('StarPerv.ttf');
 }
 
-body {
+html {
 	background-color: black;
+}
+
+body {
 	color: #8598FF;
 	font-family: "Star Perv", monospace;
 	font-style: 18px;
