@@ -24,6 +24,11 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			}
 		});
 
+		function setBrushNum (n) {
+			brushNum = n % brushes.length;
+			if (brushNum < 0) brushNum = brushes.length - 1;
+		}
+
 		function updateBrush (n) {
 			brushNum = (brushNum + n) % brushes.length;
 			if (brushNum < 0) brushNum = brushes.length - 1;
@@ -46,6 +51,13 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		    }	  
 		  } while(obj = obj.offsetParent );
 		  return {left: offsetLeft, top: offsetTop};
+		}
+
+		function getCanvasPosFromScreenPos(screenX, screenY) {
+			var canvasOffset = getDomElementOffset(canvas);
+			var x = Math.floor((screenX - canvasOffset.left) / pixelSize);
+			var y = Math.floor((screenY - canvasOffset.top) / pixelSize);
+			return {x:x, y:y};
 		}
 
 		function getMapPosFromScreenPos(screenX, screenY) {
@@ -91,6 +103,17 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 		var paintAtEvent = function (event) {
 			event.preventDefault();
+
+			var screenPos = getCanvasPosFromScreenPos(event.clientX, event.clientY);
+
+			//are we clicking on the UI buttons?
+			if (screenPos.y < tileSize && mouseDown) {
+				var brushNum = Math.floor(screenPos.x / tileSize);
+				setBrushNum(brushNum);
+				return;
+			}
+
+			//otherwise, paint on the map
 
 			if (!mouseDown && !event.shiftKey) {
 				return;
@@ -139,15 +162,20 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 				});
 			});
 
-			var brush = getBrush();
-			if (brush.sprite) {
-				painter.drawSprite2(0, 0, 12, null, 
-					brush.sprite, Colors.highlight, true);
-			} else if (brush.code === 0) {
-				painter.drawAbsRect(0, 0, 12, 12, Colors.highlight, 1);
-			} else if (brush.code === 1) {
-				painter.drawAbsRect(0, 0, 12, 12, Colors.highlight);
+			for (var i = 0; i < brushes.length; i++) {
+				var brush = brushes[i];
+				var color = (i === brushNum) ? Colors.good : Colors.highlight;
+				if (brush.sprite) {
+					painter.drawSprite2(i*tileSize, 0, 12, null, 
+						brush.sprite, color, true);
+				} else if (brush.code === 0) {
+					painter.drawAbsRect(i*tileSize, 0, 10, 10, color, 1);
+				} else if (brush.code === 1) {
+					painter.drawAbsRect(i*tileSize, 0, 10, 10, color);
+				}
 			}
+
+
 		}
 
 		updateBrush(0);
