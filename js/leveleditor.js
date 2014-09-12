@@ -6,6 +6,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		var level = null;
 		var tileSize = 10;
 		var mouseDown = false;
+		var camTarget = camera.pos.clone();
 
 		var brushNum = 0;
 		var brushes = [];
@@ -146,6 +147,19 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_D)) {
 				updateBrush(1);
 			}
+			if (keyboard.isKeyDown(KeyEvent.DOM_VK_UP)) {
+				camTarget.y -= 5;
+			}
+			if (keyboard.isKeyDown(KeyEvent.DOM_VK_DOWN)) {
+				camTarget.y += 5;
+			}
+			if (keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT)) {
+				camTarget.x -= 5;
+			}
+			if (keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT)) {
+				camTarget.x += 5;
+			}
+			camera.jumpTo(camTarget.x, camTarget.y);
 		}
 
 		this.draw = function (painter) {
