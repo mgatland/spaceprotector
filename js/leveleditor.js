@@ -109,7 +109,9 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 			//are we clicking on the UI buttons?
 			if (screenPos.y < tileSize && mouseDown) {
-				var brushNum = Math.floor(screenPos.x / tileSize);
+				//-1 for an off-by-one error, which we should really fix
+				//elsewhere as it probs affects every click and touch as well
+				var brushNum = Math.floor((screenPos.x - 1) / tileSize);
 				setBrushNum(brushNum);
 				return;
 			}
