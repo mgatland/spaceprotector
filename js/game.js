@@ -92,7 +92,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 
 			if (!levelEditor && keyboard.isKeyDown(KeyEvent.DOM_VK_E) &&
 				keyboard.isKeyDown(KeyEvent.DOM_VK_L)) {
-				levelEditor = bridge.createLevelEditor(camera);
+				levelEditor = bridge.createLevelEditor(camera, Events);
 			}
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) {

@@ -1,12 +1,13 @@
 define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 	function (Keyboard, Painter, Level, Sprites, SpriteData, Colors) {
 
-	var LevelEditor = function (camera, canvas, pixelSize) {
+	var LevelEditor = function (camera, Events, canvas, pixelSize) {
 
 		var level = null;
 		var tileSize = 10;
 		var mouseDown = false;
-		var camTarget = camera.pos.clone();
+		var camTarget = camera.getTargetPos();
+		var enabled = true;
 
 		var brushNum = 0;
 		var brushes = [];
@@ -143,12 +144,26 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		}
 
 		this.update = function (keyboard) {
+			if (!enabled) {
+				if (keyboard.isKeyHit(KeyEvent.DOM_VK_E)) {
+					enabled = true;
+					camTarget = camera.getTargetPos();
+				}
+				return;
+			}
+
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_A)) {
 				updateBrush(-1);
 			}
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_D)) {
 				updateBrush(1);
 			}
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_E)) {
+				Events.restart();
+				enabled = false;
+			}
+
 			if (keyboard.isKeyDown(KeyEvent.DOM_VK_UP)) {
 				camTarget.y -= 5;
 			}
@@ -165,6 +180,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		}
 
 		this.draw = function (painter) {
+			if (!enabled) return;
 			if (!level) return;
 			var spawners = level.getSpawners();
 			spawners.forEach(function (s) {
@@ -190,10 +206,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 					painter.drawAbsRect(i*tileSize, 0, 10, 10, color);
 				}
 			}
-
-
 		}
-
 		updateBrush(0);
 	};
 

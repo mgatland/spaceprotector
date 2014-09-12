@@ -27,6 +27,9 @@ define([], function () {
 		this.player = function(p) {
 			this.players.push(p);
 		}
+		this.restart = function () {
+			this.isRestarting = true;
+		}
 	};
 	return Events;
 });

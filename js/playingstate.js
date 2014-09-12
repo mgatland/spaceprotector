@@ -46,14 +46,15 @@ define(["entity", "level", "camera"],
 		var winStats = null;
 
 		//game state:
-		var gs = {
-			shots: [],
-			explosions: [],
-			players: [],
-			local: 0,
-			other: 1,
-			monsters: []
+		var GameState = function () {
+			this.shots = [];
+			this.explosions = [];
+			this.players = [];
+			this.local = 0;
+			this.other = 1;
+			this.monsters = [];
 		};
+		var gs = new GameState();
 
 		function moveElementsTo(dest, source) {
 			Array.prototype.push.apply(dest, source);
@@ -76,7 +77,14 @@ define(["entity", "level", "camera"],
 		};
 
 		this.update = function (keys, Network, Events) {
+			if (Events.isRestarting) {
+				Events.isRestarting = false;
+				gs = new GameState;
+				level.spawnEntities();
+			}
+
 			ticks++;
+
 			processEvents(Events);
 
 			//Process collisions

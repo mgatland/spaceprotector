@@ -23,6 +23,10 @@ define(["pos"], function (Pos) {
 			this.pos.x = x - pixelWindow.width/2;
 			this.pos.y = y - pixelWindow.height/2
 		}
+
+		this.getTargetPos = function () {
+			return this.pos.clone().moveXY(pixelWindow.width/2, pixelWindow.height/2);
+		}
 	};
 	return Camera;
 });

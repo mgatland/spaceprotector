@@ -62,10 +62,10 @@ define(["monster", "player", "events", "colors"],
 				}
 				n++;
 			}
-			spawnEntities();
+			level.spawnEntities();
 		}
 
-		var spawnEntities = function () {
+		this.spawnEntities = function () {
 			spawners.forEach(function (s) {
 				if (s.type==="p") {
 					Events.player(new Player(level, s.x*tileSize, s.y*tileSize));
