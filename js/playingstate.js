@@ -79,8 +79,10 @@ define(["entity", "level", "camera"],
 		this.update = function (keys, Network, Events) {
 			if (Events.isRestarting) {
 				Events.isRestarting = false;
+				//hack: don't reset the player position
+				var tempPos = gs.players[gs.local].pos;
 				gs = new GameState;
-				level.spawnEntities();
+				level.spawnEntities(tempPos);
 			}
 
 			ticks++;

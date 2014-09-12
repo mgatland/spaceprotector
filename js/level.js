@@ -65,10 +65,16 @@ define(["monster", "player", "events", "colors"],
 			level.spawnEntities();
 		}
 
-		this.spawnEntities = function () {
+		this.spawnEntities = function (overridePSpawn) {
 			spawners.forEach(function (s) {
 				if (s.type==="p") {
-					Events.player(new Player(level, s.x*tileSize, s.y*tileSize));
+					if (overridePSpawn) {
+						Events.player(new Player(level, 
+							overridePSpawn.x,
+							overridePSpawn.y));	
+					} else {
+						Events.player(new Player(level, s.x*tileSize, s.y*tileSize));	
+					}
 				}
 				if (s.type==="m") {
 					Events.monster(Monster.create1(level, s.x*tileSize, s.y*tileSize));
