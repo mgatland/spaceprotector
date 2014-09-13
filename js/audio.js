@@ -8,9 +8,15 @@ define([], function () {
 	} else {
 		var doNothing = function () {};
 		console.log("No audio supported.");
-		return {play: doNothing, unmuteIOSHack:doNothing};
+		return {
+			play: doNothing,
+			unmuteIOSHack:doNothing,
+			update:doNothing,
+			mute:doNothing,
+			unmute:doNothing};
 	}
 
+	var muted = false;
 	var soundNames = ["pshoot", "mshoot", "mdead", "mhit", "pdead", 
 	"hitwall", "checkpoint", "jump", "land", "winlevel"];
 	var loaded = 0;
@@ -40,7 +46,8 @@ define([], function () {
 	}
 
 	//play the loaded file 
-	function play(name) { 
+	function play(name) {
+		if (muted) return;
 		if (loaded < soundNames.length) return; //haven't loaded yet
 		if (sounds[name].coolDown > 0) return ; //Don't repeat a sound too quickly.	
 		sounds[name].coolDown = 3;
@@ -69,5 +76,13 @@ define([], function () {
 		//if this was called on a user action, sound will be enabled.
 	}
 
-	return {play: play, unmuteIOSHack:unmuteIOSHack, update:update};
+	function mute() {muted = true; console.log("audio off");};
+	function unmute() {muted = false; console.log("audio on");};
+
+	return {
+		play: play,
+		unmuteIOSHack:unmuteIOSHack,
+		update:update,
+		mute:mute,
+		unmute:unmute};
 });

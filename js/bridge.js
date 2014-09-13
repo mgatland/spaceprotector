@@ -1,6 +1,6 @@
 "use strict";
-define(["keyboard", "touch", "painter", "leveleditor"], 
-	function (Keyboard, Touch, Painter, LevelEditor) {
+define(["keyboard", "touch", "painter", "leveleditor", "audio"], 
+	function (Keyboard, Touch, Painter, LevelEditor, audio) {
 
 	//Bridge links the game to the browser.
 	//It deals with browser-related functionality like when the page is resized.
@@ -149,6 +149,10 @@ define(["keyboard", "touch", "painter", "leveleditor"],
 			gameArea.classList.remove("hide");
 			requestAnimationFrame(tick);
 
+			var muteButton = document.getElementById('mute-button');
+			var unmuteButton = document.getElementById('unmute-button');
+			muteButton.addEventListener('click', audio.mute);
+			unmuteButton.addEventListener('click', audio.unmute);
 
 		    //iOS Safari 7.1 has a bug, in full screen mode it lets you
 		    //scroll past the end of the page. Rotating can trigger it.
