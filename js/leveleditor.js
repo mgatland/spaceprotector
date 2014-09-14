@@ -87,20 +87,6 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 			console.log("spawner count: " + level.getSpawners().length);
 
-			/*lines = mapData.split("\n");
-
-			while (lines.length <= y) {
-				lines.push("");
-			}
-
-			if (lines[y] !== undefined) {
-				if (lines[y].length <= x) {
-					lines[y] = lines[y] + new Array(x-lines[y].length+1).join(" ");
-				}
-				lines[y] = lines[y].slice(0, x) + value + lines[y].slice(x+1);
-				mapData = lines.join("\n");
-				level = new Level(mapData, tileSize);
-			}*/
 		}
 
 		var paintAtEvent = function (event) {
@@ -158,6 +144,9 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_D)) {
 				updateBrush(1);
 			}
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_S)) {
+				console.log(level.toString());
+			}
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_E)) {
 				Events.restart();
@@ -212,76 +201,4 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 	return LevelEditor;
 
-/*	mapData =
-		"OOOOO\n" +
-		"O   O\n" +
-		"O O O\n" +
-		"O   O\n" +
-		"OOOOO\n" +
-		"";
-
-	var level = new Level(mapData, tileSize);
-	var showCells = true;
-
-	var tick = function() {
-		if (keyboard.isKeyDown(KeyEvent.DOM_VK_LEFT)) cameraPos.x--;
-		if (keyboard.isKeyDown(KeyEvent.DOM_VK_RIGHT)) cameraPos.x++;
-		if (keyboard.isKeyDown(KeyEvent.DOM_VK_UP)) cameraPos.y--;
-		if (keyboard.isKeyDown(KeyEvent.DOM_VK_DOWN)) cameraPos.y++;
-
-		if (keyboard.isKeyHit(KeyEvent.DOM_VK_L)) {
-			loadMap();
-		}
-
-		if (keyboard.isKeyHit(KeyEvent.DOM_VK_S)) {
-			saveMap(mapData);
-		}
-
-		if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) showCells = !showCells;
-
-		var x = 0;
-		var y = 0;
-		for (var i = 0; i < mapData.length; i++) {
-			var c = mapData[i];
-			if (c === "\n") {
-				y++;
-				x = 0;
-			} else {
-				//find the appropriate brush
-				brushes.forEach(function (b) {
-					if (b.code === c && b.sprite) {
-					painter.drawSprite2(
-						x*tileSize,
-						y*tileSize,
-						12, null, b.sprite, Colors.good);
-					}
-				});
-				if (showCells && c === "O") {
-					painter.drawRect(x * tileSize, y * tileSize,
-						tileSize, tileSize, Colors.background);
-				}
-				x++;
-			}
-		}
-	}
-
-	function loadMap () {
-		var data = prompt("Enter map data: ");
-		if (data) {
-			mapData = data.replace(/\\n/g, "\n");
-			console.log(mapData + " loaded");
-			level = new Level(mapData, tileSize);
-		} else {
-			alert("Invalid data string.");
-		}
-	}
-
-	function saveMap () {
-		console.log(mapData + " saved");
-		setOutput(mapData.replace(/\n/g, "\\n"));
-	}
-
-	function setOutput(text) {
-		document.querySelector('.output').innerHTML = text;
-	}*/
 });

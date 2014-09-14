@@ -142,7 +142,7 @@ define(["monster", "player", "events", "colors"],
 			}
 		}
 
-		//for editor only
+		//--- editor commands ---
 		this.setCell = function(x, y, value) {
 			if (!map[y]) {
 				map[y] = [];
@@ -150,15 +150,43 @@ define(["monster", "player", "events", "colors"],
 			map[y][x] = value;
 		}
 
-		//for editor only
 		this.getSpawners = function () {
 			return spawners;
 		}
 
-		//for editor only
 		this.setSpawners = function (newSpawners) {
 			spawners = newSpawners;
 		}
+
+		this.toString = function () {
+			var output = [];
+			//get blocks from map
+			for (var y = 0; y < map.length; y++) {
+				var row = map[y];
+				output[y] = [];
+				for (var x = 0; x < row.length; x++) {
+					if (map[y][x]===0) {
+						output[y][x] = " ";	
+					} else {
+						output[y][x] = "O";
+					}
+				}
+			}
+			//insert spawners
+			spawners.forEach(function (s) {
+				output[s.y][s.x] = s.type;
+			});
+			var string = "";
+			output.forEach(function (row) {
+				if (row.length > 0) {
+					var rowString = row.join("");
+					string += "\"" + rowString + "\\n\" +\n"
+				}
+			});
+			string += "\"\";";
+			return string;
+		}
+		//--- end of editor commands ---
 
 		loadMap(mapData);
 	};
