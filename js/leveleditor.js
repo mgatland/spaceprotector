@@ -153,6 +153,10 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 				enabled = false;
 			}
 
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_R)) {
+				level.eraseAll();
+			}
+
 			if (keyboard.isKeyDown(KeyEvent.DOM_VK_UP)) {
 				camTarget.y -= 5;
 			}

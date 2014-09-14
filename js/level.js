@@ -158,6 +158,18 @@ define(["monster", "player", "events", "colors"],
 			spawners = newSpawners;
 		}
 
+		this.eraseAll = function () {
+			map = [];
+			for (var i = 0; i < 20; i++) {
+				map[i] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+			}
+			this.setSpawners([]);
+			this.setCell(5,5,0);
+			this.setCell(6,5,0);
+			spawners.push({x:5, y:5, type:"p"});
+			spawners.push({x:6, y:5, type:"p"});
+		}
+
 		this.toString = function () {
 			var output = [];
 			//get blocks from map
