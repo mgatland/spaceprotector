@@ -1,8 +1,9 @@
 "use strict";
 require(["events", "colors", "network", "bridge", "playingstate",
-	"titlestate", "endlevelstate", "camera", "audio", "lib/peer"], 
+	"titlestate", "endlevelstate", "camera", "audio", 
+	"editingstate", "lib/peer"], 
 	function(Events, Colors, Network, Bridge, PlayingState,
-		TitleState, EndLevelState, Camera, Audio) {
+		TitleState, EndLevelState, Camera, Audio, EditingState) {
 	var initGame = function () {
 
 		var level = 0; //TODO: replicate?
@@ -81,32 +82,43 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		var touch = bridge.createTouch();
 		var keyboard = bridge.createKeyboard(touch);
 		var painter = bridge.createPainter();
-		var levelEditor = null;
+		var editorState = null;
+		var gameState = null;
 
 		var bridgeUpdate = function () {
 
-			if (levelEditor && state.getLevel) {
+			if (!editorState && keyboard.isKeyDown(KeyEvent.DOM_VK_E) &&
+				keyboard.isKeyDown(KeyEvent.DOM_VK_L)) {
+				var levelEditor = bridge.createLevelEditor(
+					camera, Events, keyboard);
 				levelEditor.setLevel(state.getLevel());
-				levelEditor.update(keyboard);
+				editorState = new EditingState(camera, levelEditor);
+				gameState = state;
+				state = editorState;
 			}
 
-			if (!levelEditor && keyboard.isKeyDown(KeyEvent.DOM_VK_E) &&
-				keyboard.isKeyDown(KeyEvent.DOM_VK_L)) {
-				levelEditor = bridge.createLevelEditor(camera, Events);
-			}
+			keyboard.preUpdate();
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) {
 				bridge.resetWorstStats();
 			}
-			keyboard.preUpdate();
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_E) 
+				&& editorState != null) {
+				if (editorState === state) {
+					editorState.deactivated();
+					state = gameState;
+				} else {
+					editorState.activated();
+					state = editorState;
+				}
+			}
+			
 			update(keyboard, painter);
 			keyboard.postUpdate();
 		}
 		var bridgeDraw = function () {
 			draw(painter, touch);
-			if (levelEditor) {
-				levelEditor.draw(painter);
-			}
 			updateAudio(Audio, painter);
 		}
 		bridge.showGame(bridgeUpdate, bridgeDraw);

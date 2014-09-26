@@ -1,13 +1,12 @@
 define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 	function (Keyboard, Painter, Level, Sprites, SpriteData, Colors) {
 
-	var LevelEditor = function (camera, Events, canvas, pixelSize) {
+	var LevelEditor = function (camera, Events, keyboard, canvas, pixelSize) {
 
 		var level = null;
 		var tileSize = 10;
 		var mouseDown = false;
 		var camTarget = camera.getTargetPos();
-		var enabled = true;
 
 		var brushNum = 0;
 		var brushes = [];
@@ -129,15 +128,16 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			level = newLevel;
 		}
 
-		this.update = function (keyboard) {
-			if (!enabled) {
-				if (keyboard.isKeyHit(KeyEvent.DOM_VK_E)) {
-					enabled = true;
-					camTarget = camera.getTargetPos();
-				}
-				return;
-			}
+		this.activated = function () {
+			camTarget = camera.getTargetPos();
+		}
 
+		this.deactivated = function () {
+			Events.restart();
+		}
+
+		this.update = function (keys) {
+			//ignore keys, use the more powerful keyboard
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_A)) {
 				updateBrush(-1);
 			}
@@ -146,11 +146,6 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 			}
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_S)) {
 				console.log(level.toString());
-			}
-
-			if (keyboard.isKeyHit(KeyEvent.DOM_VK_E)) {
-				Events.restart();
-				enabled = false;
 			}
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_R)) {
@@ -173,8 +168,8 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		}
 
 		this.draw = function (painter) {
-			if (!enabled) return;
 			if (!level) return;
+			level.draw(painter, true);
 			var spawners = level.getSpawners();
 			spawners.forEach(function (s) {
 				brushes.forEach(function (b) {
@@ -189,7 +184,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 
 			for (var i = 0; i < brushes.length; i++) {
 				var brush = brushes[i];
-				var color = (i === brushNum) ? Colors.good : Colors.highlight;
+				var color = (i === brushNum) ? Colors.highlight : Colors.good;
 				if (brush.sprite) {
 					painter.drawSprite2(i*tileSize, 0, 12, null, 
 						brush.sprite, color, true);

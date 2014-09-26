@@ -127,7 +127,7 @@ define(["monster", "player", "events", "colors"],
 			if (map[y][x] === 0) return false;
 			return true;
 		}
-		this.draw = function(painter) {
+		this.draw = function(painter, editMode) {
 			var bounds = painter.screenBounds();
 			var minX = Math.floor(bounds.minX / tileSize);
 			var minY = Math.floor(bounds.minY / tileSize);
@@ -135,8 +135,27 @@ define(["monster", "player", "events", "colors"],
 			var maxY = Math.floor(bounds.maxY / tileSize);
 			for (var y = minY; y <= maxY; y++) {
 				for (var x = minX; x <= maxX; x++) {
-					if (map[y] && map[y][x] === 1) {
-						drawTile(x, y, painter);	
+					var value = -1;
+					if (map[y]) {
+						if (map[y][x] === 1) {
+							value = 1;
+						} else if (map[y][x] === 0) {
+							value = 0;
+						}
+					}
+					if (editMode) {
+						if (value === 1) {
+							drawTile(x, y, painter);
+							painter.drawRect(x*tileSize, y*tileSize, 
+								tileSize, tileSize, Colors.background);
+						}	else if (value === 0) {
+							painter.drawRect(x*tileSize+4, y*tileSize+4,
+								tileSize-8, tileSize-8, Colors.background);
+						}
+					} else {
+						if (value === 1) {
+							drawTile(x, y, painter);
+						}
 					}
 				}
 			}
@@ -144,10 +163,19 @@ define(["monster", "player", "events", "colors"],
 
 		//--- editor commands ---
 		this.setCell = function(x, y, value) {
+			if (x < 0) return;
+			if (y < 0) return;
 			if (!map[y]) {
 				map[y] = [];
 			}
 			map[y][x] = value;
+			
+			//fill in possible gaps
+			for (var checkY = 0; checkY < map.length; checkY++) {
+				if (map[checkY] === undefined) {
+					map[checkY] = [];
+				}
+			}
 		}
 
 		this.getSpawners = function () {

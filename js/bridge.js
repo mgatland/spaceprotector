@@ -38,9 +38,9 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 			return new Keyboard(touch); 
 		};
 
-		this.createLevelEditor = function (camera, Events) {
+		this.createLevelEditor = function (camera, Events, keyboard) {
 			var canvas = document.getElementById('gamescreen');
-			return new LevelEditor(camera, Events, canvas, scale);
+			return new LevelEditor(camera, Events, keyboard, canvas, scale);
 		}
 
 		this.resetWorstStats = function () {
