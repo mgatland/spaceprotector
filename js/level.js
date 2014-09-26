@@ -1,6 +1,6 @@
 "use strict";
-define(["monster", "player", "events", "colors"],
-	function (Monster, Player, Events, Colors) {
+define(["monster", "player", "events", "colors", "walkmonster", "shootmonster"],
+	function (Monster, Player, Events, Colors, WalkMonster, ShootMonster) {
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods
 		var map = [];
@@ -77,10 +77,10 @@ define(["monster", "player", "events", "colors"],
 					}
 				}
 				if (s.type==="m") {
-					Events.monster(Monster.create1(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new ShootMonster(level, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="k") {
-					Events.monster(Monster.create2(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new WalkMonster(level, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="x") {
 					Events.monster(Monster.createCrate(level, s.x*tileSize, s.y*tileSize));

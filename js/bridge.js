@@ -83,7 +83,6 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 				var fontSize = Math.floor(fontScale*18/scale/3)*3; 
 				if (fontSize < 6) fontSize = 6;
 				htmlBody.style.fontSize = fontSize + "px";
-
 			}
 
 			var logUpdateTime = function (duration) {

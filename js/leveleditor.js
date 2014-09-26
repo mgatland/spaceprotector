@@ -1,3 +1,4 @@
+"use strict";
 define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 	function (Keyboard, Painter, Level, Sprites, SpriteData, Colors) {
 
