@@ -41,11 +41,13 @@ if (typeof KeyEvent == "undefined") {
     }
 }
 
-define([], function () {
+define(["gamepad"], function (Gamepad) {
     function Keyboard(touch) {
 
         var keysDown = {};
         var keysHit = {};
+        var gamepad = new Gamepad();
+        gamepad.setCallbacks(keyDown, keyUp);
 
         function keyDown (code) {
             if (!keysDown[code]) { //ignore repeated triggering of keyhit when key is held down
@@ -89,7 +91,11 @@ define([], function () {
             return keysHit[keyCode];
         }
 
-        this.update = function () {
+        this.preUpdate = function () {
+            gamepad.update();
+        }
+
+        this.postUpdate = function () {
             keysHit = {};
         }
 

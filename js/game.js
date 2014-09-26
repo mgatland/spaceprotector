@@ -98,8 +98,9 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_P)) {
 				bridge.resetWorstStats();
 			}
+			keyboard.preUpdate();
 			update(keyboard, painter);
-			keyboard.update();
+			keyboard.postUpdate();
 		}
 		var bridgeDraw = function () {
 			draw(painter, touch);
