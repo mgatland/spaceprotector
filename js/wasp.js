@@ -1,6 +1,6 @@
 "use strict";
-define(["sprites", "spritedata", "util", "monster", "pos", "events"], 
-	function (Sprites, SpriteData, Util, Monster, Pos, Events) {
+define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"], 
+	function (Sprites, SpriteData, Util, Monster, Pos, Events, Dir) {
 	var sprites = Sprites.loadFramesFromData(SpriteData.wasp);
 	var anims = {
 		flying: {frames: [0,1,2,3,4,5], delay: 6}
@@ -12,27 +12,98 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events"],
 		//constants
 		var initialHealth = 1;
 		var moveDelay = 1;
+		var vMoveRatio = 3;
 		var seeDistance = 10*10;
+		var speed = 1;
 
 		//state
 		var moveTimer = 0;
+		var vMoveTimer = 0;
 		var action = "waiting";
+		var hAim = 0;
+		var vAim = 0;
 
 		var onHit = function (collisions) {
 		}
 
-		function canSee (thing) {
+		function getTarget (gs) {
+			var target = null;
+			var dist = null;
+			gs.players.forEach(function (player) {
+				if (!player.hidden) {
+					var distToPlayer = _this.pos.distanceTo(player.pos);
+					if (target === null || distToPlayer < dist) {
+						target = player;
+						dist = distToPlayer;
+					}
+				}
+			});
+			return target;
 		}
 
 		var ai = function (gs) {
-			//waiting: wake if player is close
-			//awake: move towards player
-			//pick a pseudorandom approach height
+			if (action === "waiting") {
+				var awake = false;
+				gs.players.forEach(function (player) {
+					if (!player.hidden 
+						&& _this.pos.distanceTo(player.pos) < seeDistance) {
+						awake = true;
+					}
+				});
+				if (awake) {
+					action = "moving";
+				}
+			}
+			if (action === "moving") {
+				if (moveTimer >= moveDelay) {
+					moveTimer = 0;
+					var target = getTarget(gs);
+
+					if (target) {
+						if (target.pos.x > _this.pos.x) {
+							hAim++;
+							if (hAim > 5) hAim = 5;
+						} else {
+							hAim--;
+							if (hAim < -5) hAim = -5;
+						}
+						if (hAim > 0) {
+							_this.dir = Dir.RIGHT;
+
+						} else {
+							_this.dir = Dir.LEFT;
+						}
+						_this.tryMove(_this.dir.x*speed,_this.dir.y*speed);
+
+						vMoveTimer++;
+						if (vMoveTimer===vMoveRatio) {
+							vMoveTimer = 0;
+							if (target.pos.y > _this.pos.y + 7) {
+								vAim++;
+								if (vAim > 5) vAim = 5;
+							} else {
+								vAim--;
+								if (vAim < -5) vAim = -5;
+							}
+							if (vAim > 0) {
+								_this.tryMove(0, 1);
+							} else {
+								_this.tryMove(0, -1);
+							}
+						}
+					}
+				} else {
+					moveTimer++;
+				}
+			}
 		}
 
 		this.toData = function () {
 			var data = this.monsterToData();
 			data.moveTimer = moveTimer;
+			data.vMoveTimer = vMoveTimer;
+			data.hAim = hAim;
+			data.vAim = vAim;
 			data.action = action;
 			return data;
 		}
@@ -40,6 +111,9 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events"],
 		this.fromData = function (data) {
 			this.monsterFromData(data);
 			moveTimer = data.moveTimer;
+			vMoveTimer = data.vMoveTimer;
+			hAim = data.hAim;
+			vAim = data.vAim;
 			action = data.action;
 		}
 
