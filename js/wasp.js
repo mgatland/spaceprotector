@@ -16,6 +16,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 		var vMoveRatio = 3;
 		var seeDistance = 10*5;
 		var speed = 1;
+		var maxWakefulness = 20;
 
 		//state
 		var moveTimer = 0;
@@ -23,6 +24,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 		var action = "waiting";
 		var hAim = 0;
 		var vAim = 0;
+		var wakefulness = 0;
 
 		var onHit = function (collisions) {
 		}
@@ -44,17 +46,20 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 
 		var ai = function (gs) {
 			if (action === "waiting") {
-				var awake = false;
+				var disturbed = false;
 				gs.players.forEach(function (player) {
-					if (!player.hidden 
+					if (!player.hidden && player.pos.y > _this.pos.y
 						&& _this.pos.distanceTo(player.pos) < seeDistance) {
-						awake = true;
+						disturbed = true;
 					}
 				});
-				if (awake) {
-					action = "moving";
-					_this.startAnimation("flying");
-					Events.playSound("waspstart", _this.pos.clone());
+				if (disturbed) {
+					wakefulness++;
+					if (wakefulness >= maxWakefulness) {
+						action = "moving";
+						_this.startAnimation("flying");
+						Events.playSound("waspstart", _this.pos.clone());					
+					}
 				}
 			}
 			if (action === "moving") {
@@ -108,6 +113,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 			data.hAim = hAim;
 			data.vAim = vAim;
 			data.action = action;
+			data.wakefulness = wakefulness;
 			return data;
 		}
 
@@ -118,6 +124,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 			hAim = data.hAim;
 			vAim = data.vAim;
 			action = data.action;
+			wakefulness = data.wakefulness;
 		}
 
 		Util.extend(this, new Monster(level, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
