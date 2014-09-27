@@ -30,6 +30,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 		var timeSinceLastShot = 0;
 
 		var jumpIsQueued = false;
+		var isSpringed = false;
 
 		this.toData = function () {
 			var data = {};
@@ -50,6 +51,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			data.shootingAnim = shootingAnim;
 			data.timeSinceLastShot = timeSinceLastShot;
 			data.jumpIsQueued = jumpIsQueued;
+			data.isSpringed = isSpringed;
 
 			WalkingThing.toData(this, data);
 			return data;
@@ -73,6 +75,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			shootingAnim = data.shootingAnim;
 			timeSinceLastShot = data.timeSinceLastShot;
 			jumpIsQueued = data.jumpIsQueued;
+			isSpringed = data.isSpringed;
 
 			WalkingThing.fromData(this, data);
 		}
@@ -98,6 +101,8 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				this.update = function (jumpIsHeld) {
 					animState = "jumping";
 					var phase = phases[this.jumpPhase];
+
+					if (isSpringed) jumpIsHeld = true; //forced by a spring.
 
 					var speed = phase.ySpeed;
 					var spaceAboveMe = this.tryMove(0, speed);
@@ -143,6 +148,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 						jumpIsQueued = false;
 						Events.playSound("jump", this.pos.clone());
 					}
+					if (isSpringed) isSpringed = false;
 				};
 				this.update = function () {
 					if (!this.isOnGround()) {
@@ -205,6 +211,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 					this.live = true;
 					this.pos = spawnPoint.clone();
 					this.state = "falling";
+					isSpringed = false;
 				} else {
 					deadTimer--;
 				}
@@ -226,6 +233,12 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 					currentCheckpoint = other;
 					currentCheckpoint.selected = true;
 					Events.playSound("checkpoint", _this.pos.clone());
+				}
+				if (other.isSpring) {
+					isSpringed = true;
+					_this.state = "jumping";
+					_this.jumpTime = 0;
+					_this.jumpPhase = 1;
 				}
 				if (other.isEnd) {
 					Events.winLevel();
@@ -260,6 +273,9 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				this.dir = Dir.RIGHT;
 				movingDir = Dir.RIGHT;
 				this.tryMove(1,0);
+			}
+			if (isSpringed) {
+				this.tryMove(2,0);
 			}
 
 			//If you hit jump and hold it down, that hit gets queued.

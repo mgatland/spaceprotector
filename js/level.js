@@ -88,6 +88,9 @@ define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", 
 				if (s.type==="x") {
 					Events.monster(Monster.createCrate(level, s.x*tileSize, s.y*tileSize));
 				}
+				if (s.type==="s") {
+					Events.monster(Monster.createSpring(level, s.x*tileSize, s.y*tileSize));
+				}
 				if (s.type==="!") {
 					Events.monster(Monster.createFlag(level, s.x*tileSize, s.y*tileSize));
 				}

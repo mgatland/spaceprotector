@@ -40,6 +40,22 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		this.fromData = function () {/*not replicated*/};
 	}
 
+	var springSprites = Sprites.loadFramesFromData(SpriteData.spring);
+	var Spring = function (level, x, y) {
+		Util.extend(this, new Entity(new Pos(x, y), new Pos(3, 8)));
+
+		this.isSpring = true;
+		this.ignoreShots = true;
+
+		this.update = function () {
+		}
+		this.draw = function (painter) {
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, Dir.RIGHT, springSprites[0], Colors.good);
+		};
+		this.toData = function () { return null};
+		this.fromData = function () {/*not replicated*/};
+	}
+
 	var Monster = function (level, x, y, width, height, sprites, anims, ai, health, onHit) {
 
 		//constants
@@ -157,6 +173,9 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 	};
 	Monster.createFlag = function (level, x, y) {
 		return new Flag(level, x, y);
+	};
+	Monster.createSpring = function (level, x, y) {
+		return new Spring(level, x, y);
 	};
 	Monster.createEnd = function (level, x, y) {
 		return new End(level, x, y);
