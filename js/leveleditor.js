@@ -19,6 +19,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		brushes.push({code:"x", spriteData: SpriteData.crate});
 		brushes.push({code:"!", spriteData: SpriteData.flag});
 		brushes.push({code:"@", spriteData: SpriteData.end});
+		brushes.push({code:"b", spriteData: SpriteData.blockMonster});
 
 		brushes.forEach(function (brush) {
 			if (brush.spriteData) {
