@@ -278,7 +278,8 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				this.tryMove(1,0);
 			}
 			if (isSpringed) {
-				this.tryMove(2,0);
+				var unblocked = this.tryMove(2,0);
+				if (!unblocked) isSpringed = false;
 			}
 
 			//If you hit jump and hold it down, that hit gets queued.
