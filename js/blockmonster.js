@@ -1,6 +1,6 @@
 "use strict";
-define(["sprites", "spritedata", "util", "monster", "pos"], 
-	function (Sprites, SpriteData, Util, Monster, Pos) {
+define(["sprites", "spritedata", "util", "monster", "pos", "events"], 
+	function (Sprites, SpriteData, Util, Monster, Pos, Events) {
 	var sprites = Sprites.loadFramesFromData(SpriteData.blockMonster);
 	var anims = {
 		idle: {frames: [0,1], delay: 60},
@@ -49,6 +49,7 @@ define(["sprites", "spritedata", "util", "monster", "pos"],
 					var couldWalk = _this.tryMove(_this.dir.x*speed,_this.dir.y*speed);
 					if (couldWalk === false) {
 						action = "recovering";
+						Events.playSound("blockstop", _this.pos.clone());
 						_this.startAnimation("recovering");
 						moveTimer = 0;
 					}
@@ -83,6 +84,7 @@ define(["sprites", "spritedata", "util", "monster", "pos"],
 						action = "preparing";
 						_this.startAnimation("preparing");
 						moveTimer = 0;
+						Events.playSound("blockstart", _this.pos.clone());
 					}
 				});
 			}
