@@ -81,10 +81,18 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events"],
 						_this.dir = Pos.bestDirFromTo(
 							_this.getCenter(),
 							player.getCenter());
-						action = "preparing";
-						_this.startAnimation("preparing");
-						moveTimer = 0;
-						Events.playSound("blockstart", _this.pos.clone());
+
+						//check that we can actually move that way
+						if (_this.tryMove(_this.dir.x, _this.dir.y)) {
+							//undo that test move
+							_this.pos.moveXY(-_this.dir.x, -_this.dir.y);
+							//prepare to move
+							action = "preparing";
+							_this.startAnimation("preparing");
+							moveTimer = 0;
+							Events.playSound("blockstart", _this.pos.clone());
+						}
+
 					}
 				});
 			}
