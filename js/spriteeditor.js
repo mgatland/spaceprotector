@@ -163,7 +163,8 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 
 		window.setInterval(function () {
 			clear();
-
+			keyboard.preUpdate();
+			
 			var data = pixels.getData();
 			frames[currentFrame] = data.slice(); //inefficient
 			for (var frameN = 0; frameN < frames.length; frameN++) {
@@ -227,8 +228,7 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_S)) {
 				save(frames);
 			}
-
-			keyboard.update();	
+			keyboard.postUpdate();
 		}, 1000/60);
 	}
 
