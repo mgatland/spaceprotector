@@ -5,7 +5,13 @@ define(["pos"], function (Pos) {
 		this.size = size;
 		this.live = true;
 
-		this.collisions = []; //transient	
+		this.collisions = []; //transient
+
+		this.getCenter = function () {
+			return this.pos.clone().moveXY(
+				Math.floor(this.size.x/2),
+				Math.floor(this.size.y/2));
+		}
 	}
 	Entity.toData = function (ent, data) {
 		data.pos = ent.pos.toData();

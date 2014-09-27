@@ -2,10 +2,10 @@
 define([], function () {
 
     var Dir = {};
-    Dir.UP = {isHorizontal: false, x:0};
-    Dir.DOWN = {isHorizontal: false, x:0};
-    Dir.LEFT = {isHorizontal: true, x:-1};
-    Dir.RIGHT = {isHorizontal: true, x:1};
+    Dir.UP = {isHorizontal: false, x:0, y:-1};
+    Dir.DOWN = {isHorizontal: false, x:0, y:1};
+    Dir.LEFT = {isHorizontal: true, x:-1, y:0};
+    Dir.RIGHT = {isHorizontal: true, x:1, y:0};
 
     Dir.UP.reverse = Dir.DOWN;
     Dir.DOWN.reverse = Dir.UP;

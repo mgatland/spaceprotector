@@ -84,6 +84,22 @@ define(["dir"], function (Dir) {
         return this;
     }
 
+    Pos.bestDirFromTo = function(from, to) {
+        var dX = from.x - to.x;
+        var dY = from.y - to.y;
+        if (Math.abs(dX) > Math.abs(dY)) {
+            if (from.x > to.x) {
+                return Dir.LEFT;
+            }
+            return Dir.RIGHT;
+        } else {
+              if (from.y > to.y) {
+                return Dir.UP;
+            }
+            return Dir.DOWN;          
+        }
+    }
+
     Pos.prototype.toData = function () {
         return {x:this.x, y:this.y};
     }

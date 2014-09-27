@@ -1,9 +1,12 @@
-"use strict"
-define(["sprites", "spritedata", "util", "monster"], 
-	function (Sprites, SpriteData, Util, Monster) {
+"use strict";
+define(["sprites", "spritedata", "util", "monster", "pos"], 
+	function (Sprites, SpriteData, Util, Monster, Pos) {
 	var sprites = Sprites.loadFramesFromData(SpriteData.blockMonster);
 	var anims = {
-		idle: {frames: [0,1], delay: 30},
+		idle: {frames: [0,1], delay: 60},
+		moving: {frames: [2], delay: 0},
+		recovering: {frames: [3], delay: 0},
+		preparing: {frames: [4], delay: 0},
 	};
 
 	var BlockMonster = function (level, x, y) {
@@ -11,37 +14,74 @@ define(["sprites", "spritedata", "util", "monster"],
 
 		//constants
 		var initialHealth = 5;
-		var moveDelay = 2;
+		var moveDelay = 0;
+		var recoveryDelay = 30;
+		var preparingDelay = 20;
+		var speed = 4;
+		var seeDistance = 10*10;
 
 		//state
 		var moveTimer = 0;
 		var action = "waiting";
 
-
 		var onHit = function (collisions) {
 		}
 
 		function canSee (thing) {
-
+			//vertical
+			if (thing.pos.x + thing.size.x > _this.pos.x
+				&& thing.pos.x < _this.pos.x + _this.size.x) {
+				if (Math.abs(thing.pos.y - _this.pos.y) < seeDistance) return true;
+				return false;
+			}
+			//horizontal
+			if (thing.pos.y + thing.size.y > _this.pos.y
+				&& thing.pos.y < _this.pos.y + _this.size.y) {
+				if (Math.abs(thing.pos.x - _this.pos.x) < seeDistance) return true;
+				return false;
+			}
 		}
 
 		var ai = function (gs) {
 			if (action === "moving") {
 				if (moveTimer >= moveDelay) {
 					moveTimer = 0;
-					var couldWalk = _this.tryMove(_this.dir.x,0);
+					var couldWalk = _this.tryMove(_this.dir.x*speed,_this.dir.y*speed);
 					if (couldWalk === false) {
-						action = "waiting";
+						action = "recovering";
+						_this.startAnimation("recovering");
+						moveTimer = 0;
 					}
+				} else {
+					moveTimer++;
+				}
+			}
+			if (action === "recovering") {
+				if (moveTimer >= recoveryDelay) {
+					moveTimer = 0;
+					action = "waiting";
+					_this.startAnimation("idle");
+				} else {
+					moveTimer++;
+				}
+			}
+			if (action === "preparing") {
+				if (moveTimer >= preparingDelay) {
+					moveTimer = 0;
+					action = "moving";
+					_this.startAnimation("moving");
 				} else {
 					moveTimer++;
 				}
 			}
 			if (action === "waiting") {
 				gs.players.forEach(function (player) {
-					if (canSee(player)) {
-						_this.dir = pointTowards(player);
-						action = "moving";
+					if (!player.hidden && canSee(player)) {
+						_this.dir = Pos.bestDirFromTo(
+							_this.getCenter(),
+							player.getCenter());
+						action = "preparing";
+						_this.startAnimation("preparing");
 						moveTimer = 0;
 					}
 				});
