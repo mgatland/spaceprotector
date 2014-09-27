@@ -3,7 +3,8 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 	function (Sprites, SpriteData, Util, Monster, Pos, Events, Dir) {
 	var sprites = Sprites.loadFramesFromData(SpriteData.wasp);
 	var anims = {
-		flying: {frames: [0,1,2,3,4,5], delay: 6}
+		flying: {frames: [0,1,2,3,4,5], delay: 6},
+		sleeping: {frames: [6,7,8,7], delay: 30}
 	};
 
 	var Wasp = function (level, x, y) {
@@ -13,7 +14,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 		var initialHealth = 1;
 		var moveDelay = 1;
 		var vMoveRatio = 3;
-		var seeDistance = 10*10;
+		var seeDistance = 10*5;
 		var speed = 1;
 
 		//state
@@ -52,6 +53,8 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 				});
 				if (awake) {
 					action = "moving";
+					_this.startAnimation("flying");
+					Events.playSound("waspstart", _this.pos.clone());
 				}
 			}
 			if (action === "moving") {
@@ -118,7 +121,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 		}
 
 		Util.extend(this, new Monster(level, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
-		this.startAnimation("flying");
+		this.startAnimation("sleeping");
 	}
 	return Wasp;
 });
