@@ -105,7 +105,7 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 
 
 	var start = function () {
-		var size = 12;
+		var size = 10;
 		var maxFrames = 12;
 		var pixels = new Pixels(size);
 		var frames = [];
@@ -152,7 +152,7 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 		}
 
 		var save = function (frames) {
-			var data = "v1.0:";
+			var data = "v2.0:";
 			frames.forEach(function (frame) {
 				frame.forEach(function (val) {
 					data = data + val;
@@ -203,6 +203,17 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 				if (currentFrame < 0) currentFrame = maxFrames - 1;
 				pixels.setData(frames[currentFrame].slice());
 				console.log("Frame " + currentFrame);
+			}
+
+			if (keyboard.isKeyHit(KeyEvent.DOM_VK_F)) {
+				console.log("flip");
+				var newData = [];
+				for (var y = 0; y < size; y++) {
+					for (var x = 0; x < size; x++) {
+						newData[x+y*size] = data[size-x-1+y*size];
+					}
+				}
+				pixels.setData(newData);
 			}
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_EQUALS)) {
