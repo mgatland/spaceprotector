@@ -142,9 +142,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			grounded: new function () {
 				this.preupdate = function () {
 					if (jumpIsQueued) {
-						this.state = "jumping";
-						this.jumpTime = 0;
-						this.jumpPhase = 1;
+						beginJumpState();
 						jumpIsQueued = false;
 						Events.playSound("jump", this.pos.clone());
 					}
@@ -202,6 +200,12 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			Events.playSound("pshoot", this.pos.clone());
 		}
 
+		function beginJumpState() {
+			_this.state = "jumping";
+			_this.jumpTime = 0;
+			_this.jumpPhase = 1;
+		}
+
 		this.update = function (keys) {
 			
 			if (this.hidden) return;
@@ -234,11 +238,10 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 					currentCheckpoint.selected = true;
 					Events.playSound("checkpoint", _this.pos.clone());
 				}
-				if (other.isSpring) {
+				if (other.isSpring && !isSpringed) {
 					isSpringed = true;
-					_this.state = "jumping";
-					_this.jumpTime = 0;
-					_this.jumpPhase = 1;
+					Events.playSound("spring", _this.pos.clone());
+					beginJumpState();
 				}
 				if (other.isEnd) {
 					Events.winLevel();

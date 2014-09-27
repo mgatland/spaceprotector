@@ -42,10 +42,11 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 
 	var springSprites = Sprites.loadFramesFromData(SpriteData.spring);
 	var Spring = function (level, x, y) {
-		Util.extend(this, new Entity(new Pos(x, y), new Pos(3, 8)));
+		Util.extend(this, new Entity(new Pos(x, y), new Pos(8, 3)));
 
 		this.isSpring = true;
 		this.ignoreShots = true;
+		this.pos.moveXY(10-this.size.x, 10-this.size.y);
 
 		this.update = function () {
 		}
