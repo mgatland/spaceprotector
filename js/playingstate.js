@@ -127,7 +127,7 @@ define(["entity", "level", "camera", "levelpack"],
 			}
 
 			gs.monsters.forEach(function (monster) {
-				monster.update();
+				monster.update(gs);
 			});
 
 			camera.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);

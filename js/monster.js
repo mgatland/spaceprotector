@@ -15,7 +15,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		Util.extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
 		this.isEnd = true;
 		this.ignoreShots = true;
-		this.update = function () {}
+		this.update = function (gs) {}
 		this.draw = function (painter) {
 			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, Dir.LEFT, endSprites[0], Colors.good);
 		};
@@ -108,7 +108,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			animDelay = 0;
 		}
 
-		this.update = function () {
+		this.update = function (gs) {
 			if (this.live === false) {
 				if (deadTime < maxDeadTime) deadTime++;
 				return;
@@ -123,7 +123,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 				}
 			}
 
-			if (ai) ai();
+			if (ai) ai(gs);
 
 			if (this.collisions.length > 0) {
 				this.health--;
