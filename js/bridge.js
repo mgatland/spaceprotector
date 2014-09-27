@@ -16,6 +16,8 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 		var framesThisSecond = 0;
 		var borderThickness = 4;
 
+		var limitScreenSize = false;
+
 		console.log("initGame");
 
 		var gameArea = document.querySelector('.gamecontainer');
@@ -56,7 +58,8 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 				var newWidth = window.innerWidth;
 				var newHeight = window.innerHeight;
 
-				if (newWidth > pixelWindow.width * scale + borderThickness * 2
+				if (limitScreenSize 
+					&& newWidth > pixelWindow.width * scale + borderThickness * 2
 					&& newHeight > pixelWindow.height * scale + borderThickness * 2) {
 					//We're on a large screen. Draw at proper size.
 					newWidth = pixelWindow.width * scale + borderThickness * 2;
@@ -72,6 +75,10 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 					}
 					gameArea.style.height = newHeight + 'px';
 					gameArea.style.width = newWidth + 'px';
+
+					//hide the border
+					var canvas = document.getElementById('gamescreen');
+					canvas.style.borderColor = "black";
 				}
 
 				//Center
