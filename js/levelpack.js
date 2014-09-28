@@ -9,10 +9,10 @@ define([], function () {
 		"O OOO OOO OOO O O O O O O O O O OOOOOOOOOOOOOOOO  OOO  OOO    @      O\n" +
 		"O OOO OOO OOO k O m O ! O   O   OOOO                   OOO    OO     O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  OOOO    OO  m  O\n" +
-		"O O                                O               m OOOOO        OO O\n" +
-		"O O                                            OOOOOOOOOOO     m  OO O\n" +
-		"O O                    ! O    m       ! OO  k  O              OO     O\n" +
-		"O Opp !  OOO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
+		"O O  x                             O               m OOOOO        OO O\n" +
+		"O O  x                                         OOOOOOOOOOO     m  OO O\n" +
+		"O O  x                 ! O    m       ! OO  k  O              OO     O\n" +
+		"O Oppx    OO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO         OO          O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      m  OO   !      O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO      OO      O\n" +
