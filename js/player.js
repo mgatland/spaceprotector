@@ -31,6 +31,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 		var jumpIsQueued = false;
 		var isSpringed = false;
+		var respawnGlow = 0;
 
 		this.toData = function () {
 			var data = {};
@@ -52,6 +53,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			data.timeSinceLastShot = timeSinceLastShot;
 			data.jumpIsQueued = jumpIsQueued;
 			data.isSpringed = isSpringed;
+			data.respawnGlow = respawnGlow;
 
 			WalkingThing.toData(this, data);
 			return data;
@@ -76,6 +78,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			timeSinceLastShot = data.timeSinceLastShot;
 			jumpIsQueued = data.jumpIsQueued;
 			isSpringed = data.isSpringed;
+			respawnGlow = data.respawnGlow;
 
 			WalkingThing.fromData(this, data);
 		}
@@ -177,10 +180,11 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				console.log("Error animation state " + animState);
 			}
 			if (shootingAnim && frame === 0) frame = 6;
+			var color = respawnGlow > 0 ? Colors.highlight : Colors.good;
 			var img = playerSprites[frame];
 			if (this.live) {
 				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
-					this.dir, img, Colors.good);
+					this.dir, img, color);
 			} else {
 				var decay = (maxDeadTime - deadTimer) / maxDeadTime;
 				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
@@ -216,20 +220,30 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 					this.pos = spawnPoint.clone();
 					this.state = "falling";
 					isSpringed = false;
+					respawnGlow = 5;
 				} else {
 					deadTimer--;
 				}
 				return;
 			}
 
+			if (respawnGlow > 0) {
+				respawnGlow--;
+			}
+
 			this.collisions.forEach(function (other) {
 				if (_this.live === false) return; //so we can't die twice in this loop
 				if (other.killPlayerOnTouch) {
-					_this.live = false;
-					deadTimer = maxDeadTime;
-					hitPos = other.pos.clone().clampWithin(_this.pos, _this.size);
-					deaths++;
-					Events.playSound("pdead", null);
+					if (respawnGlow > 0) {
+						//A hack to hurt the monster. fixme use a hurt method
+						other.collisions.push(_this);
+					} else {
+						_this.live = false;
+						deadTimer = maxDeadTime;
+						hitPos = other.pos.clone().clampWithin(_this.pos, _this.size);
+						deaths++;
+						Events.playSound("pdead", null);
+					}
 				}
 				if (other.isCheckpoint && other !== currentCheckpoint) {
 					if (currentCheckpoint) currentCheckpoint.selected = false;
