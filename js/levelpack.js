@@ -11,8 +11,8 @@ define([], function () {
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO                  OOOO    OO  m  O\n" +
 		"O O  x                             O               m OOOOO        OO O\n" +
 		"O O  x                                         OOOOOOOOOOO     m  OO O\n" +
-		"O O  x                 ! O    m       ! OO  k  O              OO     O\n" +
-		"O Oppx    OO OO  k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
+		"O O  x         O       ! O    m       ! OO  k  O              OO     O\n" +
+		"O Oppx  OO     O k    OOOO    OOO    OOOOOOOOOOO          m   OO     O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOO OOO  k OOOOOOOOOOO         OO          O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO      m  OO   !      O\n" +
 		"O OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OO      OO      O\n" +
