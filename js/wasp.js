@@ -4,7 +4,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 	var sprites = Sprites.loadFramesFromData(SpriteData.wasp);
 	var anims = {
 		flying: {frames: [0,1,2,3,4,5], delay: 6},
-		sleeping: {frames: [6,7,8,7], delay: 30}
+		sleeping: {frames: [6,7,7], delay: 30}
 	};
 
 	var Wasp = function (level, x, y) {
