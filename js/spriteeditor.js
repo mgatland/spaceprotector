@@ -225,7 +225,8 @@ require(["sprites", "keyboard"], function (Sprites, Keyboard) {
 
 			if (keyboard.isKeyHit(KeyEvent.DOM_VK_L)) {
 				var data = prompt("Enter v1.0 data string: ");
-				if (data && data.indexOf("v1.0:") === 0) {
+				if (data && (data.indexOf("v1.0:") === 0 
+					|| data.indexOf("v2.0:") === 0 )) {
 					var newFrames = Sprites.loadFramesFromData(data);
 					newFrames.forEach(function (frame, index) {
 						frames[index] = frame;
