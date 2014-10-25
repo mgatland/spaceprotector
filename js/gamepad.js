@@ -25,7 +25,10 @@ define([], function () {
     				|| gamepad.buttons[7].pressed;
                 var start = gamepad.buttons[8].pressed || gamepad.buttons[9].pressed;
 
-
+                //gamepad restart hack
+                if (gamepad.buttons[8].pressed && gamepad.buttons[9].pressed) {
+                    document.location.reload();
+                }
 
     			simulateKey(left, oldLeft, KeyEvent.DOM_VK_LEFT);
     			simulateKey(right, oldRight, KeyEvent.DOM_VK_RIGHT);
