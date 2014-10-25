@@ -8,7 +8,6 @@ require(["events", "colors", "network", "bridge", "playingstate",
 
 		var level = 0; //TODO: replicate?
 
-		var state = new TitleState();
 		Network.connectToServer(function (data) {
 			if (state.gotData) {
 				state.gotData(data);
@@ -82,6 +81,8 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		var painter = bridge.createPainter();
 		var editorState = null;
 		var gameState = null;
+
+		var state = new TitleState(pixelWindow);
 
 		var bridgeUpdate = function () {
 

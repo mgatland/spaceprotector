@@ -1,6 +1,6 @@
 "use strict";
 define(["colors"], function (Colors) {
-	var TitleState = function () {
+	var TitleState = function (pixelWindow) {
 		var fakeLoadingProgress = 0;
 		var maxLoadingProgress = 20;
 		var frame = 0;
@@ -52,7 +52,7 @@ define(["colors"], function (Colors) {
 			if (frame < 60) {
 				painter.drawText(20, 74, Array(fakeLoadingProgress+1).join("…"), Colors.good);
 			}
-			painter.drawAbsRect(0, 0, 192, 104, Colors.bad, 10);
+			painter.drawAbsRect(0, 0, pixelWindow.width, pixelWindow.height, Colors.bad, 10);
 		};
 	}
 	return TitleState;
