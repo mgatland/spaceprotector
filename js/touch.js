@@ -7,6 +7,7 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 		"v1.0:000000000000000000000000000010000000000100000000001000000000011111111000001000000000000100000000000010000000000000000000000000000000000000000000000000000000000000000000000000100000000000010000000000001000001111111100000000001000000000010000000000100000000000000000000000000000000000000000000000000000000000000000000001000000000011100000000101010000001001001000000001000000000001000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000111000111111111100000000111000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111100000000000000011111111100000000000000011111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 		var sprites = Sprites.loadFramesFromData(spriteData);
 
+		var yOff = 0; //Hack to move buttons down on tall screens
 		var hasBeenUsed = false;
 		var visible = false;
 		//callbacks
@@ -34,7 +35,7 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 
 		//Hack for the menus - tapping anywhere counts as pressing enter
 		buttons.push({x:0, y:0, w:0, h:0, sprite:null,
-			dx:0, dy:0, dw:9000, dh:9000, 
+			dx:-5000, dy:-5000, dw:10000, dh:10000, 
 			key:KeyEvent.DOM_VK_ENTER});
 
 		buttons.push({x:-1, y:-1, w:13, h:11, sprite:sprites[4],
@@ -64,13 +65,14 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 
 		function getButtonTouchArea(canvas, button) {
 			var x = button.dx * canvas.offsetWidth / pixelWindow.width;
-			var y = button.dy * canvas.offsetHeight / pixelWindow.height;
+			var y = (button.dy + yOff) * canvas.offsetHeight / pixelWindow.height;
 			var w = button.dw * canvas.offsetWidth / pixelWindow.width;
 			var h = button.dh * canvas.offsetHeight / pixelWindow.height;
 			return {x:x, y:y, w:w, h:h};
 		}
 
 		function updateTouches(touches) {
+
 			var canvasOffset = getDomElementOffset(canvas); 
 
 			var keysDown = [];
@@ -127,18 +129,24 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 			onKeyUp = onUp;
 		}
 
+		this.update = function () {
+			//Hack to move buttons down on tall screens
+			yOff = pixelWindow.height - 192;
+			if (yOff < 0) yOff = 0;
+		}
+
 		this.draw = function (painter) {
 			if (!visible) return;
 			buttons.forEach(function (button) {
 				var color = button.color ? button.color: Colors.background;
 				color = button.active ? Colors.good: color;
-				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
+				painter.drawAbsRect(button.x, button.y+yOff, button.w, button.h, 
 					Colors.blank);
-				painter.drawAbsRect(button.x, button.y, button.w, button.h, 
+				painter.drawAbsRect(button.x, button.y+yOff, button.w, button.h, 
 					color, 1);
 				if (button.sprite) {
 					var sX = button.x + Math.floor(button.w / 2) - 5;
-					var sY = button.y + Math.floor(button.h / 2) - 5;
+					var sY = button.y + Math.floor(button.h / 2) - 5 + yOff;
 					painter.drawSprite2(sX, sY, 10, Dir.RIGHT,
 					button.sprite, color, true);
 				}

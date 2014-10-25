@@ -115,6 +115,7 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			
 			update(keyboard, painter);
 			keyboard.postUpdate();
+			touch.update();
 		}
 		var bridgeDraw = function () {
 			draw(painter, touch);
