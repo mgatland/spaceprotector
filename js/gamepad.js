@@ -2,7 +2,7 @@ define([], function () {
     function Gamepad() {
 
     	var deadZone = 0.2;
-    	var oldLeft, oldRight, oldJump, oldShoot;
+    	var oldLeft, oldRight, oldJump, oldShoot, oldStart;
     	var downFunc, upFunc;
     	this.setCallbacks = function setCallbacks (down, up) {
     		downFunc = down;
@@ -23,16 +23,21 @@ define([], function () {
     			var shoot = gamepad.buttons[1].pressed 
     				|| gamepad.buttons[2].pressed
     				|| gamepad.buttons[7].pressed;
+                var start = gamepad.buttons[8].pressed || gamepad.buttons[9].pressed;
+
+
 
     			simulateKey(left, oldLeft, KeyEvent.DOM_VK_LEFT);
     			simulateKey(right, oldRight, KeyEvent.DOM_VK_RIGHT);
     			simulateKey(jump, oldJump, KeyEvent.DOM_VK_X);
     			simulateKey(shoot, oldShoot, KeyEvent.DOM_VK_Z);
+                simulateKey(start, oldStart, KeyEvent.DOM_VK_ENTER);
 
     			oldLeft = left;
     			oldRight = right;
     			oldShoot = shoot;
     			oldJump = jump;
+                oldStart = start;
     		}
     	}
     }
