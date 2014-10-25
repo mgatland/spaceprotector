@@ -1,9 +1,10 @@
 "use strict";
-define(["explosion", "events", "colors", "entity", "dir", "pos", "util"], 
-	function (Explosion, Events, Colors, Entity, Dir, Pos, Util) {
+define(["explosion", "events", "colors", "entity", "dir", "pos", "util", "sprites"], 
+	function (Explosion, Events, Colors, Entity, Dir, Pos, Util, Sprites) {
 
 	console.log("Define Shot");
-	var shotSprite0 = "111111\n";
+	var shotSpriteData = "v2.0:1111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+	var shotSprite = Sprites.loadFramesFromData(shotSpriteData);
 
 	var Shot = function (level, pos, dir, owner) {
 		Util.extend(this, new Entity(pos, new Pos(5,1)));
@@ -59,10 +60,15 @@ define(["explosion", "events", "colors", "entity", "dir", "pos", "util"],
 			}
 		}
 
+		this.getFrame = function () {
+			return shotSprite[0];
+		}
+
 		this.draw = function (painter) {
 			if (this.live) {
 				var color = this.hitsMonsters ? Colors.good : Colors.bad;
-				painter.drawSprite(this.pos.x, this.pos.y, shotSprite0, color);
+				painter.drawSprite2(this.pos.x, this.pos.y, 
+					this.size.x, this.dir, this.getFrame(), color);
 			}
 		}
 	}
