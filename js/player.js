@@ -164,9 +164,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}
 		};
 
-		this.draw = function (painter) {
-			if (this.hidden) return;
-
+		this.getFrame = function () {
 			var frame;
 			if (animState === "standing") {
 				frame = 0;
@@ -180,8 +178,13 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				console.log("Error animation state " + animState);
 			}
 			if (shootingAnim && frame === 0) frame = 6;
+			return playerSprites[frame];
+		}
+
+		this.draw = function (painter) {
+			if (this.hidden) return;
+			var img = this.getFrame();
 			var color = respawnGlow > 0 ? Colors.highlight : Colors.good;
-			var img = playerSprites[frame];
 			if (this.live) {
 				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
 					this.dir, img, color);
@@ -189,8 +192,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				var decay = (maxDeadTime - deadTimer) / maxDeadTime;
 				painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, 
 					this.dir, img, Colors.highlight, false, decay, hitPos);
-			}
-			
+			}	
 		}
 
 		this.isOnGround = function () {

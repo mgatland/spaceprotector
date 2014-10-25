@@ -158,14 +158,18 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			}
 		};
 
+		this.getFrame = function () {
+			return sprites[getAnimation().frames[animFrame]];
+		}
+
 		this.draw = function (painter) {
 			if (this.live === false) {
 				if (deadTime < maxDeadTime) {
-					painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, sprites[getAnimation().frames[animFrame]], Colors.highlight, false, deadTime/maxDeadTime, hitPos);
+					painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, this.getFrame(), Colors.highlight, false, deadTime/maxDeadTime, hitPos);
 				}
 				return;
 			}
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, sprites[getAnimation().frames[animFrame]], Colors.bad);
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, this.getFrame(), Colors.bad);
 		};
 	};
 
