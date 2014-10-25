@@ -48,7 +48,7 @@ define(["shot", "util", "sprites", "spritedata", "monster", "events"],
 
 			if (action === "shooting") {
 				if (refireTimer === 0) {
-					Events.shoot(new Shot(level, _this.pos.clone().moveXY(0, _this.size.x/2), _this.dir, "monster"));
+					Events.shoot(new Shot(level, _this.pos.clone().moveXY(0, Math.floor(_this.size.x/2)), _this.dir, "monster"));
 					Events.playSound("mshoot", _this.pos.clone());
 					refireTimer = refireDelay;
 					shotsInARow++;
