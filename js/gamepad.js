@@ -1,7 +1,7 @@
 define([], function () {
     function Gamepad() {
 
-    	var deadZone = 0.01;
+    	var deadZone = 0.2;
     	var oldLeft, oldRight, oldJump, oldShoot;
     	var downFunc, upFunc;
     	this.setCallbacks = function setCallbacks (down, up) {
@@ -17,12 +17,12 @@ define([], function () {
     	this.update = function update () {
     		var gamepad = navigator.getGamepads &&  navigator.getGamepads()[0];
     		if (gamepad) {
-    			var left = gamepad.axes[0] < -deadZone;
-    			var right = gamepad.axes[0] > deadZone;
-    			var jump = gamepad.buttons[0].value > deadZone || gamepad.buttons[2].value > deadZone;
-    			var shoot = gamepad.buttons[1].value > deadZone 
-    				|| gamepad.buttons[3].value > deadZone
-    				|| gamepad.buttons[5].value > deadZone;
+    			var left = gamepad.axes[0] < -deadZone || gamepad.buttons[14].pressed;
+    			var right = gamepad.axes[0] > deadZone || gamepad.buttons[15].pressed;
+    			var jump = gamepad.buttons[0].pressed || gamepad.buttons[3].pressed;
+    			var shoot = gamepad.buttons[1].pressed 
+    				|| gamepad.buttons[2].pressed
+    				|| gamepad.buttons[7].pressed;
 
     			simulateKey(left, oldLeft, KeyEvent.DOM_VK_LEFT);
     			simulateKey(right, oldRight, KeyEvent.DOM_VK_RIGHT);
