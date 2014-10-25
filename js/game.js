@@ -72,13 +72,11 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			audio.update();
 		}
 
-		var pixelWindow = {width:192, height:104}; //I could fit 200 x 120 on Galaxy s3 at 4x pixel scale
-		var camera = new Camera(pixelWindow);
-		var scale = 4;
-
+		var minWindow = {width:192, height:104};
+		var pixelWindow = {width:192, height:104};
+		var camera = new Camera(minWindow);
 		var desiredFps = 60;
-
-		var bridge = new Bridge(pixelWindow, scale, desiredFps);
+		var bridge = new Bridge(pixelWindow, minWindow, desiredFps);
 		var touch = bridge.createTouch();
 		var keyboard = bridge.createKeyboard(touch);
 		var painter = bridge.createPainter();

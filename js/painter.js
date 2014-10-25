@@ -6,8 +6,11 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 
 		var currentColor = null;
 
-		ctx.font = (pixelSize * 10) + "px Star Perv";
-		ctx.textBaseline = "top";
+		this.resize = function (newPixelSize) {
+			pixelSize = newPixelSize;
+			ctx.font = (pixelSize * 10) + "px Star Perv";
+			ctx.textBaseline = "top";
+		}
 
 		this.setPos = function (cameraPos) {
 			pos.x = cameraPos.x;
@@ -137,6 +140,8 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 			this.drawAbsRect(0, pixelWindow.height / 2 - barY, pixelWindow.width, barHeight, Colors.good);
 			this.drawAbsRect(0, pixelWindow.height / 2 + barY - barHeight, pixelWindow.width, barHeight, Colors.good);
 		}
+
+		this.resize(pixelSize);
 	};
 	return Painter;
 });

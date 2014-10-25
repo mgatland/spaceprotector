@@ -4,7 +4,9 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 
 	//Bridge links the game to the browser.
 	//It deals with browser-related functionality like when the page is resized.
-	var Bridge = function (pixelWindow, scale, desiredFps) {
+	var Bridge = function (pixelWindow, minSize, desiredFps) {
+
+		var scale = 4;
 
 		var gameTime = null;
 		var frameDelay = 1000/desiredFps;
@@ -18,18 +20,20 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 
 		var limitScreenSize = false;
 
+
+		var canvas = document.getElementById('gamescreen');
+
 		console.log("initGame");
 
 		var gameArea = document.querySelector('.gamecontainer');
 		var htmlBody = document.body;
 		var widthToHeight = pixelWindow.width / pixelWindow.height;
 
+		var painter;
 		this.createPainter = function () {
-			var canvas = document.getElementById('gamescreen');
-			canvas.width = pixelWindow.width*scale;
-			canvas.height = pixelWindow.height*scale;
 			var ctx = canvas.getContext("2d");
-			return new Painter(ctx, pixelWindow, scale); 
+			painter = new Painter(ctx, pixelWindow, scale);
+			return painter;
 		};
 
 		this.createTouch = function () {
@@ -55,41 +59,28 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 			//http://www.html5rocks.com/en/tutorials/
 			//	casestudies/gopherwoord-studios-resizing-html5-games/
 			var resizeGame = function() {
-				var newWidth = window.innerWidth;
-				var newHeight = window.innerHeight;
 
-				if (limitScreenSize 
-					&& newWidth > pixelWindow.width * scale + borderThickness * 2
-					&& newHeight > pixelWindow.height * scale + borderThickness * 2) {
-					//We're on a large screen. Draw at proper size.
-					newWidth = pixelWindow.width * scale + borderThickness * 2;
-					newHeight = pixelWindow.height * scale + borderThickness * 2;
-					gameArea.style.width = newWidth;
-					gameArea.style.height = newHeight;
-				} else {
-					var newWidthToHeight = newWidth / newHeight;
-					if (newWidthToHeight > widthToHeight) {
-					  newWidth = newHeight * widthToHeight;
-					} else {
-					  newHeight = newWidth / widthToHeight;
-					}
-					gameArea.style.height = newHeight + 'px';
-					gameArea.style.width = newWidth + 'px';
+				var xScale = window.innerWidth/minSize.width;
+				var yScale = window.innerHeight/minSize.height;
+				scale = Math.floor(Math.min(xScale, yScale));
 
-					//hide the border
-					var canvas = document.getElementById('gamescreen');
-					canvas.style.borderColor = "black";
-				}
+				var newWidth = Math.floor(window.innerWidth / scale);
+				var newHeight = Math.floor(window.innerHeight / scale);
+				pixelWindow.width = newWidth;
+				pixelWindow.height = newHeight;
+				gameArea.style.width = newWidth*scale;
+				gameArea.style.height = newHeight*scale;
 
-				//Center
-				gameArea.style.marginTop = (-newHeight / 2) + 'px';
-				gameArea.style.marginLeft = (-newWidth / 2) + 'px';
+				canvas.width = newWidth*scale;
+				canvas.height = newHeight*scale;
 
 				/*font size must be a multiple of 3*/
-				var fontScale = (newWidth / pixelWindow.width);
-				var fontSize = Math.floor(fontScale*18/scale/3)*3; 
+				var fontScale = (newWidth*scale / minSize.width);
+				var fontSize = Math.floor(fontScale*18/4/3)*3; 
 				if (fontSize < 6) fontSize = 6;
 				htmlBody.style.fontSize = fontSize + "px";
+
+				painter.resize(scale);
 			}
 
 			var logUpdateTime = function (duration) {
