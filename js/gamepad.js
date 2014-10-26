@@ -1,7 +1,7 @@
 define([], function () {
     function Gamepad() {
 
-    	var deadZone = 0.2;
+    	var deadZone = 0.5;
     	var oldLeft, oldRight, oldJump, oldShoot, oldStart;
     	var downFunc, upFunc;
     	this.setCallbacks = function setCallbacks (down, up) {
