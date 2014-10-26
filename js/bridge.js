@@ -20,6 +20,7 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 
 		var limitScreenSize = false;
 
+		var debugDrawTimes = true;
 
 		var canvas = document.getElementById('gamescreen');
 
@@ -90,7 +91,21 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 				}
 			}
 
+			var drawTimes = [];
+			var drawTimeI = 0;
+			var drawSampleSize = 180;
 			var logDrawTime = function (duration) {
+				
+				if (debugDrawTimes) {
+					drawTimes[drawTimeI] = duration;
+					drawTimeI++;
+					if (drawTimeI === drawSampleSize) {
+						console.log("Avg draw: " + 
+							drawTimes.reduce(function(a, b) {return a + b;}) / drawSampleSize);
+						drawTimeI = 0;
+					}					
+				}
+
 				if (duration > worstDrawTime) {
 					worstDrawTime = duration;
 					console.log("Slowest draw: " + worstDrawTime + " ms");
