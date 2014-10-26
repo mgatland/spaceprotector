@@ -2,10 +2,12 @@
 	/*font by Anna Anthropy*/
     font-family: 'Star Perv';
     src: url('StarPerv.ttf');
+	
 }
 
 html {
 	background-color: black;
+	cursor:none;
 }
 
 body {
