@@ -38,6 +38,10 @@ define(["colors"], function (Colors) {
 			drawText(painter, 50, 50, "Resets: " + pad(stats.deaths), age - 15);
 			drawText(painter, 50, 60, "Time:   " + formatTime(stats.time), age - 15 - 12);
 			drawText(painter, 50, 70, "Mercy:  " + pad(stats.mercy), age - 15 - 12 - 12);
+
+			if (stats.lastLevel) {
+				drawText(painter, 50, 90, "Thanks for playing!", age - 15 - 12 - 12 - 12);
+			}
 		};
 	}
 	return EndLevelState;
