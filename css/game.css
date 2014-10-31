@@ -7,7 +7,9 @@
 
 html {
 	background-color: black;
-	cursor:none;
+	/*cursor:none; 
+	used when exhibiting on my laptop, because closing the lid
+	moves the cursor to the center of the screen*/
 }
 
 body {
