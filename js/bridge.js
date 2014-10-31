@@ -20,7 +20,7 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio", "sprites"],
 
 		var limitScreenSize = false;
 
-		var debugDrawTimes = true;
+		var debugDrawTimes = false;
 
 		var canvas = document.getElementById('gamescreen');
 
