@@ -6,8 +6,8 @@ define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", 
 		var map = [];
 		var spawners = [];
 
-		var drawEdge = function(x, y, checkX, checkY, mode, painter) {
-			if (!level.isSolid(x+checkX, y+checkY)) {
+		var drawEdge = function(x, y, checkX, checkY, condition, mode, painter) {
+			if (condition) {
 				var drawOffsetX = (checkX === 1) ? tileSize - 1 : 0;
 				var drawOffsetY = (checkY === 1) ? tileSize - 1 : 0;
 				var width;
@@ -28,14 +28,32 @@ define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", 
 
 		var drawTile = function (x, y, painter) {
 			if (!painter.isOnScreen(x*tileSize, y*tileSize, tileSize, tileSize)) return;
-			drawEdge(x, y, 0, -1, "horizontal", painter);
-			drawEdge(x, y, 0, 1, "horizontal", painter);
-			drawEdge(x, y, -1, 0, "vertical", painter);
-			drawEdge(x, y, +1, 0, "vertical", painter);
-			drawEdge(x, y, -1, -1, "corner", painter);
-			drawEdge(x, y, +1, -1, "corner", painter);
-			drawEdge(x, y, -1, +1, "corner", painter);
-			drawEdge(x, y, +1, +1, "corner", painter);
+
+			//Note: drawing these as 10x10 sprites is usually SLOWER
+			//than drawing from rectangles like this, even though it takes 
+			//fewer draw calls. Probably because in most cases, what you
+			//actually draw is only a 1x10 rectangle.
+
+			//which neighbours are solid?
+			var up = level.isSolid(x, y - 1);
+			var down = level.isSolid(x, y + 1);
+			var left = level.isSolid(x - 1, y);
+			var right = level.isSolid(x + 1, y);
+
+			//which corners are solid?
+			var upLeft = level.isSolid(x - 1, y - 1);
+			var upRight = level.isSolid(x + 1, y - 1);
+			var downLeft = level.isSolid(x - 1, y + 1);
+			var downRight = level.isSolid(x + 1, y + 1);	
+
+			drawEdge(x, y, 0, -1, !up, "horizontal", painter);
+			drawEdge(x, y, 0, 1, !down, "horizontal", painter);
+			drawEdge(x, y, -1, 0, !left, "vertical", painter);
+			drawEdge(x, y, +1, 0, !right, "vertical", painter);
+			drawEdge(x, y, -1, -1, up && left && !upLeft, "corner", painter);
+			drawEdge(x, y, +1, -1, up && right && !upRight, "corner", painter);
+			drawEdge(x, y, -1, +1, down && left && !downLeft, "corner", painter);
+			drawEdge(x, y, +1, +1, down && right && !downRight, "corner", painter);
 		}
 
 		var loadMap = function (mapData) {
