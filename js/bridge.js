@@ -1,6 +1,6 @@
 "use strict";
-define(["keyboard", "touch", "painter", "leveleditor", "audio"], 
-	function (Keyboard, Touch, Painter, LevelEditor, audio) {
+define(["keyboard", "touch", "painter", "leveleditor", "audio", "sprites"], 
+	function (Keyboard, Touch, Painter, LevelEditor, audio, Sprites) {
 
 	//Bridge links the game to the browser.
 	//It deals with browser-related functionality like when the page is resized.
@@ -82,6 +82,7 @@ define(["keyboard", "touch", "painter", "leveleditor", "audio"],
 				htmlBody.style.fontSize = fontSize + "px";
 
 				painter.resize(scale);
+				Sprites.resize(scale);
 			}
 
 			var logUpdateTime = function (duration) {

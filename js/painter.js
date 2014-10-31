@@ -75,31 +75,34 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 			return true;
 		}
 
-		this.drawSprite = function (x, y, sprite, color) {
-			if (!this.isOnScreen(x, y, 12, 12)) return;
-			setColor(color);
-			var n = 0;
-			var xN = x;
-			var yN = y;
-			while (sprite[n]) {
-				if (sprite[n] === "1") drawPixel(xN,yN,color);
-				if (sprite[n] === "\n") {
-					xN = x;
-					yN++;
-				} else {
-					xN++;
-				}
-				n++;
-			}
-		}
-
 		var getX = function (x, dir, width) {
 			if (dir === Dir.LEFT) return width - 1 - x;
 			return x;
 		}
 
-		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color, absolute, decay, decayPos) {
-			if (!absolute && !this.isOnScreen(x, y, sprite.width, sprite.width)) return;
+		var drawSpriteSimple = function (x, y, actualWidth, dir, sprite, color, absolute) {
+			var offset = (absolute === true ? noOffset : pos);
+			var outX = x * pixelSize - offset.x * pixelSize;
+			var outY = y * pixelSize - offset.y * pixelSize;
+			var sX = sprite.position*pixelSize;
+			var sY = 0;
+			var sWidth = sprite.width * pixelSize;
+			var sHeight = sprite.width * pixelSize;
+			if (color === Colors.bad) sY += sprite.width * pixelSize * 0;
+			if (color === Colors.good) sY += sprite.width * pixelSize * 2;
+			if (color === Colors.highlight) sY += sprite.width * pixelSize * 4;
+			if (dir === Dir.LEFT) {
+				sY += sprite.width * pixelSize;
+				outX = outX - (sprite.width - actualWidth) * pixelSize;
+			}
+			ctx.drawImage(sprite.canvas,
+				sX, sY,
+				sWidth, sHeight,
+				outX, outY,
+				sprite.width*pixelSize, sprite.width*pixelSize);			
+		}
+
+		this.drawSpritePixels = function (x, y, actualWidth, dir, sprite, color, absolute, decay, decayPos) {
 			setColor(color);
 			var n = 0;
 			var xOff = 0;
@@ -128,6 +131,18 @@ define(["pos", "dir", "colors"], function (Pos, Dir, Colors) {
 					xOff++;
 				}
 				n++;
+			}
+		}
+
+		this.drawSprite2 = function (x, y, actualWidth, dir, sprite, color, absolute, decay, decayPos) {
+			if (!absolute && !this.isOnScreen(x, y, sprite.width, sprite.width)) return;
+
+			if (sprite.canvas && !decay) {
+				drawSpriteSimple(x, y, actualWidth, dir,
+					sprite, color, absolute);
+			} else {
+				this.drawSpritePixels(x, y, actualWidth, dir,
+					sprite, color, absolute, decay, decayPos);
 			}
 		}
 
