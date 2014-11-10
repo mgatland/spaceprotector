@@ -202,7 +202,11 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 		}
 
 		this._shoot = function () {
-			Events.shoot(new Shot(level, this.pos.clone(), this.dir, "player"));
+			var pos = this.pos.clone();
+			if (animState === "standing") {
+				pos.moveXY(0, 1);
+			}
+			Events.shoot(new Shot(level, pos, this.dir, "player"));
 			Events.playSound("pshoot", this.pos.clone());
 		}
 
@@ -297,7 +301,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}
 
 			updateShooting(keys);
-			
+
 			if (isSpringed) {
 				var unblocked = this.tryMove(2,0);
 				if (!unblocked) isSpringed = false;
