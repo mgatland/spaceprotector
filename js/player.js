@@ -212,6 +212,26 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			_this.jumpPhase = 1;
 		}
 
+		var updateShooting = function(keys) {
+			if (_this.loading > 0) _this.loading--;
+
+			if (keys.shootHit || keys.shoot && _this.loading === 0) {
+				_this.loading = _this.refireRate;
+				_this._shoot();
+				_this.shotThisFrame = true;
+			} else {
+				_this.shotThisFrame = false;
+			}
+
+			if (keys.shoot) {
+				shootingAnim = true;
+				timeSinceLastShot = 0;
+			} else {
+				timeSinceLastShot++;
+				if (timeSinceLastShot > 30) shootingAnim = false;
+			}
+		}
+
 		this.update = function (keys) {
 			
 			if (this.hidden) return;
@@ -265,23 +285,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			});
 			this.collisions.length = 0;
 
-			if (this.loading > 0) this.loading--;
-
-			if (keys.shootHit || keys.shoot && this.loading === 0) {
-				this.loading = this.refireRate;
-				this._shoot();
-				this.shotThisFrame = true;
-			} else {
-				this.shotThisFrame = false;
-			}
-
-			if (keys.shoot) {
-				shootingAnim = true;
-				timeSinceLastShot = 0;
-			} else {
-				timeSinceLastShot++;
-				if (timeSinceLastShot > 30) shootingAnim = false;
-			}
+			updateShooting(keys);
 
 			var movingDir = null;
 			if (keys.left && !keys.right) {
