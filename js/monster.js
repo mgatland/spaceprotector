@@ -76,6 +76,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 		var animFrame = 0;
 		var animDelay = 0;
 		var hitPos = null;
+		var hitFlash = 0;
 
 		this.monsterToData = function () {
 			var data = {};
@@ -86,6 +87,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			data.animFrame = animFrame;
 			data.animDelay = animDelay;
 			data.hitPos = hitPos ? hitPos.toData() : null;
+			data.hitFlash = hitFlash;
 			WalkingThing.toData(this, data);
 			return data;
 		}
@@ -98,6 +100,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 			animFrame = data.animFrame;
 			animDelay = data.animDelay;
 			hitPos = Pos.fromData(data.hitPos);
+			hitFlash = data.hitFlash;
 			WalkingThing.fromData(this, data);
 		}
 
@@ -131,6 +134,8 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 				return;
 			}
 
+
+			if (hitFlash > 0) hitFlash--;
 			animDelay++;
 			if (animDelay > getAnimation().delay) {
 				animDelay = 0;
@@ -153,6 +158,7 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 					Events.playSound("mdead", this.pos.clone());
 					return;
 				} else {
+					hitFlash = 2;
 					Events.playSound("mhit", this.pos.clone());
 				}
 			}
@@ -169,7 +175,8 @@ define(["shot", "events", "colors", "entity", "walkingthing",
 				}
 				return;
 			}
-			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, this.getFrame(), Colors.bad);
+			var color = (hitFlash > 0 ? Colors.highlight : Colors.bad);
+			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, this.getFrame(), color);
 		};
 	};
 
