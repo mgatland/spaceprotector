@@ -21,7 +21,6 @@ require(["events", "colors", "network", "bridge", "playingstate",
 		var update = function(keyboard) {
 
 			if (state.transition === true) {
-				console.log(level);
 				if (state.endStats) {
 					if (level === 1) state.endStats.lastLevel = true;
 					state = new EndLevelState(state.endStats);
