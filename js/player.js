@@ -285,8 +285,6 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			});
 			this.collisions.length = 0;
 
-			updateShooting(keys);
-
 			var movingDir = null;
 			if (keys.left && !keys.right) {
 				this.dir = Dir.LEFT;
@@ -297,6 +295,9 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				movingDir = Dir.RIGHT;
 				this.tryMove(1,0);
 			}
+
+			updateShooting(keys);
+			
 			if (isSpringed) {
 				var unblocked = this.tryMove(2,0);
 				if (!unblocked) isSpringed = false;
