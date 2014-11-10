@@ -97,8 +97,8 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 			jumping: new function () {
 				var phases = [];
-				phases[1] = {ySpeed: -2, normalDuration: 3};
-				phases[2] = {ySpeed: -1, normalDuration: 5, jumpHeldDuration: 15};
+				phases[1] = {ySpeed: -2, normalDuration: 0, jumpHeldDuration: 3};
+				phases[2] = {ySpeed: -1, normalDuration: 0, jumpHeldDuration: 15};
 				phases[3] = {ySpeed: 0, normalDuration: 6};
 				this.preupdate = function () {};
 				this.update = function (jumpIsHeld) {
