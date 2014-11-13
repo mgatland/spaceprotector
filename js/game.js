@@ -26,7 +26,8 @@ require(["events", "colors", "network", "bridge", "playingstate",
 					state = new EndLevelState(state.endStats);
 					level++;
 				} else if (level === 2) {
-					document.location.reload();
+					level = 0;
+					state = new TitleState(pixelWindow);
 				} else {
 					state = new PlayingState(Events, camera, level);	
 				}

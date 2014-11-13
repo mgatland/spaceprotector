@@ -5,8 +5,9 @@ define(["colors"], function (Colors) {
 		var maxLoadingProgress = 20;
 		var frame = 0;
 		this.update = function (keys, painter, Network, Events) {
-			if (keys.start || keys.up || keys.left || keys.right || keys.down ||
-				keys.shoot || keys.jumpIsHeld) {
+			if ((keys.start || keys.up || keys.left || keys.right || keys.down ||
+				keys.shoot || keys.jumpIsHeld)
+				&& fakeLoadingProgress >= maxLoadingProgress) {
 				this.transition = true;
 			}
 			if (fakeLoadingProgress < maxLoadingProgress) {
