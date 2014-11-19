@@ -1,10 +1,21 @@
 "use strict";
-define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", "blockmonster", "wasp"],
-	function (Monster, Player, Events, Colors, WalkMonster, ShootMonster, BlockMonster, Wasp) {
+define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", "blockmonster", "wasp", "wolf", "lib/los"],
+	function (Monster, Player, Events, Colors, WalkMonster, ShootMonster, BlockMonster, Wasp, Wolf, LOS) {
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods
 		var map = [];
 		var spawners = [];
+
+		this.canSee = function(from, to) {
+			var startX = Math.floor(from.x / tileSize);
+			var startY = Math.floor(from.y / tileSize);
+		    var start = {x: startX, y: startY};
+
+			var endX = Math.floor(to.x / tileSize);
+			var endY = Math.floor(to.y / tileSize);
+		    var end = {x: endX, y:endY};
+		    return LOS.canSee(level, start, end);
+		}
 
 		var drawEdge = function(x, y, checkX, checkY, condition, mode, painter) {
 			if (condition) {
@@ -112,6 +123,9 @@ define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", 
 				if (s.type==="s") {
 					Events.monster(Monster.createSpring(level, s.x*tileSize, s.y*tileSize));
 				}
+				if (s.type==="f") {
+					Events.monster(new Wolf(level, s.x*tileSize, s.y*tileSize));
+				}
 				if (s.type==="!") {
 					Events.monster(Monster.createFlag(level, s.x*tileSize, s.y*tileSize));
 				}
@@ -154,6 +168,7 @@ define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", 
 			if (map[y][x] === 0) return false;
 			return true;
 		}
+
 		this.draw = function(painter, editMode) {
 			var bounds = painter.screenBounds();
 			var minX = Math.floor(bounds.minX / tileSize);

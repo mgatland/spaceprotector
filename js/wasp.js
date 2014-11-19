@@ -29,26 +29,11 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 		var onHit = function (collisions) {
 		}
 
-		function getTarget (gs) {
-			var target = null;
-			var dist = null;
-			gs.players.forEach(function (player) {
-				if (!player.hidden) {
-					var distToPlayer = _this.pos.distanceTo(player.pos);
-					if (target === null || distToPlayer < dist) {
-						target = player;
-						dist = distToPlayer;
-					}
-				}
-			});
-			return target;
-		}
-
 		var ai = function (gs) {
 			if (action === "waiting") {
 				var disturbed = false;
 				gs.players.forEach(function (player) {
-					if (!player.hidden && player.pos.y > _this.pos.y
+					if (!player.hidden && player.pos.y >= _this.pos.y
 						&& _this.pos.distanceTo(player.pos) < seeDistance) {
 						disturbed = true;
 					}
@@ -65,7 +50,7 @@ define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"],
 			if (action === "moving") {
 				if (moveTimer >= moveDelay) {
 					moveTimer = 0;
-					var target = getTarget(gs);
+					var target = _this.getTarget(gs);
 
 					if (target) {
 						if (target.pos.x > _this.pos.x) {

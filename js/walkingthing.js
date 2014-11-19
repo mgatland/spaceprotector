@@ -12,6 +12,13 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 			return (level.cellDepthAt(frontFoot) >= minHeight);
 		}
 
+		this.isOnGround = function () {
+			var leftFoot = level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
+			var rightFoot = level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));
+			return (leftFoot || rightFoot);
+		}
+
+
 		this.tryMove = function (x, y) {
 			var ok = true;
 			while (x != 0) {
@@ -36,7 +43,24 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 			}
 			return ok;
 		}
+
+		this.getTarget = function (gs) {
+			var target = null;
+			var dist = null;
+			var _this = this;
+			gs.players.forEach(function (player) {
+				if (!player.hidden) {
+					var distToPlayer = _this.pos.distanceTo(player.pos);
+					if (target === null || distToPlayer < dist) {
+						target = player;
+						dist = distToPlayer;
+					}
+				}
+			});
+			return target;
+		}
 	}
+
 	WalkingThing.toData = Entity.toData;
 	WalkingThing.fromData = Entity.fromData;
 	return WalkingThing;

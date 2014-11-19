@@ -195,12 +195,6 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}	
 		}
 
-		this.isOnGround = function () {
-			var leftFoot = level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
-			var rightFoot = level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));
-			return (leftFoot || rightFoot);
-		}
-
 		this._shoot = function () {
 			var pos = this.pos.clone();
 			if (animState === "standing") {
