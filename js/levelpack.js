@@ -47,6 +47,35 @@ define([], function () {
 "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   k  k O        ! O\n" +
 "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 ""; 
+
+	mapData[2] =
+"OOOOOOOOOOOOOOOOOOO\n" +
+"OOOOOOOOOOOOOOOOOOO\n" +
+"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
+"O             OOOOO            O\n" +
+"O OOO OOO OOO OOOOO OOOO OOO O O\n" +
+"O             OOOOO            O\n" +
+"O                              O\n" +
+"O pp          OOOOO          k O\n" +
+"O OOO OOO OOO OOOOO OOO OOOO O O\n" +
+"O             OOOOO            O\n" +
+"OOOOOOOOOOOOOOOOOOOOOOOOO OOOOOO\n" +
+"OOOOOOOOOOOOOOOOOOOOOOOOO OOOOOO\n" +
+"OOOOOOOOOOOOOOOOOOOOOOOOO OOOOOO\n" +
+"O             OOOOO      !     O\n" +
+"O OOOO OOOO O OOOOO OOO OOO OO O\n" +
+"O             OOOOO            O\n" +
+"O             OOOOO            O\n" +
+"O               !              O\n" +
+"O f           OOOOO          f O\n" +
+"O OO OOOOO OO OOOOO O OOO OOOO O\n" +
+"O             OOOOO            O\n" +
+"OOOOOOO OOOOOOOOOOOOOOOOOOOOOOOO\n" +
+"OOOOOOO OO\n" +
+"OOOOOOO@OO\n" +
+"OOOOOOOOOO\n" +
+""; 
+
 		this.mapData = mapData;
 	}
 	return LevelPack;
