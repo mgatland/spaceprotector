@@ -45,6 +45,12 @@ require(["events", "colors", "network", "bridge", "playingstate",
 			keys.start = keyboard.isKeyHit(KeyEvent.DOM_VK_ENTER) || keyboard.isKeyDown(KeyEvent.DOM_VK_RETURN) || keyboard.isKeyHit(KeyEvent.DOM_VK_SPACE);
 			keys.esc = keyboard.isKeyHit(KeyEvent.DOM_VK_ESCAPE);
 
+			//cheats
+			window.mgskip = function(nextLevel) {
+				state.transition = true;
+				level = (nextLevel !== undefined) ? nextLevel : level + 1;
+			}
+
 			if (keys.esc) {
 				state.paused = !state.paused;
 				if (state.paused) {
