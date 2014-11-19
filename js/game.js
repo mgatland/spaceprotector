@@ -22,10 +22,9 @@ require(["events", "colors", "network", "bridge", "playingstate",
 
 			if (state.transition === true) {
 				if (state.endStats) {
-					if (level === 1) state.endStats.lastLevel = true;
 					state = new EndLevelState(state.endStats);
 					level++;
-				} else if (level === 2) {
+				} else if (state.restartAfterTransition === true) {
 					level = 0;
 					state = new TitleState(pixelWindow);
 				} else {

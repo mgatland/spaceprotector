@@ -4,6 +4,8 @@ define(["colors"], function (Colors) {
 
 		var age = 0;
 
+		this.restartAfterTransition = stats.isLastLevel;
+
 		this.update = function (keys) {
 			age++;
 			if (age >= 60 && (keys.start || keys.up || keys.left || keys.right || keys.down ||
@@ -39,7 +41,7 @@ define(["colors"], function (Colors) {
 			drawText(painter, 50, 60, "Time:   " + formatTime(stats.time), age - 15 - 12);
 			drawText(painter, 50, 70, "Mercy:  " + pad(stats.mercy), age - 15 - 12 - 12);
 
-			if (stats.lastLevel) {
+			if (stats.isLastLevel) {
 				drawText(painter, 50, 90, "Thanks for playing!", age - 15 - 12 - 12 - 12);
 			}
 		};

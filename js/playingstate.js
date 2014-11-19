@@ -191,7 +191,8 @@ define(["entity", "level", "camera", "levelpack"],
 				time: ticks * tickDurationInSeconds,
 				mercy: gs.monsters.filter(
 					function (f) {return f.live && f.killIsCounted;}
-					).length
+					).length,
+				isLastLevel: mapData.length - 1 === levelNum
 			};
 		}
 
