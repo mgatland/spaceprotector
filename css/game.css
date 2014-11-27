@@ -6,14 +6,14 @@
 }
 
 html {
-	background-color: black;
+	background-color: #AA3339; /*blank*/
 	/*cursor:none; 
 	used when exhibiting on my laptop, because closing the lid
 	moves the cursor to the center of the screen*/
 }
 
 body {
-	color: #8598FF;
+	color: #A59274; /*'bad'*/
 	font-family: "Star Perv", monospace;
 	font-style: 18px;
 	text-align: center;
@@ -27,13 +27,13 @@ body {
 
 #instructions {
 	position: absolute;
-	top: calc(100% / 192 * 44);;
+	top: calc(100% / 192 * 44);
 	margin-left: calc(100% / 192 * 11);
 	margin-right: calc(100% / 192 * 11);
 	left: 0;
 	right: 0;
-	background-color: rgba(0,0,0,1);
-	border: 4px solid #8598FF;
+	background-color: #AA3339; /*blank*/
+	border: 4px solid #A59274; /*'bad'*/
 }
 
 canvas {
@@ -46,11 +46,11 @@ canvas {
 }
 
 input {
-	background-color: #8598FF;
-	color: black;
+	background-color: #A59274; /*'bad'*/
+	color: #AA3339; /*'blank'*/
 	padding: 6px;
 	border: none;
-	border-left: 6px solid #B2FFFF;
+	border-left: 6px solid #DD9494; /*'good'*/
 	font-family: "Star Perv", monospace;
 	font-size: 18px;
 	max-width: calc(20px * 5);
@@ -58,21 +58,21 @@ input {
 }
 
 #connect-button {
-	color: #8598FF;
-	border: 1px solid #8598FF;
+	color: #A59274; /*bad*/
+	border: 1px solid #A59274; /*'bad'*/
 	padding: 6px;
 	text-transform: uppercase;
 }
 
 #connect-button:hover {
-	background-color: #8598FF;	
-	color: white;
+	background-color: #A59274; /*'bad'*/
+	color: #E4D7C4; /*'highlight'*/
 }
 
 a, a:visited {
-	color: #8598FF;
+	color: #A59274; /*'bad'*/
 	text-decoration: none;
 }
 a:hover {
-	color: #B2FFFF;
+	color: #DD9494; /*'good'*/
 };

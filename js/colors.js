@@ -1,11 +1,11 @@
 "use strict";
 define([], function () {
 	var Colors = {
-		blank: "#000000",
-		background: "#5CCCCC",
-		bad: "#8598FF",
-		good: "#B2FFFF",
-		highlight: "#FFFFFF"
+		blank: "#AA3339",
+		background: "#C7B18A",
+		bad: "#A59274",
+		good: "#DD9494",
+		highlight: "#E4D7C4"
 	};
 	return Colors;
 });
