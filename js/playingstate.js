@@ -105,7 +105,7 @@ define(["entity", "level", "camera", "levelpack"],
 			} else {
 				gs.players[1].hidden = true;
 			}
-			gs.players[gs.local].update(keys);
+			gs.players[gs.local].update(gs, keys);
 
 			if (netFrame === 0) {
 				var netData = {};

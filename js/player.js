@@ -101,14 +101,14 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 				phases[2] = {ySpeed: -1, normalDuration: 0, jumpHeldDuration: 15};
 				phases[3] = {ySpeed: 0, normalDuration: 6};
 				this.preupdate = function () {};
-				this.update = function (jumpIsHeld) {
+				this.update = function (gs, jumpIsHeld) {
 					animState = "jumping";
 					var phase = phases[this.jumpPhase];
 
 					if (isSpringed) jumpIsHeld = true; //forced by a spring.
 
 					var speed = phase.ySpeed;
-					var spaceAboveMe = this.tryMove(0, speed);
+					var spaceAboveMe = this.tryMove(0, speed, gs);
 
 					this.jumpTime++;
 					var duration = (jumpIsHeld && phase.jumpHeldDuration) ? phase.jumpHeldDuration : phase.normalDuration;
@@ -129,7 +129,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 			falling: new function () {
 				this.preupdate = function () {};
-				this.update = function () {
+				this.update = function (gs) {
 					animState = "falling";
 					if (this.isOnGround()) {
 						Events.playSound("land", this.pos.clone());
@@ -137,7 +137,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 					} else {
 						this.fallingTime++;
 						var speed = this.fallingTime < 10 ? 1 : 2;
-						this.tryMove(0,speed);
+						this.tryMove(0,speed,gs);
 					}
 				};
 			},
@@ -230,7 +230,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			}
 		}
 
-		this.update = function (keys) {
+		this.update = function (gs, keys) {
 			
 			if (this.hidden) return;
 
@@ -287,17 +287,17 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 			if (keys.left && !keys.right) {
 				this.dir = Dir.LEFT;
 				movingDir = Dir.LEFT;
-				this.tryMove(-1,0);
+				this.tryMove(-1,0,gs);
 			} else if (keys.right && !keys.left) {
 				this.dir = Dir.RIGHT;
 				movingDir = Dir.RIGHT;
-				this.tryMove(1,0);
+				this.tryMove(1,0,gs);
 			}
 
 			updateShooting(keys);
 
 			if (isSpringed) {
-				var unblocked = this.tryMove(2,0);
+				var unblocked = this.tryMove(2,0,gs);
 				if (!unblocked) isSpringed = false;
 			}
 
@@ -310,7 +310,7 @@ define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "ut
 
 			getState().preupdate.call(this);
 
-			getState().update.call(this, keys.jumpIsHeld);
+			getState().update.call(this, gs, keys.jumpIsHeld);
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;

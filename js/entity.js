@@ -53,8 +53,7 @@ define(["pos", "dir"], function (Pos, Dir) {
 		return false;
 	}
 
-	Entity.checkCollision = function (a, b, mode) {
-		if (!mode) mode = "both";
+	Entity.isColliding = function(a, b) {
 		if (a.live === true && b.live === true
 			&& a.pos.x < b.pos.x + b.size.x
 			&& a.pos.x + a.size.x > b.pos.x
@@ -62,9 +61,17 @@ define(["pos", "dir"], function (Pos, Dir) {
 			&& a.pos.y + a.size.y > b.pos.y
 			) {
 			if (checkPixelCollision(a, b)) {
-				a.collisions.push(b);
-				if (mode === "both") b.collisions.push(a);				
+				return true;
 			}
+		}
+		return false;
+	}
+
+	Entity.checkCollision = function (a, b, mode) {
+		if (!mode) mode = "both";
+		if (Entity.isColliding(a, b)) {
+			a.collisions.push(b);
+			if (mode === "both") b.collisions.push(a);
 		}
 	}
 	return Entity;

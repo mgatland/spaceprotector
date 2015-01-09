@@ -19,13 +19,28 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 		}
 
 
-		this.tryMove = function (x, y) {
+		var touchingPlatform = function(x, y, gs, _this) {
+			if (!gs) return false;
+			var touching = false;
+			gs.monsters.forEach(function (m) {
+				if (m.isPlatform) {
+					if (Entity.isColliding(m, _this)) {
+						touching = true;
+					}
+				}
+			});
+			return touching;
+		}
+
+		//x movement, y movement, optional gamestate
+		this.tryMove = function (x, y, gs) {
+			var _this = this;
 			var ok = true;
 			while (x != 0) {
 				var sign = x > 0 ? 1 : -1;
 				this.pos.x += sign;
 				x -= sign;
-				if (level.isColliding(this)) {
+				if (level.isColliding(this) || touchingPlatform(x, y, gs, _this)) {
 					this.pos.x -= sign;
 					x = 0; //no more movement.
 					ok = false;
@@ -35,7 +50,7 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 				var sign = y > 0 ? 1 : -1;
 				this.pos.y += sign;
 				y -= sign;
-				if (level.isColliding(this)) {
+				if (level.isColliding(this) || touchingPlatform(x, y, gs, _this)) {
 					this.pos.y -= sign;
 					y = 0; //no more movement.
 					ok = false;
@@ -45,9 +60,9 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 		}
 
 		this.getTarget = function (gs) {
+			var _this = this;
 			var target = null;
 			var dist = null;
-			var _this = this;
 			gs.players.forEach(function (player) {
 				if (!player.hidden) {
 					var distToPlayer = _this.pos.distanceTo(player.pos);

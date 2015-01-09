@@ -46,23 +46,27 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		var anim = new Anim(sprites, anims);
 
 		//constants
-		var breakTimer = 0;
-		var goneTimer = 0;
-		var recoveryTimer = 0;
-
 		var breakDelay = 30;
 		var recoveryDelay = 30;
 		var goneDelay = 180;
 
-		var hitFlash = 0;
-		var hitPos = null;
-
 		//state
 		var action = "";
+		var breakTimer = 0;
+		var goneTimer = 0;
+		var recoveryTimer = 0;
+		var hitFlash = 0;
+		var hitPos = null;
+		this.isPlatform = true;
+
+		this.getFrame = function () {
+			return anim.getFrame();
+		}
 
 		var startSolid = function () {
 			action = "solid";
 			anim.startAnimation("solid");
+			_this.isPlatform = true;
 		}
 
 		var startBreaking = function () {
@@ -75,6 +79,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			action = "gone";
 			goneTimer = 0;
 			anim.startAnimation("gone");
+			_this.isPlatform = false;
 		}
 
 		var startRecovery = function () {
