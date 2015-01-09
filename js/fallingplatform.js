@@ -4,9 +4,9 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 	var sprites = Sprites.loadFramesFromData(SpriteData.fallingPlatform);
 	var anims = {
 		solid: {frames: [0], delay: 0},
-		breaking: {frames: [1], delay: 0},
-		respawning: {frames: [2], delay: 0},
-		gone: {frames: [3], delay: 0}
+		breaking: {frames: [0], delay: 0},
+		respawning: {frames: [0], delay: 0},
+		gone: {frames: [1], delay: 0}
 	};
 
 	var Anim = function (sprites, anims) {
@@ -86,6 +86,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		var ai = function (gs) {
 			if (action === "breaking") {
 				breakTimer++;
+				hitFlash = (Math.floor(breakTimer / 3)) % 2;
 				if (breakTimer > breakDelay) {
 					startGone();
 				}
