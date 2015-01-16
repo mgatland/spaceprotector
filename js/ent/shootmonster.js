@@ -1,5 +1,5 @@
 "use strict";
-define(["shot", "util", "sprites", "spritedata", "monster", "events"],
+define(["ent/shot", "util", "sprites", "spritedata", "ent/monster", "events"],
 	function(Shot, Util, Sprites, SpriteData, Monster, Events) {
 	var shooterSprites = Sprites.loadFramesFromData(SpriteData.shooter);
 	var shooterAnims = {

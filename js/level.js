@@ -1,5 +1,5 @@
 "use strict";
-define(["monster", "player", "events", "colors", "walkmonster", "shootmonster", "blockmonster", "wasp", "wolf", "fallingplatform", "lib/los"],
+define(["ent/monster", "ent/player", "events", "colors", "ent/walkmonster", "ent/shootmonster", "ent/blockmonster", "ent/wasp", "ent/wolf", "ent/fallingplatform", "lib/los"],
 	function (Monster, Player, Events, Colors, WalkMonster, ShootMonster, BlockMonster, Wasp, Wolf, FallingPlatform, LOS) {
 	var Level = function(mapData, tileSize) {
 		var level = this; //for use in private methods

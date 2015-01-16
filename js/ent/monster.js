@@ -1,5 +1,5 @@
 "use strict";
-define(["shot", "events", "colors", "entity", "walkingthing", 
+define(["ent/shot", "events", "colors", "entity", "ent/walkingthing", 
 	"sprites", "spritedata", "dir", "pos", "util"], 
 	function (Shot, Events, Colors, Entity, WalkingThing, Sprites, 
 		SpriteData, Dir, Pos, Util) {

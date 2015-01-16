@@ -1,5 +1,5 @@
 "use strict"
-define(["sprites", "spritedata", "util", "monster"], 
+define(["sprites", "spritedata", "util", "ent/monster"], 
 	function (Sprites, SpriteData, Util, Monster) {
 	var walkerSprites = Sprites.loadFramesFromData(SpriteData.walker);
 	var walkerAnims = {

@@ -1,5 +1,5 @@
 "use strict";
-define(["explosion", "events", "colors", "entity", "dir", "pos", "util", "sprites"], 
+define(["ent/explosion", "events", "colors", "entity", "dir", "pos", "util", "sprites"], 
 	function (Explosion, Events, Colors, Entity, Dir, Pos, Util, Sprites) {
 
 	console.log("Define Shot");

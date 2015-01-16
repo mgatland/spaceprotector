@@ -1,5 +1,5 @@
 "use strict";
-define(["shot", "events", "colors", "walkingthing", "sprites", "dir", "pos", "util", "spritedata"], 
+define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "pos", "util", "spritedata"], 
 	function (Shot, Events, Colors, WalkingThing, Sprites, Dir, Pos, Util, SpriteData) {
 
 	var Player = function (level, x, y) {

@@ -1,5 +1,5 @@
 "use strict"
-define(["sprites", "spritedata", "util", "monster", "dir"], 
+define(["sprites", "spritedata", "util", "ent/monster", "dir"], 
 	function (Sprites, SpriteData, Util, Monster, Dir) {
 
 	var sprites = Sprites.loadFramesFromData(SpriteData.wolf);

@@ -1,5 +1,5 @@
 "use strict";
-define(["sprites", "spritedata", "util", "monster", "pos", "events", "dir"], 
+define(["sprites", "spritedata", "util", "ent/monster", "pos", "events", "dir"], 
 	function (Sprites, SpriteData, Util, Monster, Pos, Events, Dir) {
 	var sprites = Sprites.loadFramesFromData(SpriteData.wasp);
 	var anims = {
