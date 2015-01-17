@@ -115,7 +115,7 @@ define(["ent/monster", "ent/player", "events", "colors", "ent/walkmonster", "ent
 					Events.monster(new BlockMonster(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="x") {
-					Events.monster(Monster.createCrate(gs, s.x*tileSize, s.y*tileSize));
+					Events.monster(new FallingPlatform(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="w") {
 					Events.monster(new Wasp(gs, s.x*tileSize, s.y*tileSize));
@@ -125,9 +125,6 @@ define(["ent/monster", "ent/player", "events", "colors", "ent/walkmonster", "ent
 				}
 				if (s.type==="f") {
 					Events.monster(new Wolf(gs, s.x*tileSize, s.y*tileSize));
-				}
-				if (s.type==="=") {
-					Events.monster(new FallingPlatform(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="!") {
 					Events.monster(Monster.createFlag(gs, s.x*tileSize, s.y*tileSize));

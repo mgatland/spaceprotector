@@ -74,7 +74,7 @@ define([], function () {
 "OOOOOOO OOOOOOOOOOOOOO\n" +
 "O             OOOOOOOO\n" +
 "O             OOOOOOOO\n" +
-"O O====O====O OOOOOOOO\n" +
+"O OxxxxOxxxxO OOOOOOOO\n" +
 "O O    O    O OOOOOOOO\n" +
 "O O   fO   fO OOOOOOOO\n" +
 "O O  OOO  OOO       @O\n" +

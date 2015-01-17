@@ -3,10 +3,6 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 	"sprites", "spritedata", "dir", "pos", "util"], 
 	function (Shot, Events, Colors, Entity, WalkingThing, Sprites, 
 		SpriteData, Dir, Pos, Util) {
-	var crateSprites = Sprites.loadFramesFromData(SpriteData.crate);
-	var crateAnims = {
-		walk: {frames: [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2], delay: 45}
-	};
 
 	var flagSprites = Sprites.loadFramesFromData(SpriteData.flag);
 	var endSprites = Sprites.loadFramesFromData(SpriteData.end);
@@ -180,9 +176,6 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		};
 	};
 
-	Monster.createCrate = function (gs, x, y) {
-		return new Monster(gs, x, y, 10, 10, crateSprites, crateAnims, null, 1);
-	};
 	Monster.createFlag = function (gs, x, y) {
 		return new Flag(gs, x, y);
 	};
