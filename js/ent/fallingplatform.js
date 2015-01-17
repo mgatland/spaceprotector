@@ -127,8 +127,8 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		}
 
 		var onHit = function () {
-			if (action === "solid") {
-				startBreaking();
+			if (action === "solid" || action === "breaking") {
+				startGone();
 			}
 		}
 
