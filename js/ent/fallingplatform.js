@@ -70,6 +70,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			action = "solid";
 			anim.startAnimation("solid");
 			_this.isPlatform = true;
+			_this.ignoreShots = false;
 		}
 
 		var startBreaking = function () {
@@ -82,6 +83,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			action = "gone";
 			goneTimer = 0;
 			_this.isPlatform = false;
+			_this.ignoreShots = true;
 		}
 
 		var startRecovery = function () {
