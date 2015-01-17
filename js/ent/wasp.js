@@ -7,7 +7,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events", "dir"],
 		sleeping: {frames: [6,7,7], delay: 30}
 	};
 
-	var Wasp = function (level, x, y) {
+	var Wasp = function (gs, x, y) {
 		var _this = this;
 
 		//constants
@@ -29,7 +29,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events", "dir"],
 		var onHit = function (collisions) {
 		}
 
-		var ai = function (gs) {
+		var ai = function () {
 			if (action === "waiting") {
 				var disturbed = false;
 				gs.players.forEach(function (player) {
@@ -50,7 +50,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events", "dir"],
 			if (action === "moving") {
 				if (moveTimer >= moveDelay) {
 					moveTimer = 0;
-					var target = _this.getTarget(gs);
+					var target = _this.getTarget();
 
 					if (target) {
 						if (target.pos.x > _this.pos.x) {
@@ -112,7 +112,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events", "dir"],
 			wakefulness = data.wakefulness;
 		}
 
-		Util.extend(this, new Monster(level, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
+		Util.extend(this, new Monster(gs, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
 		this.startAnimation("sleeping");
 	}
 	return Wasp;

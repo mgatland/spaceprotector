@@ -91,46 +91,46 @@ define(["ent/monster", "ent/player", "events", "colors", "ent/walkmonster", "ent
 				}
 				n++;
 			}
-			level.spawnEntities();
+			//level.spawnEntities();
 		}
 
-		this.spawnEntities = function (overridePSpawn) {
+		this.spawnEntities = function (gs, overridePSpawn) {
 			spawners.forEach(function (s) {
 				if (s.type==="p") {
 					if (overridePSpawn) {
-						Events.player(new Player(level, 
+						Events.player(new Player(gs, 
 							overridePSpawn.x,
 							overridePSpawn.y));	
 					} else {
-						Events.player(new Player(level, s.x*tileSize, s.y*tileSize));	
+						Events.player(new Player(gs, s.x*tileSize, s.y*tileSize));	
 					}
 				}
 				if (s.type==="m") {
-					Events.monster(new ShootMonster(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new ShootMonster(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="k") {
-					Events.monster(new FallingPlatform(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new FallingPlatform(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="b") {
-					Events.monster(new BlockMonster(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new BlockMonster(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="x") {
-					Events.monster(Monster.createCrate(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(Monster.createCrate(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="w") {
-					Events.monster(new Wasp(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new Wasp(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="s") {
-					Events.monster(Monster.createSpring(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(Monster.createSpring(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="f") {
-					Events.monster(new Wolf(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(new Wolf(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="!") {
-					Events.monster(Monster.createFlag(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(Monster.createFlag(gs, s.x*tileSize, s.y*tileSize));
 				}
 				if (s.type==="@") {
-					Events.monster(Monster.createEnd(level, s.x*tileSize, s.y*tileSize));
+					Events.monster(Monster.createEnd(gs, s.x*tileSize, s.y*tileSize));
 				}
 			});
 		}

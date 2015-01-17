@@ -1,6 +1,6 @@
 "use strict";
-define(["entity", "level", "camera", "levelpack"],
-	function (Entity, Level, Camera, LevelPack) {
+define(["entity", "level", "camera", "levelpack", "gamestate"],
+	function (Entity, Level, Camera, LevelPack, GameState) {
 
 	var mapData = new LevelPack().mapData;
 
@@ -11,8 +11,9 @@ define(["entity", "level", "camera", "levelpack"],
 		this.showTouchButtons = true;
 
 		var tileSize = 10;
-
-		var level = new Level(mapData[levelNum % mapData.length], tileSize);
+		
+		var level = new Level(mapData[levelNum % mapData.length], tileSize, gs);
+		
 		var netFramesToSkip = 0;
 		var netFrame = netFramesToSkip;
 		var ticks = 0;
@@ -24,16 +25,9 @@ define(["entity", "level", "camera", "levelpack"],
 		var winAnimationPlaying = false;
 		var winStats = null;
 
-		//game state:
-		var GameState = function () {
-			this.shots = [];
-			this.explosions = [];
-			this.players = [];
-			this.local = 0;
-			this.other = 1;
-			this.monsters = [];
-		};
-		var gs = new GameState();
+		var gs = new GameState(level);
+
+		level.spawnEntities(gs);
 
 		function moveElementsTo(dest, source) {
 			Array.prototype.push.apply(dest, source);
@@ -61,7 +55,7 @@ define(["entity", "level", "camera", "levelpack"],
 				//hack: don't reset the player position
 				var tempPos = gs.players[gs.local].pos;
 				gs = new GameState;
-				level.spawnEntities(tempPos);
+				level.spawnEntities(gs, tempPos);
 			}
 
 			ticks++;
@@ -105,7 +99,7 @@ define(["entity", "level", "camera", "levelpack"],
 			} else {
 				gs.players[1].hidden = true;
 			}
-			gs.players[gs.local].update(gs, keys);
+			gs.players[gs.local].update(keys);
 
 			if (netFrame === 0) {
 				var netData = {};
@@ -127,7 +121,7 @@ define(["entity", "level", "camera", "levelpack"],
 			}
 
 			gs.monsters.forEach(function (monster) {
-				monster.update(gs);
+				monster.update();
 			});
 
 			camera.panTowards(gs.players[gs.local].pos.x, gs.players[gs.local].groundedY);

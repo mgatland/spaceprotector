@@ -41,7 +41,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		}
 	}
 
-	var FallingPlatform = function (level, x, y) {
+	var FallingPlatform = function (gs, x, y) {
 		var _this = this;
 		var anim = new Anim(sprites, anims);
 
@@ -88,7 +88,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			anim.startAnimation("respawning");
 		}
 
-		var ai = function (gs) {
+		var ai = function () {
 			if (action === "breaking") {
 				breakTimer++;
 				hitFlash = (Math.floor(breakTimer / 3)) % 2;
@@ -116,14 +116,14 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			}
 		}
 
-		this.update = function(gs) {
+		this.update = function() {
 			anim.update();
 
 			if (hitFlash > 0) {
 				hitFlash--;
 			}
 
-			if (ai) ai(gs);
+			if (ai) ai();
 
 			if (this.collisions.length > 0) {
 				hitPos = this.collisions[0].pos.clone();

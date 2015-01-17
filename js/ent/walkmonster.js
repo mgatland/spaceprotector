@@ -8,7 +8,7 @@ define(["sprites", "spritedata", "util", "ent/monster"],
 		run: {frames: [2, 3, 4, 5], delay: 3}
 	};
 
-	var WalkMonster = function (level, x, y) {
+	var WalkMonster = function (gs, x, y) {
 		var _this = this;
 
 		//constants
@@ -77,7 +77,7 @@ define(["sprites", "spritedata", "util", "ent/monster"],
 			aggro = data.aggro;
 		}
 
-		Util.extend(this, new Monster(level, x, y, 9, 9, walkerSprites, walkerAnims, ai, initialHealth, onHit));
+		Util.extend(this, new Monster(gs, x, y, 9, 9, walkerSprites, walkerAnims, ai, initialHealth, onHit));
 		this.startAnimation("walk");
 	}
 	return WalkMonster;

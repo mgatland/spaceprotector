@@ -2,11 +2,11 @@
 define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "pos", "util", "spritedata"], 
 	function (Shot, Events, Colors, WalkingThing, Sprites, Dir, Pos, Util, SpriteData) {
 
-	var Player = function (level, x, y) {
+	var Player = function (gs, x, y) {
 		var _this = this;
 		
 		var startPos = new Pos(x, y);
-		Util.extend(this, new WalkingThing(level, startPos, new Pos(5,6)));
+		Util.extend(this, new WalkingThing(gs, startPos, new Pos(5,6)));
 
 		//Replicated variables
 		this.state = "falling";
@@ -101,7 +101,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 				phases[2] = {ySpeed: -1, normalDuration: 0, jumpHeldDuration: 15};
 				phases[3] = {ySpeed: 0, normalDuration: 6};
 				this.preupdate = function () {};
-				this.update = function (gs, jumpIsHeld) {
+				this.update = function (jumpIsHeld) {
 					animState = "jumping";
 					var phase = phases[this.jumpPhase];
 
@@ -129,7 +129,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 
 			falling: new function () {
 				this.preupdate = function () {};
-				this.update = function (gs) {
+				this.update = function () {
 					animState = "falling";
 					if (this.isOnGround()) {
 						Events.playSound("land", this.pos.clone());
@@ -200,7 +200,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 			if (animState === "standing") {
 				pos.moveXY(0, 1);
 			}
-			Events.shoot(new Shot(level, pos, this.dir, "player"));
+			Events.shoot(new Shot(gs, pos, this.dir, "player"));
 			Events.playSound("pshoot", this.pos.clone());
 		}
 
@@ -230,7 +230,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 			}
 		}
 
-		this.update = function (gs, keys) {
+		this.update = function (keys) {
 			
 			if (this.hidden) return;
 
@@ -310,7 +310,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 
 			getState().preupdate.call(this);
 
-			getState().update.call(this, gs, keys.jumpIsHeld);
+			getState().update.call(this, keys.jumpIsHeld);
 
 			if (this.isOnGround() || this.pos.y > this.groundedY) {
 				this.groundedY = this.pos.y;

@@ -6,7 +6,7 @@ define(["ent/explosion", "events", "colors", "entity", "dir", "pos", "util", "sp
 	var shotSpriteData = "v2.0:1111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 	var shotSprite = Sprites.loadFramesFromData(shotSpriteData);
 
-	var Shot = function (level, pos, dir, owner) {
+	var Shot = function (gs, pos, dir, owner) {
 		Util.extend(this, new Entity(pos, new Pos(5,1)));
 		var _this = this;
 
@@ -43,13 +43,13 @@ define(["ent/explosion", "events", "colors", "entity", "dir", "pos", "util", "sp
 				checkPos = this.pos.clone().moveXY(this.size.x, 0);
 			}
 			
-			if (level.isPointColliding(checkPos)) {
+			if (gs.level.isPointColliding(checkPos)) {
 				if (owner === "player") Events.playSound("hitwall", this.pos.clone());
 				this.live = false;
 				//Move out of wall to place explosion correctly.
 				checkPos.moveInDir(this.dir.reverse, 1);
 				var count = 0;
-				while (level.isPointColliding(checkPos) && count < 10) {
+				while (gs.level.isPointColliding(checkPos) && count < 10) {
 					checkPos.moveInDir(this.dir.reverse, 1);
 					count++;
 				}

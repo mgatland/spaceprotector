@@ -7,7 +7,7 @@ define(["ent/shot", "util", "sprites", "spritedata", "ent/monster", "events"],
 		shoot: {frames: [4, 5, 6, 7, 8], delay: 60/5} //refireDelay / frames.length
 	};
 
-	var ShootMonster = function (level, x, y) {
+	var ShootMonster = function (gs, x, y) {
 		var _this = this;
 		//constants
 		var maxWalkingTime = 90;
@@ -48,7 +48,7 @@ define(["ent/shot", "util", "sprites", "spritedata", "ent/monster", "events"],
 
 			if (action === "shooting") {
 				if (refireTimer === 0) {
-					Events.shoot(new Shot(level, _this.pos.clone().moveXY(0, Math.floor(_this.size.x/2)), _this.dir, "monster"));
+					Events.shoot(new Shot(gs, _this.pos.clone().moveXY(0, Math.floor(_this.size.x/2)), _this.dir, "monster"));
 					Events.playSound("mshoot", _this.pos.clone());
 					refireTimer = refireDelay;
 					shotsInARow++;
@@ -83,7 +83,7 @@ define(["ent/shot", "util", "sprites", "spritedata", "ent/monster", "events"],
 			moveTimer = data.moveTimer;
 		}
 
-		Util.extend(this, new Monster(level, x, y, 7, 9, shooterSprites, shooterAnims, ai, 1));
+		Util.extend(this, new Monster(gs, x, y, 7, 9, shooterSprites, shooterAnims, ai, 1));
 		this.startAnimation("shoot");
 	}
 	return ShootMonster;

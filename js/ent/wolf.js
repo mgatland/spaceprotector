@@ -10,7 +10,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 		wait: {frames: [4,4,4,4,4,5,6,6,6,6,6,5], delay: 13}
 	};
 
-	var Wolf = function (level, x, y) {
+	var Wolf = function (gs, x, y) {
 		var _this = this;
 
 		//constants
@@ -38,9 +38,9 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 			}
 		}
 
-		var facePlayer = function (gs) {
+		var facePlayer = function () {
 
-			var target = _this.getTarget(gs);
+			var target = _this.getTarget();
 
 			if (target) {
 				if (target.pos.x > _this.pos.x) {
@@ -54,14 +54,14 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 		var states = {
 			waiting: new function () {
 				this.preupdate = function () {};
-				this.update = function (gs) {
+				this.update = function () {
 					var disturbed = false;
 					gs.players.forEach(function (player) {
 						if (!player.hidden 
 							&& player.pos.y > _this.pos.y - seeDistanceYLimit
 							&& player.pos.y < _this.pos.y + seeDistanceYLimit
 							&& _this.pos.distanceTo(player.pos) < seeDistance
-							&& level.canSee(_this.getCenter(), player.getCenter())) {
+							&& gs.level.canSee(_this.getCenter(), player.getCenter())) {
 							disturbed = true;
 						}
 					});
@@ -108,7 +108,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 			},
 			falling: new function () {
 				this.preupdate = function () {};
-				this.update = function (gs) {
+				this.update = function () {
 					if (this.isOnGround()) {
 						//Events.playSound("land", this.pos.clone());
 						state = "sliding";
@@ -124,7 +124,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 			},
 			sliding: new function () {
 				this.preupdate = function () {};
-				this.update = function (gs) {
+				this.update = function () {
 					if (!this.isOnGround()) {
 						state = "falling";
 						this.fallingTime = 0;
@@ -143,9 +143,9 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 			}
 		};
 
-		var ai = function (gs) {
+		var ai = function () {
 			getState().preupdate.call(_this);
-			getState().update.call(_this, gs);
+			getState().update.call(_this);
 		}
 
 		var getState = function () {
@@ -169,7 +169,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "dir"],
 			wakefulness = data.wakefulness;
 		}
 
-		Util.extend(this, new Monster(level, x, y, 10, 10, sprites, anims, ai, initialHealth));
+		Util.extend(this, new Monster(gs, x, y, 10, 10, sprites, anims, ai, initialHealth));
 		this.startAnimation("wait");
 		state = "waiting";
 	}

@@ -11,11 +11,11 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 	var flagSprites = Sprites.loadFramesFromData(SpriteData.flag);
 	var endSprites = Sprites.loadFramesFromData(SpriteData.end);
 
-	var End = function (level, x, y) {
+	var End = function (gs, x, y) {
 		Util.extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
 		this.isEnd = true;
 		this.ignoreShots = true;
-		this.update = function (gs) {}
+		this.update = function () {}
 		this.draw = function (painter) {
 			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, Dir.LEFT, endSprites[0], Colors.good);
 		};
@@ -23,7 +23,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		this.fromData = function () {/*not replicated*/};
 	}
 
-	var Flag = function (level, x, y) {
+	var Flag = function (gs, x, y) {
 		Util.extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
 
 		this.isCheckpoint = true;
@@ -41,7 +41,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 	}
 
 	var springSprites = Sprites.loadFramesFromData(SpriteData.spring);
-	var Spring = function (level, x, y) {
+	var Spring = function (gs, x, y) {
 		Util.extend(this, new Entity(new Pos(x, y), new Pos(8, 3)));
 
 		this.isSpring = true;
@@ -57,7 +57,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		this.fromData = function () {/*not replicated*/};
 	}
 
-	var Monster = function (level, x, y, width, height, sprites, anims, ai, health, onHit) {
+	var Monster = function (gs, x, y, width, height, sprites, anims, ai, health, onHit) {
 
 		//constants
 		this.killPlayerOnTouch = true;
@@ -65,7 +65,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		var maxDeadTime = 30;
 
 		//state
-		Util.extend(this, new WalkingThing(level, new Pos(x, y), new Pos(width, height)));
+		Util.extend(this, new WalkingThing(gs, new Pos(x, y), new Pos(width, height)));
 
 		this.isNetDirty = true;
 		this.health = health;
@@ -128,7 +128,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 			animDelay = 0;
 		}
 
-		this.update = function (gs) {
+		this.update = function () {
 			if (this.live === false) {
 				if (deadTime < maxDeadTime) deadTime++;
 				return;
@@ -145,7 +145,7 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 				}
 			}
 
-			if (ai) ai(gs);
+			if (ai) ai();
 
 			if (this.collisions.length > 0) {
 				this.health--;
@@ -180,17 +180,17 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		};
 	};
 
-	Monster.createCrate = function (level, x, y) {
-		return new Monster(level, x, y, 10, 10, crateSprites, crateAnims, null, 1);
+	Monster.createCrate = function (gs, x, y) {
+		return new Monster(gs, x, y, 10, 10, crateSprites, crateAnims, null, 1);
 	};
-	Monster.createFlag = function (level, x, y) {
-		return new Flag(level, x, y);
+	Monster.createFlag = function (gs, x, y) {
+		return new Flag(gs, x, y);
 	};
-	Monster.createSpring = function (level, x, y) {
-		return new Spring(level, x, y);
+	Monster.createSpring = function (gs, x, y) {
+		return new Spring(gs, x, y);
 	};
-	Monster.createEnd = function (level, x, y) {
-		return new End(level, x, y);
+	Monster.createEnd = function (gs, x, y) {
+		return new End(gs, x, y);
 	};
 
 	return Monster;

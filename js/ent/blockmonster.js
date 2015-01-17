@@ -9,7 +9,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events"],
 		preparing: {frames: [2], delay: 0},
 	};
 
-	var BlockMonster = function (level, x, y) {
+	var BlockMonster = function (gs, x, y) {
 		var _this = this;
 
 		//constants
@@ -42,7 +42,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events"],
 			}
 		}
 
-		var ai = function (gs) {
+		var ai = function () {
 			if (action === "moving") {
 				if (moveTimer >= moveDelay) {
 					moveTimer = 0;
@@ -111,7 +111,7 @@ define(["sprites", "spritedata", "util", "ent/monster", "pos", "events"],
 			action = data.action;
 		}
 
-		Util.extend(this, new Monster(level, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
+		Util.extend(this, new Monster(gs, x, y, 10, 10, sprites, anims, ai, initialHealth, onHit));
 		this.startAnimation("idle");
 	}
 	return BlockMonster;
