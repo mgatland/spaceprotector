@@ -5,7 +5,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 	var anims = {
 		solid: {frames: [0], delay: 0},
 		breaking: {frames: [0], delay: 0},
-		respawning: {frames: [0], delay: 0},
+		respawning: {frames: [1,2,3,4,5], delay: 5},
 		gone: {frames: [1], delay: 0}
 	};
 
@@ -48,7 +48,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 
 		//constants
 		var breakDelay = 30;
-		var recoveryDelay = 30;
+		var recoveryDelay = 25;
 		var goneDelay = 180;
 		var goneAnimTime = 30; //equivalent to maxDeadTime
 
