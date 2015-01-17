@@ -44,6 +44,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 	var FallingPlatform = function (gs, x, y) {
 		var _this = this;
 		var anim = new Anim(sprites, anims);
+		var weightSensor;
 
 		//constants
 		var breakDelay = 30;
@@ -89,6 +90,17 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		}
 
 		var ai = function () {
+
+			if (action === "solid") {
+				var triggered = false;
+				gs.players.forEach(function (p) {
+					if (Entity.isColliding(p, weightSensor, true)) {
+						triggered = true;
+					}
+				});
+				if (triggered) startBreaking();
+			}
+
 			if (action === "breaking") {
 				breakTimer++;
 				hitFlash = (Math.floor(breakTimer / 3)) % 2;
@@ -154,6 +166,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 
 		Util.extend(this, new Entity(new Pos(x, y), new Pos(10, 10)));
 		startSolid();
+		weightSensor = new Entity(this.pos.clone().moveXY(0,-1), new Pos(10, 1));
 	}
 	return FallingPlatform;
 });
