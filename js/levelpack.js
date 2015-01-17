@@ -49,7 +49,7 @@ define([], function () {
 ""; 
 
 	mapData[2] =
-"OOOOOOOOOOOOOOOOOOO\n" +
+ "OOOOOOOOOOOOOOOOOOO\n" +
 "OOOOOOOOOOOOOOOOOOO\n" +
 "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n" +
 "O             OOOOO            O\n" +
@@ -71,10 +71,17 @@ define([], function () {
 "O OO OOOOO OO OOOOO O OOO OOOO O\n" +
 "O             OOOOO            O\n" +
 "OOOOOOO OOOOOOOOOOOOOOOOOOOOOOOO\n" +
-"OOOOOOO OO\n" +
-"OOOOOOO@OO\n" +
-"OOOOOOOOOO\n" +
-""; 
+"OOOOOOO OOOOOOOOOOOOOO\n" +
+"O             OOOOOOOO\n" +
+"O O====O====O OOOOOOOO\n" +
+"O O    O    O OOOOOOOO\n" +
+"O O    O    O OOOOOOOO\n" +
+"O O    O    O       @O\n" +
+"O O    O    O OOOOOOOO\n" +
+"O w    w    w OOOOOOOO\n" +
+"O             OOOOOOOO\n" +
+"OOOOOOOOOOOOOOOOOOOOOO\n" +
+"";
 
 		this.mapData = mapData;
 	}

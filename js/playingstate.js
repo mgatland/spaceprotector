@@ -54,7 +54,7 @@ define(["entity", "level", "camera", "levelpack", "gamestate"],
 				Events.isRestarting = false;
 				//hack: don't reset the player position
 				var tempPos = gs.players[gs.local].pos;
-				gs = new GameState;
+				gs = new GameState(level);
 				level.spawnEntities(gs, tempPos);
 			}
 

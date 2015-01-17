@@ -23,6 +23,7 @@ define(["keyboard", "painter", "level", "sprites", "spritedata", "colors"],
 		brushes.push({code:"w", spriteData: SpriteData.wasp});
 		brushes.push({code:"s", spriteData: SpriteData.spring});
 		brushes.push({code:"f", spriteData: SpriteData.wolf});
+		brushes.push({code:"=", spriteData: SpriteData.fallingPlatform});
 
 		brushes.forEach(function (brush) {
 			if (brush.spriteData) {
