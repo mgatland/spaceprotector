@@ -71,6 +71,11 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			anim.startAnimation("solid");
 			_this.isPlatform = true;
 			_this.ignoreShots = false;
+			gs.players.forEach(function (p) {
+				if (Entity.isColliding(p, _this, true)) {
+					p.hurt(p.pos);
+				}
+			});
 		}
 
 		var startBreaking = function () {

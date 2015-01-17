@@ -230,6 +230,14 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 			}
 		}
 
+		this.hurt = function (_hitPos) {
+			_this.live = false;
+			deadTimer = maxDeadTime;
+			hitPos = _hitPos.clone().clampWithin(_this.pos, _this.size);
+			deaths++;
+			Events.playSound("pdead", null);
+		}
+
 		this.update = function (keys) {
 			
 			if (this.hidden) return;
@@ -258,11 +266,7 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 						//A hack to hurt the monster. fixme use a hurt method
 						other.collisions.push(_this);
 					} else {
-						_this.live = false;
-						deadTimer = maxDeadTime;
-						hitPos = other.pos.clone().clampWithin(_this.pos, _this.size);
-						deaths++;
-						Events.playSound("pdead", null);
+						_this.hurt(other.pos);
 					}
 				}
 				if (other.isCheckpoint && other !== currentCheckpoint) {
