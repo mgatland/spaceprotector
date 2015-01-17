@@ -67,6 +67,18 @@ define(["pos", "dir"], function (Pos, Dir) {
 		return false;
 	}
 
+	Entity.isCollidingPos = function(a, pos) {
+		if (a.live === true
+			&& a.pos.x < pos.x + 1
+			&& a.pos.x + a.size.x > pos.x
+			&& a.pos.y < pos.y + 1
+			&& a.pos.y + a.size.y > pos.y
+			) {
+				return true;
+		}
+		return false;
+	}
+
 	Entity.checkCollision = function (a, b, mode) {
 		if (!mode) mode = "both";
 		if (Entity.isColliding(a, b)) {

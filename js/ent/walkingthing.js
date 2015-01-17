@@ -13,13 +13,26 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 		}
 
 		this.isOnGround = function () {
-			var leftFoot = gs.level.isPointColliding(this.pos.clone().moveXY(0,this.size.y));
-			var rightFoot = gs.level.isPointColliding(this.pos.clone().moveXY(this.size.x-1,this.size.y));
+			var leftFootPos = this.pos.clone().moveXY(0,this.size.y);
+			var leftFoot = gs.level.isPointColliding(leftFootPos) || posTouchingPlatform(leftFootPos, this);
+			var rightFootPos = this.pos.clone().moveXY(this.size.x-1,this.size.y);
+			var rightFoot = gs.level.isPointColliding(rightFootPos) || posTouchingPlatform(rightFootPos, this);
 			return (leftFoot || rightFoot);
 		}
 
+		var posTouchingPlatform = function(pos, _this) {
+			var touching = false;
+			gs.monsters.forEach(function (m) {
+				if (m.isPlatform) {
+					if (Entity.isCollidingPos(m, pos)) {
+						touching = true;
+					}
+				}
+			});
+			return touching;
+		}
 
-		var touchingPlatform = function(x, y, _this) {
+		var touchingPlatform = function(_this) {
 			var touching = false;
 			gs.monsters.forEach(function (m) {
 				if (m.isPlatform) {
@@ -39,7 +52,7 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 				var sign = x > 0 ? 1 : -1;
 				this.pos.x += sign;
 				x -= sign;
-				if (gs.level.isColliding(this) || touchingPlatform(x, y, _this)) {
+				if (gs.level.isColliding(this) || touchingPlatform(_this)) {
 					this.pos.x -= sign;
 					x = 0; //no more movement.
 					ok = false;
@@ -49,7 +62,7 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 				var sign = y > 0 ? 1 : -1;
 				this.pos.y += sign;
 				y -= sign;
-				if (gs.level.isColliding(this) || touchingPlatform(x, y, _this)) {
+				if (gs.level.isColliding(this) || touchingPlatform(_this)) {
 					this.pos.y -= sign;
 					y = 0; //no more movement.
 					ok = false;
