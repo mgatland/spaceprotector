@@ -50,6 +50,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		var breakDelay = 30;
 		var recoveryDelay = 30;
 		var goneDelay = 180;
+		var goneAnimTime = 30; //equivalent to maxDeadTime
 
 		//state
 		var action = "";
@@ -59,6 +60,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		var hitFlash = 0;
 		var hitPos = null;
 		this.isPlatform = true;
+		var hitPos;
 
 		this.getFrame = function () {
 			return anim.getFrame();
@@ -79,7 +81,6 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		var startGone = function () {
 			action = "gone";
 			goneTimer = 0;
-			anim.startAnimation("gone");
 			_this.isPlatform = false;
 		}
 
@@ -98,7 +99,10 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 						triggered = true;
 					}
 				});
-				if (triggered) startBreaking();
+				if (triggered) {
+					hitPos = weightSensor.getCenter();
+					startBreaking();
+				}
 			}
 
 			if (action === "breaking") {
@@ -147,6 +151,12 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 		}
 
 		this.draw = function (painter) {
+			if (action === "gone") {
+				if (goneTimer < goneAnimTime) {
+					painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, anim.getFrame(), Colors.highlight, false, goneTimer/goneAnimTime, hitPos);
+				}
+				return;
+			}
 			var color = (hitFlash > 0 ? Colors.highlight : Colors.bad);
 			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, this.dir, anim.getFrame(), color);
 		};
