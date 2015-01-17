@@ -73,12 +73,12 @@ define([], function () {
 "OOOOOOO OOOOOOOOOOOOOOOOOOOOOOOO\n" +
 "OOOOOOO OOOOOOOOOOOOOO\n" +
 "O             OOOOOOOO\n" +
+"O             OOOOOOOO\n" +
 "O O====O====O OOOOOOOO\n" +
 "O O    O    O OOOOOOOO\n" +
-"O O    O    O OOOOOOOO\n" +
-"O O    O    O       @O\n" +
-"O O    O    O OOOOOOOO\n" +
-"O w    w    w OOOOOOOO\n" +
+"O O   fO   fO OOOOOOOO\n" +
+"O O  OOO  OOO       @O\n" +
+"O             OOOOOOOO\n" +
 "O             OOOOOOOO\n" +
 "OOOOOOOOOOOOOOOOOOOOOO\n" +
 "";
