@@ -36,7 +36,7 @@ define(["entity", "dir", "pos", "util"], function (Entity, Dir, Pos, Util) {
 			var touching = false;
 			gs.monsters.forEach(function (m) {
 				if (m.isPlatform) {
-					if (Entity.isColliding(m, _this)) {
+					if (Entity.isColliding(m, _this, true)) {
 						touching = true;
 					}
 				}
