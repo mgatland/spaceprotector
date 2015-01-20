@@ -82,6 +82,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			action = "breaking";
 			breakTimer = 0;
 			anim.startAnimation("breaking");
+			Events.playSound("alert1", _this.pos.clone());
 		}
 
 		var startGone = function () {
@@ -89,6 +90,7 @@ define(["sprites", "spritedata", "util", "entity", "pos", "events", "colors"],
 			goneTimer = 0;
 			_this.isPlatform = false;
 			_this.ignoreShots = true;
+			Events.playSound("mdead", _this.pos.clone());
 		}
 
 		var startRecovery = function () {

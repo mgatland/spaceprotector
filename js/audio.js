@@ -19,7 +19,7 @@ define([], function () {
 	var muted = false;
 	var soundNames = ["pshoot", "mshoot", "mdead", "mhit", "pdead", 
 	"hitwall", "checkpoint", "jump", "land", "winlevel", "spring", 
-	"blockstop", "blockstart", "waspstart"];
+	"blockstop", "blockstart", "waspstart", "alert1"];
 	var loaded = 0;
 	var sounds = {};
 
