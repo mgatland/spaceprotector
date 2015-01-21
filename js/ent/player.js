@@ -238,6 +238,14 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 			Events.playSound("pdead", null);
 		}
 
+		this.spring = function () {
+			if (this.live && !isSpringed) {
+				isSpringed = true;
+				Events.playSound("spring", _this.pos.clone());
+				beginJumpState();
+			}			
+		}
+
 		this.update = function (keys) {
 			
 			if (this.hidden) return;
@@ -275,11 +283,6 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 					currentCheckpoint = other;
 					currentCheckpoint.selected = true;
 					Events.playSound("checkpoint", _this.pos.clone());
-				}
-				if (other.isSpring && !isSpringed) {
-					isSpringed = true;
-					Events.playSound("spring", _this.pos.clone());
-					beginJumpState();
 				}
 				if (other.isEnd) {
 					Events.winLevel();

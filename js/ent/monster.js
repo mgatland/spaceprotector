@@ -43,8 +43,15 @@ define(["ent/shot", "events", "colors", "entity", "ent/walkingthing",
 		this.isSpring = true;
 		this.ignoreShots = true;
 		this.pos.moveXY(10-this.size.x, 10-this.size.y);
+		var sensor = new Entity(this.pos.clone().moveXY(0, this.size.y - 1), new Pos(this.size.x, 1));
 
 		this.update = function () {
+			//If my sensor is touching the player
+			gs.players.forEach(function (p) {
+				if (Entity.isColliding(p, sensor, true)) {
+					p.spring();
+				}
+			});
 		}
 		this.draw = function (painter) {
 			painter.drawSprite2(this.pos.x, this.pos.y, this.size.x, Dir.RIGHT, springSprites[0], Colors.good);
