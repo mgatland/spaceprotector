@@ -17,6 +17,9 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 		this.shotThisFrame = false;
 		this.groundedY = this.pos.y;
 
+		//todo replicated
+		this.jumpHeldCounter = 0; 
+
 		var spawnPoint = startPos.clone();
 		var currentCheckpoint = null; //The flag entity we last touched
 
@@ -97,9 +100,9 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 
 			jumping: new function () {
 				var phases = [];
-				phases[1] = {ySpeed: -2, normalDuration: 0, jumpHeldDuration: 3};
-				phases[2] = {ySpeed: -1, normalDuration: 0, jumpHeldDuration: 15};
-				phases[3] = {ySpeed: 0, normalDuration: 6};
+				phases[0] = {ySpeed: -2, normalDuration: 1, jumpHeldDuration: 4, jumpHoldMultiplier: [3,1,1,1]};
+				phases[1] = {ySpeed: -1, normalDuration: 1, jumpHeldDuration: 16};
+				phases[2] = {ySpeed: 0, normalDuration: 7};
 				this.preupdate = function () {};
 				this.update = function (jumpIsHeld) {
 					animState = "jumping";
@@ -107,20 +110,28 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 
 					if (isSpringed) jumpIsHeld = true; //forced by a spring.
 
+					if (this.jumpHeldCounter > 0) this.jumpHeldCounter -= 1;
+					if (jumpIsHeld) {
+						this.jumpHeldCounter += 
+							phase.jumpHoldMultiplier ? phase.jumpHoldMultiplier[this.jumpTime] : 1;
+					}
+
+					var jumpBoostActive = (this.jumpHeldCounter > 0);
+
 					var speed = phase.ySpeed;
 					var spaceAboveMe = this.tryMove(0, speed, gs);
 
 					this.jumpTime++;
-					var duration = (jumpIsHeld && phase.jumpHeldDuration) ? phase.jumpHeldDuration : phase.normalDuration;
-					if (this.jumpTime > duration) {
+					var duration = (jumpBoostActive && phase.jumpHeldDuration) ? phase.jumpHeldDuration : phase.normalDuration;
+					if (this.jumpTime >= duration) {
 						this.jumpPhase++;
 						this.jumpTime = 0;
 					}
-					if (!spaceAboveMe && this.jumpPhase < 3) {
-						this.jumpPhase = 3;
+					if (!spaceAboveMe && this.jumpPhase < phases.length - 1) {
+						this.jumpPhase = phases.length - 1;
 						this.jumpTime = 0;
 					}
-					if (this.jumpPhase === 4) {
+					if (this.jumpPhase === phases.length) {
 						this.state = "falling";
 						this.fallingTime = 0;
 					}
@@ -207,7 +218,8 @@ define(["ent/shot", "events", "colors", "ent/walkingthing", "sprites", "dir", "p
 		function beginJumpState() {
 			_this.state = "jumping";
 			_this.jumpTime = 0;
-			_this.jumpPhase = 1;
+			_this.jumpPhase = 0;
+			_this.jumpHeldCounter = 0;
 		}
 
 		var updateShooting = function(keys) {
