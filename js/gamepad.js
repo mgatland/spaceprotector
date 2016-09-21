@@ -17,23 +17,18 @@ define([], function () {
     	this.update = function update () {
     		var gamepad = navigator.getGamepads &&  navigator.getGamepads()[0];
     		if (gamepad) {
-    			var left = gamepad.axes[0] < -deadZone;// || gamepad.buttons[14].pressed;
-    			var right = gamepad.axes[0] > deadZone;// || gamepad.buttons[15].pressed;
-    			var jump = gamepad.buttons[2].pressed;
-    			var shoot = gamepad.buttons[0].pressed 
-    				|| gamepad.buttons[1].pressed
+    			var left = gamepad.axes[0] < -deadZone || gamepad.buttons[14].pressed;
+    			var right = gamepad.axes[0] > deadZone || gamepad.buttons[15].pressed;
+    			var jump = gamepad.buttons[0].pressed || gamepad.buttons[3].pressed;
+    			var shoot = gamepad.buttons[1].pressed 
+    				|| gamepad.buttons[2].pressed
     				|| gamepad.buttons[7].pressed;
-                var start = gamepad.buttons[10].pressed || gamepad.buttons[9].pressed;
+                var start = gamepad.buttons[8].pressed || gamepad.buttons[9].pressed;
 
                 //gamepad restart hack
-                /*if (gamepad.buttons[8].pressed && gamepad.buttons[9].pressed) {
+                if (gamepad.buttons[8].pressed && gamepad.buttons[9].pressed) {
                     document.location.reload();
                 }
-                for (var i = 0; i < gamepad.buttons.length; i++) {
-                    if (gamepad.buttons[i].pressed) {
-                        console.log(i);
-                    }
-                }*/
 
     			simulateKey(left, oldLeft, KeyEvent.DOM_VK_LEFT);
     			simulateKey(right, oldRight, KeyEvent.DOM_VK_RIGHT);
