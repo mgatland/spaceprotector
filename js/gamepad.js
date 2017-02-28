@@ -16,17 +16,20 @@ define([], function () {
 
     	this.update = function update () {
     		var gamepad = navigator.getGamepads &&  navigator.getGamepads()[0];
+            function getButton (num) {
+                return (gamepad.buttons.length > num && gamepad.buttons[num].pressed);
+            }
     		if (gamepad) {
-    			var left = gamepad.axes[0] < -deadZone || gamepad.buttons[14].pressed;
-    			var right = gamepad.axes[0] > deadZone || gamepad.buttons[15].pressed;
-    			var jump = gamepad.buttons[0].pressed || gamepad.buttons[3].pressed;
-    			var shoot = gamepad.buttons[1].pressed 
-    				|| gamepad.buttons[2].pressed
-    				|| gamepad.buttons[7].pressed;
-                var start = gamepad.buttons[8].pressed || gamepad.buttons[9].pressed;
+    			var left = gamepad.axes[0] < -deadZone || getButton(14);
+    			var right = gamepad.axes[0] > deadZone || getButton(15);
+    			var jump = getButton(0) || getButton(3);
+    			var shoot = getButton(1)
+    				|| getButton(2)
+    				|| getButton(7);
+                var start = getButton(8) || getButton(9);
 
                 //gamepad restart hack
-                if (gamepad.buttons[8].pressed && gamepad.buttons[9].pressed) {
+                if (getButton(8) || getButton(9)) {
                     document.location.reload();
                 }
 
