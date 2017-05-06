@@ -107,14 +107,14 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 		}
 
 		function touchStart (e) {
-			if (!hasBeenUsed) {
-				onFirstTouch();
-			}
 			e.preventDefault();
 			updateTouches(e.touches);
 		}
 
 		function touchEnd (e) {
+			if (!hasBeenUsed) {
+				onFirstTouch();
+			}
 			e.preventDefault();
 			updateTouches(e.touches);
 		}
