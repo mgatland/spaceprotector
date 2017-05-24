@@ -7,7 +7,7 @@ define([], function () {
             || document.documentElement.webkitRequestFullscreen);
     }
     //From MDN
-    function toggleFullScreen() {
+    function goFullScreen() {
       if (!document.fullscreenElement &&    // alternative standard method
           !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
         if (document.documentElement.requestFullscreen) {
@@ -19,7 +19,7 @@ define([], function () {
         } else if (document.documentElement.webkitRequestFullscreen) {
           document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         }
-      } else {
+      } /*else { //toggle
         if (document.exitFullscreen) {
           document.exitFullscreen();
         } else if (document.msExitFullscreen) {
@@ -29,7 +29,7 @@ define([], function () {
         } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
         }
-      }
+      }*/
     };
 
     var fullscreenTools = {};
@@ -42,7 +42,7 @@ define([], function () {
     	var heightIsOK = minDimension >= pixelWindow.height * pixelSize;
     	if (!widthIsOK || !heightIsOK) {
     		if (doISupportFullScreen()) {
-    			toggleFullScreen();
+    			goFullScreen();
     		}
     	}
     }

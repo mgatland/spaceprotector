@@ -103,7 +103,6 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 			hasBeenUsed = true;
 			visible = true;
 			Audio.unmuteIOSHack();
-			Fullscreen.goFullscreenIfRequired(canvas, pixelWindow, pixelSize);
 		}
 
 		function touchStart (e) {
@@ -117,6 +116,7 @@ define(["colors", "fullscreen", "audio", "sprites", "dir"],
 			}
 			e.preventDefault();
 			updateTouches(e.touches);
+			Fullscreen.goFullscreenIfRequired(canvas, pixelWindow, pixelSize);
 		}
 
 		function touchMove (e) {

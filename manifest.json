@@ -1,0 +1,14 @@
+{
+  "short_name": "Space Protector",
+  "name": "Space Protector",
+  "icons": [
+    {
+      "src": "spaceprotector-icon.png",
+      "sizes": "200x200",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}
