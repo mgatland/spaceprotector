@@ -109,7 +109,8 @@ define([], function () {
 
 	Network.connectToServer = function (dataCallback) {
 		//var peer = new Peer(generatePeerId(), {host: 'spacepro.herokuapp.com', port: 80, debug: 3});
-		var peer = new Peer(generatePeerId(), {key: '6ku8444tfj3y2e29', debug: 3});
+		try {
+		var peer = new Peer(generatePeerId(), {debug: 3});
 		peer.on('error', function(err) {
 			console.log(err.message + "|" + err.type);
 			if (tryingToJoin === true) {
@@ -146,6 +147,10 @@ define([], function () {
   			}
 			});
 		});
+		} catch (e) {
+			console.log("A problem with multiplayer. Try loading the game using http instead of https.")
+			document.getElementById("netinfo").innerHTML = "Load the page over http (not https) to enable multiplayer"
+		}
 	}
 
 	Network.send = function (data) {
